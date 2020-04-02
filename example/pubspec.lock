@@ -140,9 +140,11 @@ packages:
   g_base_package:
     dependency: "direct main"
     description:
-      path: ".."
-      relative: true
-    source: path
+      path: "."
+      ref: "0.0.1"
+      resolved-ref: "9ce1bcf5c20c02f04e304f31b6eb4d07d85773bf"
+      url: "git://github.com/2math/g_base_package.git"
+    source: git
     version: "0.0.1"
   glob:
     dependency: transitive
