@@ -25,6 +25,7 @@ samples, guidance on mobile development, and a full API reference.
             git:  
               url: git://github.com/2math/g_base_package.git  
               ref: 0.0.1  
+    #ref: 0.0.1 is pointing at TAG "0.0.1"          
     #don't forget to check for new version by tag at https://github.com/2math/g_base_package or in  
     #change log : https://github.com/2math/g_base_package/blob/master/CHANGELOG.md
 
