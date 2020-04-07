@@ -44,7 +44,7 @@ class Log {
   }
 
   static void _print(String textToLog) {
-    print(textToLog);
+    print( "${DateTime.now()} $textToLog");
 //    Colorize string = new Colorize(textToLog);
 //    string.bgGreen();
 //    print(string);

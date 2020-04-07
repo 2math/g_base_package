@@ -25,19 +25,22 @@ dependencies:
   cupertino_icons: ^0.1.2
 
   #custom libs are bellow
-#  g_base_package:
-#    path: ../../g_base_package/
   g_base_package:
-    git:
-      url: git://github.com/2math/g_base_package.git
-      ref: 0.0.1
-      #don't forget to check for new version by tag at https://github.com/2math/g_base_package or in
-      #change log : https://github.com/2math/g_base_package/blob/master/CHANGELOG.md
+    path: ../../g_base_package/
+#  g_base_package:
+#    git:
+#      url: git://github.com/2math/g_base_package.git
+#      ref: 0.0.1
+#      #don't forget to check for new version by tag at https://github.com/2math/g_base_package or in
+#      #change log : https://github.com/2math/g_base_package/blob/master/CHANGELOG.md
+
+  json_annotation: ^3.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   test: ^1.9.0
+  json_serializable: ^3.2.5
 
 
 # For information on the generic Dart part of this file, see the
@@ -51,6 +54,8 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+  assets:
+    - assets/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

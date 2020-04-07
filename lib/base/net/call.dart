@@ -8,7 +8,7 @@ class Call {
   String endpoint;
   Map<String, String> params, headers;
   String body, toLog, token, language, fileName;
-  bool isFullUrl, isServerUrl;
+  bool isFullUrl, isServerUrl, refreshOn401;
   File file;
   MediaType mediaType;
 
@@ -19,9 +19,10 @@ class Call {
       this.toLog,
       this.token,
       this.language,
-      this.isFullUrl=false,
-      this.isServerUrl=true,
+      this.isFullUrl = false,
+      this.isServerUrl = true,
       this.file,
       this.mediaType,
-      this.fileName});
+      this.fileName,
+      this.refreshOn401 = true});
 }

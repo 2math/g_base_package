@@ -21,17 +21,39 @@ class BaseNetworkManager {
     final response = await _doCall(call);
 
     if (response.statusCode < 300) {
-      if (call.callMethod == CallMethod.DOWNLOAD) {
-        return await _saveToFile(call, response);
-      }
-      else {
-        // If the call to the server was successful, parse the JSON.
-        return await handlePositiveResultBody(response.body); //JsonParser().toPost
-      }
+      return await _onPositiveResponse(call, response, handlePositiveResultBody);
     } else {
-      //todo check for 401 and re-login
-      // If that call was not successful, throw an error.
-      throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: response.body);
+      if (response.statusCode == 401 && call.refreshOn401) {
+          Log.d("tryToRefreshSession");
+        String newToken = await tryToRefreshSession();
+        if (newToken != null) {
+          Log.d("repeat call with new session");
+          call.token = newToken;
+          final response2 = await _doCall(call);
+          if (response2.statusCode < 300) {
+            return await _onPositiveResponse(call, response2, handlePositiveResultBody);
+          }
+        }
+        //return original response if we couldn't auto login!
+        throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: response.body);
+      } else {
+        // If that call was not successful, throw an error.
+        throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: response.body);
+      }
+    }
+  }
+
+  ///override this function if you want to refresh session on 401 and repeat call
+  Future<String> tryToRefreshSession() async {
+    return Future.value(null);
+  }
+
+  Future _onPositiveResponse(Call call, http.Response response, Function handlePositiveResultBody) async {
+    if (call.callMethod == CallMethod.DOWNLOAD) {
+      return await _saveToFile(call, response);
+    } else {
+      // If the call to the server was successful, parse the JSON.
+      return await handlePositiveResultBody(response.body); //JsonParser().toPost
     }
   }
 
@@ -198,8 +220,10 @@ class BaseNetworkManager {
 
     var response = await request.send();
     http.Response httpResponse = await http.Response.fromStream(response);
-    Log.d("$url\nResponse Code : ${response.statusCode}\n"
-                  "Body :\n${_printJson(httpResponse.body)}", "Response UploadFile");
+    Log.d(
+        "$url\nResponse Code : ${response.statusCode}\n"
+            "Body :\n${_printJson(httpResponse.body)}",
+        "Response UploadFile");
     return httpResponse;
   }
 

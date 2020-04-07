@@ -1,7 +1,17 @@
+import 'dart:convert';
+
+import 'package:example/flavors/main_dev.dart';
+import 'package:example/network/network_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:g_base_package/base/utils/logger.dart';
+import 'package:g_base_package/base/utils/system.dart';
 
-void main() => runApp(MyApp());
+import 'model/session.dart';
+
+void main() {
+    DevConfig();
+    runApp(MyApp());
+}
 //todo Galeen (02 Apr 2020) : Make example of basic use, copy what can from Zoef
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -47,8 +57,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
     final String tag = "MyHomePage";
   int _counter = 0;
+  String token, companyId;
 
   void _incrementCounter() {
+
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -57,11 +69,34 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
       Log.d("new counter value : $_counter", tag);
+
+      //todo Galeen (07 Apr 2020) : implement block and repository
+      if(token == null){
+          Log.d("login", tag);
+          NetworkManager(null).login("mm@mm.mm", "mmmmmm", (json){
+              try {
+                  var session = Session.fromJson(jsonDecode(json));
+                  token = session.sessionId;
+                  companyId = session.company.id;
+              } catch (e) {
+                  Log.e("weird error parsing session",tag,e);
+              }
+          });
+      }else{
+          NetworkManager(token).getWorkspaces(companyId, (json){
+              Log.d("getWorkspaces", tag);
+              return List();
+          });
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+      //important to be called here in first widget
+      if (SizeConfig().init(context)) {
+          Log.d(SizeConfig().toString());
+      }
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -101,6 +136,13 @@ class _MyHomePageState extends State<MyHomePage> {
               '$_counter',
               style: Theme.of(context).textTheme.display1,
             ),
+              FlatButton(child: Text("Logout"), onPressed: () {
+                  NetworkManager(token).logout().then((isOK){
+                      if(isOK ?? false){
+                          token = null;
+                      }
+                  });
+              },),
           ],
         ),
       ),
