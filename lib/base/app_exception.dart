@@ -1,4 +1,4 @@
-class AppException {
+class AppException extends Error{
     //Error codes must be < 300 , 300+ are for network errors
     static const int OFFLINE_ERROR = 226;
     static const int NO_CALL_METHOD_ERROR = 227;

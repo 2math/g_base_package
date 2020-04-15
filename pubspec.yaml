@@ -1,6 +1,6 @@
 name: g_base_package
 description: Base functionality for a project
-version: 0.0.1
+version: 0.0.3
 author:
 homepage:
 
@@ -17,6 +17,7 @@ dependencies:
   connectivity: ^0.4.8+2
   package_info: ^0.4.0+16
   path_provider: ^1.6.5
+  logger_flutter: ^0.7.1
 
 dev_dependencies:
   flutter_test:
