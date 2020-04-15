@@ -1,3 +1,5 @@
+## [0.0.3] - better logs
+
 ## [0.0.2] - refresh session
 
 * added ability to refresh session on 401
