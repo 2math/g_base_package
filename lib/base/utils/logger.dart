@@ -1,5 +1,7 @@
 //import 'package:colorize/colorize.dart';
 
+import 'package:g_base_package/base/app_exception.dart';
+
 import '../provider/instance_provider.dart';
 import 'package:flutter/foundation.dart' as Foundation;
 import 'package:logger/logger.dart';
@@ -68,6 +70,14 @@ class Log {
         _logger.d(textToLog);
         break;
     }
+  }
+
+  ///Use this method to print in logs your error messages.
+  static error(String log, {String tag, dynamic error}) {
+    if (error != null && !(error is Error)) {
+      error = AppException(data: error);
+    }
+    e(log, tag, error);
   }
 
   ///Use this method to print in logs your error messages.
