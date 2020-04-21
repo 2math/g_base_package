@@ -1,3 +1,5 @@
+## [0.0.5] - helper function to detect keyboard is visible
+
 ## [0.0.4] - Log error with any data that will be converted to Error if is not instance of it
 
 ## [0.0.3] - better logs

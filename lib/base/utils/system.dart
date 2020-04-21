@@ -9,6 +9,12 @@ class System {
   static double getScreenWidth(BuildContext context) {
     return MediaQuery.of(context).size.width;
   }
+
+  ///this one is not tested on iOS. There could be a problem if the user has installed floating keyboard though.
+  static bool isKeyboardVisible(BuildContext context){
+      double bottom = MediaQuery.of(context).viewInsets.bottom;
+      return bottom > 200;
+  }
 }
 
 class SizeConfig {

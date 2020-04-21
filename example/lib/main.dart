@@ -63,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String token, companyId;
 
   void _incrementCounter() {
+    Log.d("${System.isKeyboardVisible(context)}", tag);
     setState(() {
       // This call to setState tells the Flutter framework that something has
       // changed in this State, which causes it to rerun the build method below
@@ -150,12 +151,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-              FlatButton(
-                  child: Text("Show Logs"),
-                  onPressed: () {
-                     Navigator.push(context, MaterialPageRoute(builder: (context) => LogsPage()));
-                  },
-                  ),
+            FlatButton(
+              child: Text("Show Logs"),
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LogsPage()));
+              },
+            ),
+            TextField()
           ],
         ),
       ),
