@@ -1,10 +1,11 @@
 import 'package:flutter/widgets.dart';
 
-///wrap child with SingleChildScrollView, but the height of the view will be as matchParent and if the keyboard
-///appear this height will be kept and view will be scrollable
+
 class SingleScrollView extends StatefulWidget {
   final Widget child;
 
+  ///wrap child with SingleChildScrollView, but the height of the view will be as matchParent and if the keyboard
+  ///appear this height will be kept and view will be scrollable
   SingleScrollView({Key key, this.child}) : super(key: key);
 
   @override
