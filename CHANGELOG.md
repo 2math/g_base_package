@@ -1,3 +1,7 @@
+## [0.0.6] - SingleScrollView which has full parent height and will keep it on show keyboard.
+This way you can design your screen and make sure on keyboard visible will keep the same layout and will be
+scrollable
+
 ## [0.0.5] - helper function to detect keyboard is visible
 
 ## [0.0.4] - Log error with any data that will be converted to Error if is not instance of it
