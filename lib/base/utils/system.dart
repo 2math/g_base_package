@@ -10,6 +10,10 @@ class System {
     return MediaQuery.of(context).size.width;
   }
 
+  static double getStatusBarHeight(BuildContext context) {
+    return MediaQuery.of(context).padding.top;
+  }
+
   ///this one is not tested on iOS. There could be a problem if the user has installed floating keyboard though.
   static bool isKeyboardVisible(BuildContext context){
       double bottom = MediaQuery.of(context).viewInsets.bottom;
