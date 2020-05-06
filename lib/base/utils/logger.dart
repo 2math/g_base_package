@@ -89,13 +89,13 @@ class Log {
     if (!Foundation.kReleaseMode) {
       String systemTag = '$tagError $appTag';
       if (tag != null && error != null) {
-        _print('$systemTag $tag : $log \n $error', Level.info, error: error, stackTrace: error?.stackTrace);
+        _print('$systemTag $tag : $log \n $error', Level.error, error: error, stackTrace: error?.stackTrace);
       } else if (tag != null) {
-        _print('$systemTag $tag : $log', Level.info, error: error, stackTrace: error?.stackTrace);
+        _print('$systemTag $tag : $log', Level.error, error: error, stackTrace: error?.stackTrace);
       } else if (error != null) {
-        _print('$systemTag : $log \n $error', Level.info, error: error, stackTrace: error?.stackTrace);
+        _print('$systemTag : $log \n $error', Level.error, error: error, stackTrace: error?.stackTrace);
       } else {
-        _print('$systemTag : $log', Level.info, error: error, stackTrace: error?.stackTrace);
+        _print('$systemTag : $log', Level.error, error: error, stackTrace: error?.stackTrace);
       }
       return true;
     }

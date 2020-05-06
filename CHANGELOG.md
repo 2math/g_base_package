@@ -1,3 +1,5 @@
+## [0.0.8] - fix on logging error instead of info
+
 ## [0.0.7] - helper function to get status bar height
 
 ## [0.0.6] - SingleScrollView which has full parent height and will keep it on show keyboard.
