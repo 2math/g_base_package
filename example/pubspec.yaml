@@ -35,6 +35,7 @@ dependencies:
 #      #change log : https://github.com/2math/g_base_package/blob/master/CHANGELOG.md
 
   json_annotation: ^3.0.1
+  launch_review: ^2.0.0
 
 dev_dependencies:
   flutter_test:

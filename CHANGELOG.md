@@ -1,3 +1,6 @@
+## [0.0.9] - versioning with FL servers. It has ready for use service request, response and logic for status. Example in
+ the app how to use it.
+
 ## [0.0.8] - fix on logging error instead of info
 
 ## [0.0.7] - helper function to get status bar height

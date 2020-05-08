@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'package:example/flavors/main_dev.dart';
 import 'package:example/network/network_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:g_base_package/base/app_exception.dart';
 import 'package:g_base_package/base/ui/logs_screen.dart';
+import 'package:g_base_package/base/utils/dialogs.dart';
 import 'package:g_base_package/base/utils/logger.dart';
 import 'package:g_base_package/base/utils/system.dart';
+import 'package:g_base_package/base/utils/versions.dart';
+import 'package:launch_review/launch_review.dart';
 
 import 'model/session.dart';
 
@@ -152,9 +156,43 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             FlatButton(
-              child: Text("Show Logs"),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => LogsPage()));
+              child: Text("Get versions"),
+              onPressed: () async {
+                var versions = await NetworkManager(null).getVersions();
+
+                if(versions == null){
+                  return;
+                }
+
+                int status = versions.getStatus();
+                Log.d("status : $status");
+
+                if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
+                  bool isBlocking = status == Version.UPDATE_REQUIRED;
+                  int result = await Dialogs.showVersions(
+                      context,
+                      Text("App Name"),
+                      Text(isBlocking
+                          ? "You are using a version which "
+                              "is no longer supported.\nTo continue using this app, please install latest version."
+                          : "There is a new version available."),
+                      Text(isBlocking ? "Exit" : "Next Time"),
+                      Text("Go To Store"));
+                  if(result == Version.UPDATE_REQUIRED){
+                    //go to store
+                    LaunchReview.launch(
+                      androidAppId: "com.facebook.katana",
+                      iOSAppId: "284882215",
+                      );
+                  }else if(isBlocking){
+                    //exit app
+                    await System.popToExit(animated: true);
+                  }else{
+                    Dialogs.showSnackBar(context, "Continue");
+                  }
+                }else{
+                  Dialogs.showSnackBar(context, "Continue");
+                }
               },
             ),
             TextField()

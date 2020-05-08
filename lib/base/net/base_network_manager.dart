@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import '../lang/localization.dart';
-import 'package:http_parser/http_parser.dart';
 import '../flavor_config.dart';
 import '../utils/logger.dart';
+import '../utils/versions.dart';
 import '../app_exception.dart';
 import 'call.dart';
 import 'package:connectivity/connectivity.dart';
@@ -46,6 +47,16 @@ class BaseNetworkManager {
   ///override this function if you want to refresh session on 401 and repeat call
   Future<String> tryToRefreshSession() async {
     return Future.value(null);
+  }
+
+  Future<Version> getVersions() async {
+//    return Version(clientVersion: "1.10.7", currentVersion: 5, minimalVersion: 2);
+    Call call = new Call.name(CallMethod.GET, "versions/${Platform.isIOS?"IOS":"ANDROID"}");
+
+    return await doServerCall<Version>(call, (json){
+      Log.d(json,"versions");
+      return Version.fromJson(jsonDecode(json));
+    });
   }
 
   Future _onPositiveResponse(Call call, http.Response response, Function handlePositiveResultBody) async {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
 class System {
@@ -18,6 +19,11 @@ class System {
   static bool isKeyboardVisible(BuildContext context){
       double bottom = MediaQuery.of(context).viewInsets.bottom;
       return bottom > 200;
+  }
+
+  ///this will close the app if you are on first screen, same as when you press back button on android
+  static Future<void> popToExit({bool animated}) async {
+    await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop', animated);
   }
 }
 
