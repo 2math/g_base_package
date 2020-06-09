@@ -1,3 +1,6 @@
+## [0.1.1] - InstanceProvider with remote and local repository
+    cleared some code
+
 ## [0.1.0] - migrate to bloc 4.0.0
     updated the other libraries to latest
 

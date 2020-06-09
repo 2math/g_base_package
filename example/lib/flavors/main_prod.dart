@@ -1,6 +1,5 @@
 import 'package:g_base_package/base/flavor_config.dart';
 
-import '../main.dart';
 import 'app_flavors.dart';
 
 void main() {

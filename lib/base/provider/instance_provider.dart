@@ -1,11 +1,10 @@
 import 'package:g_base_package/base/utils/logger.dart';
 
-import '../app_exception.dart';
 import '../reporters/analytics.dart';
 import '../reporters/crash_reporter.dart';
 import 'package:flutter/foundation.dart';
 
-class InstanceProvider<R, C extends BaseCrashReporter,
+class InstanceProvider<R, P, C extends BaseCrashReporter,
     A extends BaseAnalyticsUtil> {
   static InstanceProvider _instance;
   static bool _ignoreInstanceForUnitTests = false;
@@ -24,11 +23,12 @@ class InstanceProvider<R, C extends BaseCrashReporter,
   }
 
   R _repositoryInstance;
+  P _persistenceInstance;
   C _crashReporter;
   A _analyticsUtil;
 
   InstanceProvider.init(
-      this._repositoryInstance, this._crashReporter, this._analyticsUtil) {
+      this._repositoryInstance,this._persistenceInstance, this._crashReporter, this._analyticsUtil) {
     _instance = this;
   }
 
@@ -36,9 +36,18 @@ class InstanceProvider<R, C extends BaseCrashReporter,
     return _repositoryInstance;
   }
 
+  P provideLocalRepository() {
+    return _persistenceInstance;
+  }
+
   @visibleForTesting
-  setTestRepositoryInstance(R value) {
-    _repositoryInstance = value;
+  setTestRepositoryInstance(R testRepository) {
+    _repositoryInstance = testRepository;
+  }
+
+  @visibleForTesting
+  setTestLocalRepositoryInstance(P testRepository) {
+    _persistenceInstance = testRepository;
   }
 
   C get crashReporter => _crashReporter;

@@ -1,4 +1,4 @@
-import '../utils/utils.dart';
+//import '../utils/utils.dart';
 //import 'package:firebase_analytics/firebase_analytics.dart';
 //import 'package:firebase_analytics/observer.dart';
 
@@ -16,7 +16,7 @@ class BaseAnalyticsUtil {
 //  }
 
     ///helper method to check if we are in debug mode and skip init and log
-    static bool _canNotLog({bool withInitCheck = true}) {
+//    static bool _canNotLog({bool withInitCheck = true}) {
 //        if (_analytics == null) {
 //        if (_logNotEnabled == null) {
 //            Log.e("Must init Analytics first", null,
@@ -37,8 +37,8 @@ class BaseAnalyticsUtil {
 //        }else{
 //            return _logNotEnabled = false;
 //        }
-    return true;
-    }
+//    return true;
+//    }
 
   Future<void> logEvent(String name, Map<String, dynamic> params) async {
 //    if (_canNotLog()) return;

@@ -3,9 +3,7 @@ import 'dart:convert';
 import 'package:example/flavors/main_dev.dart';
 import 'package:example/network/network_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:g_base_package/base/app_exception.dart';
-import 'package:g_base_package/base/ui/logs_screen.dart';
 import 'package:g_base_package/base/utils/dialogs.dart';
 import 'package:g_base_package/base/utils/logger.dart';
 import 'package:g_base_package/base/utils/system.dart';
@@ -143,7 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             Text(
               '$_counter',
-              style: Theme.of(context).textTheme.display1,
+              style: Theme.of(context).textTheme.headline4,
             ),
             FlatButton(
               child: Text("Logout"),

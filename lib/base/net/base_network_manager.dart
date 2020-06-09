@@ -226,7 +226,7 @@ class BaseNetworkManager {
             "\nFile : ${call.file.path}"
             "\nfilename : ${call.fileName}"
             "\ncontentType : ${call.mediaType}"
-            "\ncontentLenght : ${length}",
+            "\ncontentLenght : $length",
         "UploadFile");
 
     var response = await request.send();
