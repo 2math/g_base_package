@@ -9,14 +9,26 @@ import 'package:flutter/services.dart';
 
 ///Create AppBaseState for each app where K should be App Repository class, which was init on App
 /// create
-abstract class BaseState<T extends StatefulWidget, K> extends State<T> {
-  K repository;
+abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
+  K remoteRepository;
+  P localRepository;
   AlertDialog progressDialog;
+
+  String get tag;
+
+  ///this getter is for consistence with older versions
+  K get repository => remoteRepository;
 
   @override
   void initState() {
     super.initState();
-    repository = InstanceProvider.getInstance().provideRepository();
+
+    Log.d("init state", tag);
+
+    InstanceProvider.getInstance().analyticsUtil.logCurrentScreen(tag);
+
+    remoteRepository = InstanceProvider.getInstance().provideRepository();
+    localRepository = InstanceProvider.getInstance().provideLocalRepository();
   }
 
   showProgressIndicator({String msgKey, String text}) {

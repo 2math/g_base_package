@@ -1,3 +1,5 @@
+## [0.1.2] - Base state with local and remote repository
+
 ## [0.1.1] - InstanceProvider with remote and local repository
     cleared some code
 
