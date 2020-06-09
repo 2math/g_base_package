@@ -34,14 +34,22 @@ class Log {
     printInDebugOnly(tag != null ? '$tagDebug $appTag $tag' : '$tagDebug $appTag', log, Level.debug);
   }
 
+  ///This method will print developer's info in logs only if we are in debug
+  ///mode, but will not add to the CrashReporter. This one is save for print passwords or other sensitive information
+  /// in the console
+  static s(String log, [String tag]) {
+    printInDebugOnly(tag != null ? '$tagDebug $appTag $tag' : '$tagDebug $appTag', log, Level.debug,
+        addToCrashReporter: false);
+  }
+
   ///This method will print developer's warning logs only if we are in debug
   ///mode
   static w(String log, [String tag]) {
     printInDebugOnly(tag != null ? '$tagWarning $appTag $tag' : '$tagWarning $appTag', log, Level.warning);
   }
 
-  static void printInDebugOnly(String tag, String log, Level level) {
-    if (fromUI) {
+  static void printInDebugOnly(String tag, String log, Level level , {bool addToCrashReporter = true}) {
+    if (fromUI && addToCrashReporter) {
       InstanceProvider.getInstance().crashReporter?.log(log, tag); //always save in Crash Reporter
     }
     if (!Foundation.kReleaseMode) {
