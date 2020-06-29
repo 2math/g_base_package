@@ -155,44 +155,52 @@ class _MyHomePageState extends State<MyHomePage> {
                 });
               },
             ),
-            FlatButton(
-              child: Text("Get versions"),
-              onPressed: () async {
-                var versions = await NetworkManager(null).getVersions();
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return FlatButton(
+                  child: Text("Get versions"),
+                  onPressed: () async {
+                    var versions = await NetworkManager(null).getVersions();
 
-                if(versions == null){
-                  return;
-                }
+                    if (versions == null) {
+                      return;
+                    }
 
-                int status = versions.getStatus();
-                Log.d("status : $status");
+                    int status = versions.getStatus();
+                    Log.d("status : $status");
 
-                if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
-                  bool isBlocking = status == Version.UPDATE_REQUIRED;
-                  int result = await Dialogs.showVersions(
-                      context,
-                      Text("App Name"),
-                      Text(isBlocking
-                          ? "You are using a version which "
+                    if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
+                      bool isBlocking = status == Version.UPDATE_REQUIRED;
+                      int result = await Dialogs.showVersions(
+                          context,
+                          Text("App Name"),
+                          Text(isBlocking
+                              ? "You are using a version which "
                               "is no longer supported.\nTo continue using this app, please install latest version."
-                          : "There is a new version available."),
-                      Text(isBlocking ? "Exit" : "Next Time"),
-                      Text("Go To Store"));
-                  if(result == Version.UPDATE_REQUIRED){
-                    //go to store
-                    LaunchReview.launch(
-                      androidAppId: "com.facebook.katana",
-                      iOSAppId: "284882215",
-                      );
-                  }else if(isBlocking){
-                    //exit app
-                    await System.popToExit(animated: true);
-                  }else{
-                    Dialogs.showSnackBar(context, "Continue");
-                  }
-                }else{
-                  Dialogs.showSnackBar(context, "Continue");
-                }
+                              : "There is a new version available."),
+                          Text(isBlocking ? "Exit" : "Next Time"),
+                          Text("Go To Store"));
+                      if (result == Version.UPDATE_REQUIRED) {
+                        //go to store
+                        LaunchReview.launch(
+                          androidAppId: "com.facebook.katana",
+                          iOSAppId: "284882215",
+                        );
+                      } else if (isBlocking) {
+                        //exit app
+                        await System.popToExit(animated: true);
+                      } else {
+                        Dialogs.showSnackBar(context, "Continue",
+                            marginBottom: SizeConfig.screenHeight / 2.4,
+                            textStyle: TextStyle(color: Colors.black),
+                            bkgColor: Colors.blue,
+                            duration: Duration(seconds: 2));
+                      }
+                    } else {
+                      Dialogs.showSnackBar(context, "Continue");
+                    }
+                  },
+                );
               },
             ),
             TextField()
