@@ -12,11 +12,11 @@ dependencies:
     sdk: flutter
 
   bloc: ^4.0.0
-  flutter_bloc: ^4.0.0
+  flutter_bloc: ^4.0.1
   http: ^0.12.1
   connectivity: ^0.4.8+6
   package_info: ^0.4.1
-  path_provider: ^1.6.10
+  path_provider: ^1.6.11
   logger_flutter: ^0.7.1
 
 dev_dependencies:
