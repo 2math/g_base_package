@@ -1,4 +1,4 @@
-## [0.1.3] - Dialogs showSnackBar customizations, set position 
+## [0.1.5] - Dialogs showSnackBar customizations, set position 
 
 ## [0.1.3] - Base bloc with local and remote repositories
 New Log.s method to print secrets in console only in debug and not to the reporters
