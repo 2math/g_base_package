@@ -25,7 +25,7 @@ abstract class BaseState<T extends StatefulWidget, K> extends State<T> {
       if (msgKey != null) {
         message = Txt.get(msgKey);
       } else if (text != null) {
-          message = text;
+        message = text;
       } else if (FlavorConfig.instance.msgLoadingKey != null) {
         message = Txt.get(FlavorConfig.instance.msgLoadingKey);
       } else {
@@ -57,9 +57,11 @@ abstract class BaseState<T extends StatefulWidget, K> extends State<T> {
     Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg, bkgColor: bkgColor);
   }
 
-  void showInfoMessage(String msg, {BuildContext buildContext, Color bkgColor}) {
+  void showInfoMessage(String msg,
+      {BuildContext buildContext, TextStyle textStyle, Color bkgColor, double marginBottom = 0, Duration duration}) {
 //    Log.e("login_screen", "$e");
-      Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg, bkgColor: bkgColor);
+    Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg, bkgColor: bkgColor, textStyle:
+    textStyle, duration: duration, marginBottom: marginBottom);
   }
 
   String getErrorMessage(error, {String defaultMessage}) {
@@ -67,8 +69,9 @@ abstract class BaseState<T extends StatefulWidget, K> extends State<T> {
       switch (error.code) {
         case 400:
           String serverCode = JsonParser().parseErr(error);
-          if (serverCode != null && serverCode == AppException.UNSUPPORTED_VERSION && FlavorConfig.instance
-                  .unsupportedVersionKey != null) {
+          if (serverCode != null &&
+              serverCode == AppException.UNSUPPORTED_VERSION &&
+              FlavorConfig.instance.unsupportedVersionKey != null) {
             return Txt.get(FlavorConfig.instance.unsupportedVersionKey);
           }
           break;

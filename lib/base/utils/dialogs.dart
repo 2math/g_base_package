@@ -22,7 +22,7 @@ class Dialogs {
   ///was clicked
   static Future<int> showVersions(
       BuildContext context, Widget title, Widget message, Widget btnSkip, Widget btnGoToStore) async {
-    if(btnGoToStore==null && btnSkip == null){
+    if (btnGoToStore == null && btnSkip == null) {
       throw AppException(errorMessage: "please provide atleast one button");
     }
     return showDialog<int>(
@@ -94,24 +94,27 @@ class Dialogs {
       {TextStyle textStyle, Color bkgColor, double marginBottom = 0, Duration duration}) {
     final snackBar = marginBottom == 0
         ? SnackBar(
-      content: Text(msg, style: textStyle),
-      backgroundColor: bkgColor,
-      duration: duration ?? Duration(milliseconds: 4000),
-    )
+            content: Text(msg, style: textStyle),
+            backgroundColor: bkgColor,
+            duration: duration ?? Duration(milliseconds: 4000),
+          )
         : SnackBar(
-      content: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(msg, style: textStyle),
-        ),
-        margin: EdgeInsets.fromLTRB(0, 0, 0, marginBottom),
-        decoration: BoxDecoration(color: bkgColor, borderRadius: BorderRadius.circular(6)),
-      ),
-      backgroundColor: Colors.transparent,
-      duration: duration ?? Duration(milliseconds: 4000),
-      elevation: 1000,
-      behavior: SnackBarBehavior.floating,
-    );
+            content: Container(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(msg, style: textStyle),
+              ),
+              margin: EdgeInsets.fromLTRB(0, 0, 0, marginBottom),
+              decoration: BoxDecoration(
+                color: bkgColor ?? Theme.of(context).snackBarTheme.backgroundColor,
+                borderRadius: BorderRadius.circular(6),
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+            duration: duration ?? Duration(milliseconds: 4000),
+            elevation: 1000,
+            behavior: SnackBarBehavior.floating,
+          );
 
 // Find the Scaffold in the Widget tree and use it to show a SnackBar
     ScaffoldState scaffoldState = Scaffold.of(context, nullOk: true);
