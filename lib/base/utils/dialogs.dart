@@ -105,7 +105,10 @@ class Dialogs {
                 child: Text(msg, style: textStyle),
               ),
               margin: EdgeInsets.fromLTRB(0, 0, 0, marginBottom),
-              decoration: BoxDecoration(color: bkgColor, borderRadius: BorderRadius.circular(6)),
+              decoration: BoxDecoration(
+                color: bkgColor ?? Theme.of(context).snackBarTheme.backgroundColor,
+                borderRadius: BorderRadius.circular(6),
+              ),
             ),
             backgroundColor: Colors.transparent,
             duration: duration ?? Duration(milliseconds: 4000),

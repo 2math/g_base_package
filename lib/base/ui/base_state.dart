@@ -69,9 +69,11 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg, bkgColor: bkgColor);
   }
 
-  void showInfoMessage(String msg, {BuildContext buildContext, Color bkgColor}) {
+  void showInfoMessage(String msg,
+      {BuildContext buildContext, TextStyle textStyle, Color bkgColor, double marginBottom = 0, Duration duration}) {
 //    Log.e("login_screen", "$e");
-      Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg, bkgColor: bkgColor);
+    Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg, bkgColor: bkgColor, textStyle:
+    textStyle, duration: duration, marginBottom: marginBottom);
   }
 
   String getErrorMessage(error, {String defaultMessage}) {
