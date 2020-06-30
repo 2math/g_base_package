@@ -1,3 +1,5 @@
+## [0.1.7] - Option to validate phone with regex
+
 ## [0.1.6] - SingleScrollView with minHeight option
  
 ## [0.1.5] - Dialogs showSnackBar customizations, set position 

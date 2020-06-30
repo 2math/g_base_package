@@ -12,6 +12,11 @@ class Validator {
     return regExp.hasMatch(email);
   }
 
+  ///if you don't specify pattern that one is in use : r'^(?:[+0]9)?[0-9]{10}$'
+  static bool isPhone(String phone, {String pattern}) {
+    return RegExp(pattern == null ? r'^(?:[+0]9)?[0-9]{10}$' : pattern).hasMatch(phone);
+  }
+
   static bool isValidLength(String pass, int length) {
     return pass != null && pass.length >= length;
   }
