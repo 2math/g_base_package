@@ -1,3 +1,5 @@
+## [0.1.6] - SingleScrollView with minHeight option
+ 
 ## [0.1.5] - Dialogs showSnackBar customizations, set position 
 
 ## [0.1.3] - Base bloc with local and remote repositories
