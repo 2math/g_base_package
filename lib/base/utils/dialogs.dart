@@ -112,7 +112,7 @@ class Dialogs {
             ),
             backgroundColor: Colors.transparent,
             duration: duration ?? Duration(milliseconds: 4000),
-            elevation: 1000,
+            elevation: 0,
             behavior: SnackBarBehavior.floating,
           );
 

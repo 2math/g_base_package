@@ -1,3 +1,5 @@
+## [0.1.8] - fixed snackbar scrim
+
 ## [0.1.7] - Option to validate phone with regex
 
 ## [0.1.6] - SingleScrollView with minHeight option

@@ -12,7 +12,7 @@ class DevConfig extends AppBaseConfig {
   DevConfig()
       : super(
           Flavor.DEV,
-          baseUrl: "https://zoef-dev.herokuapp.com/",
+          baseUrl: "https://dev-server.aimhq.com/",
           webURL: "https://zoef-web-dev.herokuapp.com/",
         );
 }
