@@ -73,7 +73,7 @@ class NetworkManager extends BaseNetworkManager {
   }
 
   Future<bool> updateWorkspace() async {
-    Call call = new Call.name(CallMethod.PUT, "v1/companies/43a5af6c-315f-4ce9-bcc8-9ee30d9311c5/workspaces/97cc8908-2011-435e-b89a-132324065d0e",
+    Call call = new Call.name(CallMethod.PUT, "v1/companies/b55306bc-20d0-4ee6-adb1-d3307c308502/workspaces/9e625fb6-e81a-414d-bcfe-95c9d8d80001",
         token: _token, body: utf8.decode(utf8.encode(jsonEncode(<String, dynamic>{
           'name': "Voice 2 ф",
           'description': "I can’t I can't",
