@@ -67,8 +67,22 @@ class NetworkManager extends BaseNetworkManager {
 
   ///Get all workspaces of mine
   Future<List<Object>> getWorkspaces(String companyId, Function handlePositiveResultBody) async {
-    Call call = new Call.name(CallMethod.GET, "v1/companies/$companyId/workspaces", token: _token);
+    Call call = new Call.name(CallMethod.GET, "v1/companies/workspaces", token: _token);
 
     return await doServerCall<List<Object>>(call, handlePositiveResultBody);
+  }
+
+  Future<bool> updateWorkspace() async {
+    Call call = new Call.name(CallMethod.PUT, "v1/companies/43a5af6c-315f-4ce9-bcc8-9ee30d9311c5/workspaces/97cc8908-2011-435e-b89a-132324065d0e",
+        token: _token, body: utf8.decode(utf8.encode(jsonEncode(<String, dynamic>{
+          'name': "Voice 2 ф",
+          'description': "I can’t I can't",
+          'location': "Bb",
+          'type': "GENERAL",
+        }))));
+
+    return await doServerCall<bool>(call, (_){
+
+    });
   }
 }

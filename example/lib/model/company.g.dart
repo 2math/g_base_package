@@ -24,6 +24,7 @@ Company _$CompanyFromJson(Map<String, dynamic> json) {
     accentColor: json['accentColor'] as String,
     language: json['language'] as String,
     defaultCategoryId: json['defaultCategoryId'] as String,
+    isApproved: json['isApproved'] as bool,
   );
 }
 
@@ -44,12 +45,14 @@ Map<String, dynamic> _$CompanyToJson(Company instance) => <String, dynamic>{
       'accentColor': instance.accentColor,
       'language': instance.language,
       'defaultCategoryId': instance.defaultCategoryId,
+      'isApproved': instance.isApproved,
     };
 
 Category _$CategoryFromJson(Map<String, dynamic> json) {
   return Category()
     ..id = json['id'] as String
     ..name = json['name'] as String
+    ..companyId = json['companyId'] as String
     ..isDefault = json['isDefault'] as bool
     ..attributes = (json['attributes'] as List)
         ?.map((e) =>
@@ -60,6 +63,7 @@ Category _$CategoryFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'companyId': instance.companyId,
       'isDefault': instance.isDefault,
       'attributes': instance.attributes?.map((e) => e?.toJson())?.toList(),
     };
@@ -77,6 +81,10 @@ Attribute _$AttributeFromJson(Map<String, dynamic> json) {
             e == null ? null : Option.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     isActive: json['isActive'] as bool,
+    currencySign: json['currencySign'] as String,
+    dataFormat:
+        _$enumDecodeNullable(_$FieldDateFormatEnumMap, json['dataFormat']),
+    valuePrecision: json['valuePrecision'] as int,
   );
 }
 
@@ -84,10 +92,13 @@ Map<String, dynamic> _$AttributeToJson(Attribute instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'label': instance.label,
+      'currencySign': instance.currencySign,
+      'dataFormat': _$FieldDateFormatEnumMap[instance.dataFormat],
       'type': _$AttributeTypeEnumMap[instance.type],
       'isRequired': instance.isRequired,
       'isActive': instance.isActive,
       'orderNumber': instance.orderNumber,
+      'valuePrecision': instance.valuePrecision,
       'options': instance.options,
     };
 
@@ -131,6 +142,13 @@ const _$AttributeTypeEnumMap = {
   AttributeType.DROPDOWN: 'DROPDOWN',
   AttributeType.MULTI_SELECT: 'MULTI_SELECT',
   AttributeType.GPS: 'GPS',
+  AttributeType.DATE: 'DATE',
+};
+
+const _$FieldDateFormatEnumMap = {
+  FieldDateFormat.US: 'US',
+  FieldDateFormat.EU: 'EU',
+  FieldDateFormat.GENERAL: 'GENERAL',
 };
 
 Option _$OptionFromJson(Map<String, dynamic> json) {

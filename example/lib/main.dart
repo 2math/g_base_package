@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //todo Galeen (07 Apr 2020) : implement block and repository
       if (token == null) {
         Log.d("login", tag);
-        NetworkManager(null).login("mm@mm.mm", "mmmmmm", (json) {
+        NetworkManager(null).login("g.blagoev@futurist-labs.com", "123456", (json) {
           try {
             var session = Session.fromJson(jsonDecode(json));
             token = session.sessionId;
@@ -201,7 +201,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
             ),
-            TextField()
+            FlatButton(
+              child: Text("Update"),
+              onPressed: () {
+                NetworkManager(token).updateWorkspace();
+              },
+            ),
           ],
         ),
       ),

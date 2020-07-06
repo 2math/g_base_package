@@ -22,6 +22,7 @@ class Company {
       accentColor,
       language,
       defaultCategoryId;
+  bool isApproved;
 
   Company(
       {this.id,
@@ -39,7 +40,8 @@ class Company {
       this.color,
       this.accentColor,
       this.language,
-      this.defaultCategoryId});
+      this.defaultCategoryId,
+      this.isApproved});
 
   factory Company.fromJson(Map<String, dynamic> json) => _$CompanyFromJson(json);
 
@@ -47,13 +49,13 @@ class Company {
 
   @override
   String toString() {
-    return 'Company{id: $id, name: $name, description: $description, address: $address, city: $city, state: $state, zip: $zip, phone_1: $phone_1, phone_2: $phone_2, phone_3: $phone_3, sign: $sign, logo: $logo, color: $color, accentColor: $accentColor, language: $language, defaultCategoryId: $defaultCategoryId}';
+    return 'Company{id: $id, name: $name, description: $description, address: $address, city: $city, state: $state, zip: $zip, phone_1: $phone_1, phone_2: $phone_2, phone_3: $phone_3, sign: $sign, logo: $logo, color: $color, accentColor: $accentColor, language: $language, defaultCategoryId: $defaultCategoryId, isApproved: $isApproved}';
   }
 }
 
 @JsonSerializable(explicitToJson: true)
 class Category {
-  String id, name;
+  String id, name, companyId;
   bool isDefault;
   List<Attribute> attributes;
 
@@ -65,21 +67,25 @@ class Category {
 
   @override
   String toString() {
-    return 'Category{id: $id, name: $name, attributes: $attributes}';
+    return 'Category{id: $id, name: $name, companyId: $companyId, isDefault: $isDefault, attributes: $attributes}';
   }
 }
 
-enum AttributeType { TEXT, NUMBER, VIN, UPC, DROPDOWN, MULTI_SELECT, GPS }
+enum AttributeType { TEXT, NUMBER, VIN, UPC, DROPDOWN, MULTI_SELECT, GPS, DATE }
+enum FieldDateFormat {US , EU , GENERAL }
 
 @JsonSerializable()
 class Attribute {
-  String id, name, label;
+  String id, name, label, currencySign;
+  FieldDateFormat dataFormat;
   AttributeType type;
-  bool isRequired,isActive;
-  int orderNumber;
+  bool isRequired, isActive;
+  int orderNumber, valuePrecision;
   List<Option> options;
 
-  Attribute({this.id, this.name, this.label, this.type, this.isRequired, this.orderNumber, this.options, this.isActive});
+  Attribute(
+      {this.id, this.name, this.label, this.type, this.isRequired, this.orderNumber, this.options, this.isActive,
+  this.currencySign, this.dataFormat, this.valuePrecision});
 
   factory Attribute.fromJson(Map<String, dynamic> json) => _$AttributeFromJson(json);
 
@@ -98,9 +104,8 @@ class Option {
 
   @override
   String toString() {
-      return 'Option{id: $id, value: $value, attributeId: $attributeId}';
+    return 'Option{id: $id, value: $value, attributeId: $attributeId}';
   }
-
 }
 
 class DefaultCompanyData {

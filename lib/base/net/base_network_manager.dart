@@ -36,10 +36,10 @@ class BaseNetworkManager {
           }
         }
         //return original response if we couldn't auto login!
-        throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: response.body);
+        throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
       } else {
         // If that call was not successful, throw an error.
-        throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: response.body);
+        throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
       }
     }
   }
@@ -64,7 +64,7 @@ class BaseNetworkManager {
       return await _saveToFile(call, response);
     } else {
       // If the call to the server was successful, parse the JSON.
-      return await handlePositiveResultBody(response.body); //JsonParser().toPost
+      return await handlePositiveResultBody(_getBodyAsUtf8(response)); //JsonParser().toPost
     }
   }
 
@@ -97,17 +97,18 @@ class BaseNetworkManager {
     http.Response response = await http.get(url, headers: headers); //todo add timeout
 
 //    String responseHeaders = _printMap(response.headers);
-//      Log.d(response.body);
     Log.d(
         "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-            "Body :\n${_printJson(response.body)}",
+            "Body :\n${_printJson(_getBodyAsUtf8(response))}",
         "Response GET");
     return response;
   }
 
+  String _getBodyAsUtf8(http.Response response) => utf8.decode(response.bodyBytes);
+
   Future<http.Response> _doPostRequest(Call call) async {
-    String contentType = call.params != null ? "application/x-www-form-urlencoded" : "application/json";
+    String contentType = call.params != null ? "application/x-www-form-urlencoded; charset=utf-8" : "application/json; charset=utf-8";
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
 
     String url = _getUrl(call);
@@ -118,17 +119,18 @@ class BaseNetworkManager {
         "POST");
 
     // make POST request
-    http.Response response = await http.post(url, headers: headers, body: call.body != null ? call.body : call.params);
+    http.Response response = await http.post(url, headers: headers, body: call.body != null ? call.body : call.params,
+    encoding: Encoding.getByName("utf-8"));
     Log.d(
         "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-            "Body :\n${_printJson(response.body)}",
+            "Body :\n${_printJson(_getBodyAsUtf8(response))}",
         "Response POST");
     return response;
   }
 
   Future<http.Response> _doPutRequest(Call call) async {
-    Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, "application/json", call.headers);
+    Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, "application/json; charset=utf-8", call.headers);
 
     String url = _getUrl(call);
 
@@ -139,13 +141,13 @@ class BaseNetworkManager {
 
     // make PUT request
     http.Response response = call.callMethod == CallMethod.PUT
-        ? await http.put(url, headers: headers, body: call.body)
-        : await http.patch(url, headers: headers, body: call.body);
+        ? await http.put(url, headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"))
+        : await http.patch(url, headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"));
 
     Log.d(
         "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-            "Body :\n${_printJson(response.body)}",
+            "Body :\n${_printJson(_getBodyAsUtf8(response))}",
         "Response ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
     return response;
   }
@@ -162,7 +164,7 @@ class BaseNetworkManager {
     Log.d(
         "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-            "Body :\n${_printJson(response.body)}",
+            "Body :\n${_printJson(_getBodyAsUtf8(response))}",
         "Response DELETE");
     return response;
   }
@@ -257,6 +259,9 @@ class BaseNetworkManager {
       customHeadersToAdd = new Map<String, String>();
     }
 
+    customHeadersToAdd["accept-encoding"] = "utf-8";
+    customHeadersToAdd["accept-charset"] = "utf-8";
+
     if (token != null && FlavorConfig.instance.headerToken != null) {
       customHeadersToAdd[FlavorConfig.instance.headerToken] = token;
     }
@@ -297,6 +302,9 @@ class BaseNetworkManager {
       return "EMPTY";
     }
     try {
+//      JsonUtf8Encoder e8 = JsonUtf8Encoder();
+//      Log.d("b: "+utf8.decode(e8.convert(json.decode(jsonToParse))));
+
       JsonEncoder encoder = new JsonEncoder.withIndent('  ');
       return encoder.convert(json.decode(jsonToParse));
     } catch (e) {
