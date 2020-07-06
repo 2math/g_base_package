@@ -1,4 +1,5 @@
-## [0.1.8] - Forcing the http requests to have utf8 data as much as possible
+## [0.1.8] - fixed snackbar scrim
+           - Forcing the http requests to have utf8 data as much as possible
 
 ## [0.1.7] - Option to validate phone with regex
 
