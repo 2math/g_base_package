@@ -1,3 +1,5 @@
+## [0.1.10] - number input formatter, added utils , updated SingleScrollView to have also maxHeight
+
 ## [0.1.9] - Forcing the http requests to have utf8 data as much as possible
 
 ## [0.1.8] - fixed snackbar scrim
