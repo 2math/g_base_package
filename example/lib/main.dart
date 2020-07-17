@@ -8,6 +8,8 @@ import 'package:g_base_package/base/utils/dialogs.dart';
 import 'package:g_base_package/base/utils/logger.dart';
 import 'package:g_base_package/base/utils/system.dart';
 import 'package:g_base_package/base/utils/versions.dart';
+import 'package:g_base_package/base/utils/files.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:launch_review/launch_review.dart';
 
 import 'model/session.dart';
@@ -207,6 +209,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 NetworkManager(token).updateWorkspace();
               },
             ),
+            FlatButton(
+              child: Text("Select and Upload"),
+              onPressed: () {
+                _selectImage();
+              },
+            ),
           ],
         ),
       ),
@@ -216,5 +224,31 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Future<void> _selectImage() async {
+    var selectedFile = await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
+      Log.error("selectImage", error: error);
+    });
+
+    if (selectedFile != null) {
+      var emptyFile = await BaseFileUtils.getLocalFile(
+        "imagesDir",
+        '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
+      );
+
+      var copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
+        Log.error("selectImage copy", error: error);
+      });
+
+      if (copiedFile != null && await copiedFile.exists()) {
+        NetworkManager(token).uploadImage(
+          copiedFile.path,
+          companyId,
+          "9e625fb6-e81a-414d-bcfe-95c9d8d80001",
+          (_) {},
+        );
+      }
+    }
   }
 }

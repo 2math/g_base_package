@@ -25,7 +25,7 @@ class BaseNetworkManager {
       return await _onPositiveResponse(call, response, handlePositiveResultBody);
     } else {
       if (response.statusCode == 401 && call.refreshOn401) {
-          Log.d("tryToRefreshSession");
+        Log.d("tryToRefreshSession");
         String newToken = await tryToRefreshSession();
         if (newToken != null) {
           Log.d("repeat call with new session");
@@ -51,10 +51,10 @@ class BaseNetworkManager {
 
   Future<Version> getVersions() async {
 //    return Version(clientVersion: "1.10.7", currentVersion: 5, minimalVersion: 2);
-    Call call = new Call.name(CallMethod.GET, "versions/${Platform.isIOS?"IOS":"ANDROID"}");
+    Call call = new Call.name(CallMethod.GET, "versions/${Platform.isIOS ? "IOS" : "ANDROID"}");
 
-    return await doServerCall<Version>(call, (json){
-      Log.d(json,"versions");
+    return await doServerCall<Version>(call, (json) {
+      Log.d(json, "versions");
       return Version.fromJson(jsonDecode(json));
     });
   }
@@ -82,7 +82,7 @@ class BaseNetworkManager {
       case CallMethod.DOWNLOAD:
         return _doDownloadFileRequest(call);
       case CallMethod.UPLOAD:
-        return _doUploadFile(call);
+        return call.onUploadProgress != null ? _doUploadFileMultipart(call) : _doUploadFile(call);
       default:
         throw AppException(errorMessage: 'Call without method', code: AppException.NO_CALL_METHOD_ERROR, data: call);
     }
@@ -108,7 +108,8 @@ class BaseNetworkManager {
   String _getBodyAsUtf8(http.Response response) => utf8.decode(response.bodyBytes);
 
   Future<http.Response> _doPostRequest(Call call) async {
-    String contentType = call.params != null ? "application/x-www-form-urlencoded; charset=utf-8" : "application/json; charset=utf-8";
+    String contentType =
+        call.params != null ? "application/x-www-form-urlencoded; charset=utf-8" : "application/json; charset=utf-8";
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
 
     String url = _getUrl(call);
@@ -119,8 +120,8 @@ class BaseNetworkManager {
         "POST");
 
     // make POST request
-    http.Response response = await http.post(url, headers: headers, body: call.body != null ? call.body : call.params,
-    encoding: Encoding.getByName("utf-8"));
+    http.Response response = await http.post(url,
+        headers: headers, body: call.body != null ? call.body : call.params, encoding: Encoding.getByName("utf-8"));
     Log.d(
         "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
@@ -130,7 +131,8 @@ class BaseNetworkManager {
   }
 
   Future<http.Response> _doPutRequest(Call call) async {
-    Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, "application/json; charset=utf-8", call.headers);
+    Map<String, String> headers =
+        _getUpdatedHeaders(call.token, call.language, "application/json; charset=utf-8", call.headers);
 
     String url = _getUrl(call);
 
@@ -202,6 +204,95 @@ class BaseNetworkManager {
     }
 
     return response;
+  }
+
+  Future<http.Response> _doUploadFileMultipart(Call call) async {
+    if (call.file == null || !await call.file.exists()) {
+      throw AppException(
+          errorMessage: 'Uploading File without actual file set', code: AppException.NO_CALL_METHOD_ERROR, data: call);
+    }
+
+    String url = _getUrl(call);
+
+    final request = await new HttpClient().postUrl(Uri.parse(url));
+
+    var multipartFile =
+        await http.MultipartFile.fromPath("file", call.file.path, filename: call.fileName, contentType: call.mediaType);
+
+    var requestMultipart = http.MultipartRequest("", Uri.parse("uri"));
+
+    requestMultipart.files.add(multipartFile);
+
+    var msStream = requestMultipart.finalize();
+
+    var totalByteLength = requestMultipart.contentLength;
+
+    request.contentLength = totalByteLength;
+
+    Map<String, String> headers =
+        _getUpdatedHeaders(call.token, call.language, requestMultipart.headers[HttpHeaders.contentTypeHeader] , call.headers);
+    headers.forEach((key, value) {
+      request.headers.set(key, value);
+    });
+
+    Log.d(requestMultipart.headers[HttpHeaders.contentTypeHeader]);
+
+//    request.headers.set(HttpHeaders.contentTypeHeader, requestMultipart.headers[HttpHeaders.contentTypeHeader]);
+
+    int byteCount = 0;
+
+    Stream<List<int>> streamUpload = msStream.transform(
+      new StreamTransformer.fromHandlers(
+        handleData: (data, sink) {
+          sink.add(data);
+
+          byteCount += data.length;
+
+          if (call.onUploadProgress != null) {
+            call.onUploadProgress(byteCount, totalByteLength);
+            // CALL STATUS CALLBACK;
+          }
+        },
+        handleError: (error, stack, sink) {
+          print(error.toString());
+        },
+        handleDone: (sink) {
+          sink.close();
+          // UPLOAD DONE;
+        },
+      ),
+    );
+
+    await request.addStream(streamUpload);
+
+    Log.d(
+        "$url\nHeaders :\n${_printMap(headers)}"
+            "\nFile : ${call.file.path}"
+            "\nfilename : ${call.fileName}"
+            "\ncontentType : ${call.mediaType}"
+            "\ncontentLength : $totalByteLength",
+        "UploadFile");
+    final httpResponse = await request.close();
+//    var response = await request.send();
+//
+//    http.Response httpResponse = await http.Response.fromStream(response);
+
+    String res = await _readResponseAsString(httpResponse);
+    Log.d(
+        "$url\nResponse Code : ${httpResponse.statusCode}\n"
+            "Body :\n${_printJson(res)}",
+        "Response UploadFile");
+
+    return http.Response(res, httpResponse.statusCode);
+  }
+
+  Future<String> _readResponseAsString(HttpClientResponse response) {
+    var completer = new Completer<String>();
+    var contents = new StringBuffer();
+    response.transform(utf8.decoder).listen((String data) {
+      contents.write(data);
+    }, onDone: () => completer.complete(contents.toString()));
+    return completer.future;
   }
 
   Future<http.Response> _doUploadFile(Call call) async {

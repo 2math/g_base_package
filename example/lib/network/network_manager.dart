@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:http_parser/http_parser.dart';
 import 'package:example/model/page.dart';
 import 'package:example/model/session.dart';
 import 'package:g_base_package/base/net/base_network_manager.dart';
@@ -32,8 +34,8 @@ class NetworkManager extends BaseNetworkManager {
   }
 
   /**
-     * open calls
-     */
+   * open calls
+   */
 
   ///pass a function which will get the JsonBody as parameter and will be called in background
   ///only if the result is positive, so the app can handle there json parsing and persisting
@@ -60,9 +62,9 @@ class NetworkManager extends BaseNetworkManager {
 
   ///We must pass the sessionId , because is deleted from repository already
   Future<bool> logout() async {
-      Call call = new Call.name(CallMethod.DELETE, NetConstants.SESSIONS, token: _token, refreshOn401: false);
+    Call call = new Call.name(CallMethod.DELETE, NetConstants.SESSIONS, token: _token, refreshOn401: false);
 
-      return await doServerCall<bool>(call, (json) {});
+    return await doServerCall<bool>(call, (json) {});
   }
 
   ///Get all workspaces of mine
@@ -73,16 +75,35 @@ class NetworkManager extends BaseNetworkManager {
   }
 
   Future<bool> updateWorkspace() async {
-    Call call = new Call.name(CallMethod.PUT, "v1/companies/b55306bc-20d0-4ee6-adb1-d3307c308502/workspaces/9e625fb6-e81a-414d-bcfe-95c9d8d80001",
-        token: _token, body: utf8.decode(utf8.encode(jsonEncode(<String, dynamic>{
+    Call call = new Call.name(CallMethod.PUT,
+        "v1/companies/b55306bc-20d0-4ee6-adb1-d3307c308502/workspaces/9e625fb6-e81a-414d-bcfe-95c9d8d80001",
+        token: _token,
+        body: utf8.decode(utf8.encode(jsonEncode(<String, dynamic>{
           'name': "Voice 2 ф",
           'description': "I can’t I can't",
           'location': "Bb",
           'type': "GENERAL",
         }))));
 
-    return await doServerCall<bool>(call, (_){
+    return await doServerCall<bool>(call, (_) {});
+  }
 
-    });
+  Future<void> uploadImage(String pathFile, String companyId, String workspaceId, handlePositiveResultBody) async {
+    File file = File(pathFile);
+
+    Call call = new Call.name(
+      CallMethod.UPLOAD,
+      "v1/companies/$companyId/workspaces/$workspaceId/resources",
+      token: _token,
+      file: file,
+      fileName: pathFile.substring(pathFile.lastIndexOf("/") + 1),
+      mediaType: MediaType("image", "jpg"),
+      onUploadProgress: (sentBytes, totalBytes) {
+        Log.w("$sentBytes - $totalBytes : ${(sentBytes / (totalBytes / 100)).floor()}%", "onUploadProgress");
+      },
+      refreshOn401: false,
+    );
+
+    return await doServerCall<void>(call, handlePositiveResultBody);
   }
 }

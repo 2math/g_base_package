@@ -1,3 +1,5 @@
+## [0.1.11] - added OnUploadProgressCallback to upload file service, example how to upload image and log progress
+
 ## [0.1.10] - number input formatter, added utils , updated SingleScrollView to have also maxHeight
 
 ## [0.1.9] - Forcing the http requests to have utf8 data as much as possible
