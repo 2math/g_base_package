@@ -12,7 +12,10 @@ abstract class BaseBlock<Event, State, T, P> extends Bloc<Event, State> {
   ///this getter is for consistence with older versions
   T get repository => remoteRepository;
 
-  BaseBlock() : super() {
+//  /// Returns the [state] before any `events` have been [add]ed.
+//  State get initialState;
+
+  BaseBlock(State initialState) : super(initialState) {
     remoteRepository = InstanceProvider.getInstance().provideRepository();
     localRepository = InstanceProvider.getInstance().provideLocalRepository();
   }

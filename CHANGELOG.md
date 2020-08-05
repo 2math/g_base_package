@@ -1,3 +1,5 @@
+## [0.1.11-bloc] - updated bloc to 6.0.1 breaking change on blocs
+
 ## [0.1.11] - added OnUploadProgressCallback to upload file service, example how to upload image and log progress
 
 ## [0.1.10] - number input formatter, added utils , updated SingleScrollView to have also maxHeight
