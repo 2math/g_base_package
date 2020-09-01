@@ -1,3 +1,8 @@
+## [0.0.16] -  Support to have locales per flavors, each flavor has its custom strings in "locales" and similar
+## strings are added in "globalLocales". This way if you have 2 flavors that has differences only in appName and a few other strings those will be in "locales", while all other will be in "globalLocales". This is better for translation and adding new Strings in multi flavor apps. When the app searches for a String will check first in "locales" and if is not there will check in "globalLocales".
+
+## If your app does not care about multi flavors, can omit the "globalLocales" and send it's "locales" only
+
 ## [0.0.15] - same updates as till master-0.1.11
 
 ## [0.0.9] - versioning with FL servers. It has ready for use service request, response and logic for status. Example in

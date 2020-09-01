@@ -11,7 +11,7 @@ description: Example of g_base_package use
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+1
+version: 1.0.0+17
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
@@ -36,6 +36,7 @@ dependencies:
 
   json_annotation: ^3.0.1
   launch_review: ^2.0.0
+  image_picker: ^0.6.7+7
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:example/flavors/main_dev.dart';
 import 'package:example/network/network_manager.dart';
+import 'package:example/res/res.dart';
+import 'package:example/res/strings/main/bg_strings.dart';
+import 'package:example/res/strings/main/en_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:g_base_package/base/app_exception.dart';
@@ -9,13 +12,17 @@ import 'package:g_base_package/base/ui/logs_screen.dart';
 import 'package:g_base_package/base/utils/dialogs.dart';
 import 'package:g_base_package/base/utils/logger.dart';
 import 'package:g_base_package/base/utils/system.dart';
+import 'package:g_base_package/base/utils/utils.dart';
 import 'package:g_base_package/base/utils/versions.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:launch_review/launch_review.dart';
 
 import 'model/session.dart';
 
 void main() {
   DevConfig();
+  Localization.init(null, [EnUSStrings(), BgStrings()], EnUSStrings(),
+      globalLocales: [EnUSGlobalStrings(), BgGlobalStrings()]);
   runApp(MyApp());
 }
 
@@ -38,7 +45,9 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(
+        title: Txt.get(StrKey.mainTitle),
+      ),
     );
   }
 }
@@ -80,11 +89,9 @@ class _MyHomePageState extends State<MyHomePage> {
       //todo Galeen (07 Apr 2020) : implement block and repository
       if (token == null) {
         Log.d("login", tag);
-        NetworkManager(null).login("mm@mm.mm", "mmmmmm", (json) {
+        NetworkManager(null).login("g.blagoev@futurist-labs.com", "123456", (json) {
           try {
-            var session = Session.fromJson(jsonDecode(json));
-            token = session.sessionId;
-            companyId = session.company.id;
+            token = jsonDecode(json)['sessionId'] as String;
           } catch (e) {
             Log.e("weird error parsing session", tag, e);
           }
@@ -139,6 +146,9 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
+              Txt.get(StrKey.appName),
+            ),
+            Text(
               'You have pushed the button this many times:',
             ),
             Text(
@@ -176,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           Text("App Name"),
                           Text(isBlocking
                               ? "You are using a version which "
-                              "is no longer supported.\nTo continue using this app, please install latest version."
+                                  "is no longer supported.\nTo continue using this app, please install latest version."
                               : "There is a new version available."),
                           Text(isBlocking ? "Exit" : "Next Time"),
                           Text("Go To Store"));
@@ -203,7 +213,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
             ),
-            TextField()
+            FlatButton(
+              child: Text("Select and Upload"),
+              onPressed: () {
+                _selectImage();
+              },
+            ),
           ],
         ),
       ),
@@ -213,5 +228,35 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  Future<void> _selectImage() async {
+    var selectedFile = await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
+      Log.error("selectImage", error: error);
+    });
+
+    if (selectedFile != null) {
+      var emptyFile = await BaseFileUtils.getLocalFile(
+        "imagesDir",
+        '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
+      );
+
+      var copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
+        Log.error("selectImage copy", error: error);
+      });
+
+      if (copiedFile != null && await copiedFile.exists()) {
+        NetworkManager(token).uploadImageFuture(
+          copiedFile.path,
+          "b55306bc-20d0-4ee6-adb1-d3307c308502",
+          "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
+          (json) {
+            Log.d(json, tag);
+          },
+        ).catchError((e) {
+          Log.error("uploadImageFuture", error: e);
+        });
+      }
+    }
   }
 }

@@ -25,7 +25,7 @@ abstract class AppBaseConfig extends FlavorConfig {
             headerContentType: "Content-Type",
             headerVersion: "x-version",
             headerOS: "x-os",
-            headerValueAndroid: "ANDROID",
+            headerValueAndroid: "ANDROID_ASSETTRAX",
             headerValueIOS: "IOS") {
     _instance ??= this;
   }

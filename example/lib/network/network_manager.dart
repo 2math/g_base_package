@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:http_parser/http_parser.dart';
 
 import 'package:example/model/page.dart';
 import 'package:example/model/session.dart';
@@ -32,8 +34,8 @@ class NetworkManager extends BaseNetworkManager {
   }
 
   /**
-     * open calls
-     */
+   * open calls
+   */
 
   ///pass a function which will get the JsonBody as parameter and will be called in background
   ///only if the result is positive, so the app can handle there json parsing and persisting
@@ -60,9 +62,9 @@ class NetworkManager extends BaseNetworkManager {
 
   ///We must pass the sessionId , because is deleted from repository already
   Future<bool> logout() async {
-      Call call = new Call.name(CallMethod.DELETE, NetConstants.SESSIONS, token: _token, refreshOn401: false);
+    Call call = new Call.name(CallMethod.DELETE, NetConstants.SESSIONS, token: _token, refreshOn401: false);
 
-      return await doServerCall<bool>(call, (json) {});
+    return await doServerCall<bool>(call, (json) {});
   }
 
   ///Get all workspaces of mine
@@ -70,5 +72,25 @@ class NetworkManager extends BaseNetworkManager {
     Call call = new Call.name(CallMethod.GET, "v1/companies/$companyId/workspaces", token: _token);
 
     return await doServerCall<List<Object>>(call, handlePositiveResultBody);
+  }
+
+  Future<void> uploadImageFuture(String pathFile, String companyId, String workspaceId, handlePositiveResultBody)
+  async {
+    File file = File(pathFile);
+
+    Call call = new Call.name(
+      CallMethod.UPLOAD,
+      "v1/companies/$companyId/workspaces/$workspaceId/resources",
+      token: _token,
+      file: file,
+      fileName: pathFile.substring(pathFile.lastIndexOf("/") + 1),
+      mediaType: MediaType("image", "jpg"),
+      onUploadProgress: (sentBytes, totalBytes) {
+        Log.w("$sentBytes - $totalBytes", "onUploadProgress");
+      },
+      refreshOn401: false,
+    );
+
+    return await doServerCall<void>(call, handlePositiveResultBody);
   }
 }
