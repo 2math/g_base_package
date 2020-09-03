@@ -92,9 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
         Log.d("login", tag);
         NetworkManager(null).login("g.blagoev@futurist-labs.com", "123456", (json) {
           try {
-            var session = Session.fromJson(jsonDecode(json));
-            token = session.sessionId;
-            companyId = session.company.id;
+            token = jsonDecode(json)['sessionId'] as String;
           } catch (e) {
             Log.e("weird error parsing session", tag, e);
           }
