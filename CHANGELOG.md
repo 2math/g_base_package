@@ -1,3 +1,6 @@
+## [0.1.12-bloc] -  Support to have locales per flavors, each flavor has its custom strings in "locales" and similar
+## strings are added in "globalLocales". This way if you have 2 flavors that has differences only in appName and a few other strings those will be in "locales", while all other will be in "globalLocales". This is better for translation and adding new Strings in multi flavor apps. When the app searches for a String will check first in "locales" and if is not there will check in "globalLocales".
+
 ## [0.1.11-bloc] - updated bloc to 6.0.1 breaking change on blocs
 
 ## [0.1.11] - added OnUploadProgressCallback to upload file service, example how to upload image and log progress

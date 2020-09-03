@@ -10,31 +10,6 @@ class EnUSStrings extends AppLocale {
     return const {
       //  use str live template
       StrKey.appName: 'AssetTrax',
-      StrKey.mainTitle: 'Home',
-      StrKey.msgLoading: 'Loading...',
-      StrKey.unauthorized: 'Unauthorized',
-      StrKey.forbidden: 'Forbidden',
-      StrKey.notFound: 'Not Found',
-      StrKey.unsupportedVersion: 'Unsupported Version Please Update!',
-      StrKey.noNetwork: 'No Network',
-      StrKey.serverError: 'Server Error',
-      StrKey.confirmAction: 'Please confirm action',
-      StrKey.btnCancel: 'Cancel',
-      StrKey.btnOK: 'OK',
-
-      //Welcome screen
-      StrKey.btnLogin: "Login",
-      StrKey.lblEmail: 'Email',
-      StrKey.hintEmail: 'Enter your email',
-      StrKey.errEmail: 'Please enter a valid email',
-      StrKey.lblPass: 'Password',
-      StrKey.hintPass: 'Enter your password',
-      StrKey.errPass: 'Minimum 6 symbols',
-      StrKey.errCreds: 'Invalid credentials',
-      StrKey.smlLogo: 'Company logo',
-      StrKey.forgotPassword: 'Forgot Password',
-      StrKey.loginError: 'Login Error',
-
     };
   }
 

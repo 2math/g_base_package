@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:http_parser/http_parser.dart';
+
 import 'package:example/model/page.dart';
 import 'package:example/model/session.dart';
 import 'package:g_base_package/base/net/base_network_manager.dart';
@@ -17,7 +17,7 @@ class NetworkManager extends BaseNetworkManager {
 
   @override
   Future<String> tryToRefreshSession() async {
-    var session = await login("mm@mm.mm", "mmmmmm", (json) {
+    var session = await login("g.blagoev@futurist-labs.com", "123456", (json) {
       try {
         var session = Session.fromJson(jsonDecode(json));
         _token = session?.sessionId;
@@ -69,26 +69,13 @@ class NetworkManager extends BaseNetworkManager {
 
   ///Get all workspaces of mine
   Future<List<Object>> getWorkspaces(String companyId, Function handlePositiveResultBody) async {
-    Call call = new Call.name(CallMethod.GET, "v1/companies/workspaces", token: _token);
+    Call call = new Call.name(CallMethod.GET, "v1/companies/$companyId/workspaces", token: _token);
 
     return await doServerCall<List<Object>>(call, handlePositiveResultBody);
   }
 
-  Future<bool> updateWorkspace() async {
-    Call call = new Call.name(CallMethod.PUT,
-        "v1/companies/b55306bc-20d0-4ee6-adb1-d3307c308502/workspaces/9e625fb6-e81a-414d-bcfe-95c9d8d80001",
-        token: _token,
-        body: utf8.decode(utf8.encode(jsonEncode(<String, dynamic>{
-          'name': "Voice 2 ф",
-          'description': "I can’t I can't",
-          'location': "Bb",
-          'type': "GENERAL",
-        }))));
-
-    return await doServerCall<bool>(call, (_) {});
-  }
-
-  Future<void> uploadImage(String pathFile, String companyId, String workspaceId, handlePositiveResultBody) async {
+  Future<void> uploadImageFuture(String pathFile, String companyId, String workspaceId, handlePositiveResultBody)
+  async {
     File file = File(pathFile);
 
     Call call = new Call.name(
@@ -99,7 +86,7 @@ class NetworkManager extends BaseNetworkManager {
       fileName: pathFile.substring(pathFile.lastIndexOf("/") + 1),
       mediaType: MediaType("image", "jpg"),
       onUploadProgress: (sentBytes, totalBytes) {
-        Log.w("$sentBytes - $totalBytes : ${(sentBytes / (totalBytes / 100)).floor()}%", "onUploadProgress");
+        Log.w("$sentBytes - $totalBytes", "onUploadProgress");
       },
       refreshOn401: false,
     );

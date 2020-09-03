@@ -12,6 +12,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 
 class BaseNetworkManager {
+  final String netTag = "NET";
   Future<T> doServerCall<T>(Call call, Function handlePositiveResultBody) async {
     if (call == null) {
       throw AppException(errorMessage: 'Trying to do a call with null Call?');
@@ -25,10 +26,10 @@ class BaseNetworkManager {
       return await _onPositiveResponse(call, response, handlePositiveResultBody);
     } else {
       if (response.statusCode == 401 && call.refreshOn401) {
-        Log.d("tryToRefreshSession");
+        Log.d("tryToRefreshSession",netTag);
         String newToken = await tryToRefreshSession();
         if (newToken != null) {
-          Log.d("repeat call with new session");
+          Log.d("repeat call with new session",netTag);
           call.token = newToken;
           final response2 = await _doCall(call);
           if (response2.statusCode < 300) {
@@ -51,10 +52,10 @@ class BaseNetworkManager {
 
   Future<Version> getVersions() async {
 //    return Version(clientVersion: "1.10.7", currentVersion: 5, minimalVersion: 2);
-    Call call = new Call.name(CallMethod.GET, "versions/${Platform.isIOS ? "IOS" : "ANDROID"}");
+    Call call = new Call.name(CallMethod.GET, "versions/${Platform.isIOS?"IOS":"ANDROID"}");
 
-    return await doServerCall<Version>(call, (json) {
-      Log.d(json, "versions");
+    return await doServerCall<Version>(call, (json){
+      Log.d(json,"$netTag versions");
       return Version.fromJson(jsonDecode(json));
     });
   }
@@ -92,7 +93,7 @@ class BaseNetworkManager {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     String url = _getUrl(call);
 
-    Log.d("$url\nHeaders :\n${_printMap(headers)}", "GET");
+    Log.d("$url\nHeaders :\n${_printMap(headers)}", "$netTag GET");
     // make GET request
     http.Response response = await http.get(url, headers: headers); //todo add timeout
 
@@ -101,15 +102,14 @@ class BaseNetworkManager {
         "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
             "Body :\n${_printJson(_getBodyAsUtf8(response))}",
-        "Response GET");
+        "$netTag Response GET");
     return response;
   }
 
   String _getBodyAsUtf8(http.Response response) => utf8.decode(response.bodyBytes);
 
   Future<http.Response> _doPostRequest(Call call) async {
-    String contentType =
-        call.params != null ? "application/x-www-form-urlencoded; charset=utf-8" : "application/json; charset=utf-8";
+    String contentType = call.params != null ? "application/x-www-form-urlencoded; charset=utf-8" : "application/json; charset=utf-8";
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
 
     String url = _getUrl(call);
@@ -117,29 +117,28 @@ class BaseNetworkManager {
     Log.d(
         "$url\nHeaders :\n${_printMap(headers)}\n"
             "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}",
-        "POST");
+        "$netTag POST");
 
     // make POST request
-    http.Response response = await http.post(url,
-        headers: headers, body: call.body != null ? call.body : call.params, encoding: Encoding.getByName("utf-8"));
+    http.Response response = await http.post(url, headers: headers, body: call.body != null ? call.body : call.params,
+        encoding: Encoding.getByName("utf-8"));
     Log.d(
         "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
             "Body :\n${_printJson(_getBodyAsUtf8(response))}",
-        "Response POST");
+        "$netTag Response POST");
     return response;
   }
 
   Future<http.Response> _doPutRequest(Call call) async {
-    Map<String, String> headers =
-        _getUpdatedHeaders(call.token, call.language, "application/json; charset=utf-8", call.headers);
+    Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, "application/json; charset=utf-8", call.headers);
 
     String url = _getUrl(call);
 
     Log.d(
         "$url\nHeaders :\n${_printMap(headers)}\n"
             "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}",
-        "${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
+        "$netTag ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
 
     // make PUT request
     http.Response response = call.callMethod == CallMethod.PUT
@@ -150,7 +149,7 @@ class BaseNetworkManager {
         "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
             "Body :\n${_printJson(_getBodyAsUtf8(response))}",
-        "Response ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
+        "$netTag Response ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
     return response;
   }
 
@@ -158,7 +157,7 @@ class BaseNetworkManager {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     String url = _getUrl(call);
 
-    Log.d("$url\nHeaders :\n${_printMap(headers)}", "DELETE");
+    Log.d("$url\nHeaders :\n${_printMap(headers)}", "$netTag DELETE");
     // make GET request
     http.Response response = await http.delete(url, headers: headers);
 
@@ -167,7 +166,7 @@ class BaseNetworkManager {
         "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
             "Body :\n${_printJson(_getBodyAsUtf8(response))}",
-        "Response DELETE");
+        "$netTag Response DELETE");
     return response;
   }
 
@@ -175,7 +174,7 @@ class BaseNetworkManager {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     String fileURL = _getUrl(call);
 
-    Log.d("$fileURL\nHeaders :\n${_printMap(headers)}", "GET");
+    Log.d("$fileURL\nHeaders :\n${_printMap(headers)}", "$netTag GET");
     // make GET request
     http.Response response = await http.get(fileURL, headers: headers); //todo add timeout
 
@@ -198,9 +197,9 @@ class BaseNetworkManager {
           "$fileURL\nResponse Code : ${response.statusCode}\nContent-Disposition = $disposition"
               "\nContent-Length = ${response.contentLength}\nfileName = $fileName"
               "\nResponse Headers\n$responseHeaders",
-          "Response Download");
+          "$netTag Response Download");
     } else {
-      Log.d("$fileURL\nResponse Code : ${response.statusCode}\n", "Response Download");
+      Log.d("$fileURL\nResponse Code : ${response.statusCode}\n", "$netTag Response Download");
     }
 
     return response;
@@ -217,7 +216,7 @@ class BaseNetworkManager {
     final request = await new HttpClient().postUrl(Uri.parse(url));
 
     var multipartFile =
-        await http.MultipartFile.fromPath("file", call.file.path, filename: call.fileName, contentType: call.mediaType);
+    await http.MultipartFile.fromPath("file", call.file.path, filename: call.fileName, contentType: call.mediaType);
 
     var requestMultipart = http.MultipartRequest("", Uri.parse("uri"));
 
@@ -230,7 +229,7 @@ class BaseNetworkManager {
     request.contentLength = totalByteLength;
 
     Map<String, String> headers =
-        _getUpdatedHeaders(call.token, call.language, requestMultipart.headers[HttpHeaders.contentTypeHeader] , call.headers);
+    _getUpdatedHeaders(call.token, call.language, requestMultipart.headers[HttpHeaders.contentTypeHeader] , call.headers);
     headers.forEach((key, value) {
       request.headers.set(key, value);
     });
@@ -271,7 +270,7 @@ class BaseNetworkManager {
             "\nfilename : ${call.fileName}"
             "\ncontentType : ${call.mediaType}"
             "\ncontentLength : $totalByteLength",
-        "UploadFile");
+        "$netTag UploadFile");
     final httpResponse = await request.close();
 //    var response = await request.send();
 //
@@ -281,7 +280,7 @@ class BaseNetworkManager {
     Log.d(
         "$url\nResponse Code : ${httpResponse.statusCode}\n"
             "Body :\n${_printJson(res)}",
-        "Response UploadFile");
+        "$netTag Response UploadFile");
 
     return http.Response(res, httpResponse.statusCode);
   }
@@ -307,7 +306,7 @@ class BaseNetworkManager {
     var request = new http.MultipartRequest("POST", Uri.parse(url));
 
     var multipartFile =
-        new http.MultipartFile('file', stream, length, filename: call.fileName, contentType: call.mediaType);
+    new http.MultipartFile('file', stream, length, filename: call.fileName, contentType: call.mediaType);
 
     request.files.add(multipartFile);
 
@@ -320,14 +319,14 @@ class BaseNetworkManager {
             "\nfilename : ${call.fileName}"
             "\ncontentType : ${call.mediaType}"
             "\ncontentLenght : $length",
-        "UploadFile");
+        "$netTag UploadFile");
 
     var response = await request.send();
     http.Response httpResponse = await http.Response.fromStream(response);
     Log.d(
         "$url\nResponse Code : ${response.statusCode}\n"
             "Body :\n${_printJson(httpResponse.body)}",
-        "Response UploadFile");
+        "$netTag Response UploadFile");
     return httpResponse;
   }
 
@@ -414,7 +413,7 @@ class BaseNetworkManager {
   void _throwNoNetwork() {
     throw AppException(
         errorMessage:
-            FlavorConfig.instance.noNetworkKey != null ? Txt.get(FlavorConfig.instance.noNetworkKey) : "No network",
+        FlavorConfig.instance.noNetworkKey != null ? Txt.get(FlavorConfig.instance.noNetworkKey) : "No network",
         code: AppException.OFFLINE_ERROR);
   }
 
