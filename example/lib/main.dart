@@ -214,11 +214,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
             ),
-
             FlatButton(
-              child: Text("Select and Upload"),
+              child: Text("Select and Upload Image"),
               onPressed: () {
                 _selectImage();
+              },
+            ),
+            FlatButton(
+              child: Text("Select and Upload Document"),
+              onPressed: () {
+                _selectFile();
               },
             ),
           ],
@@ -252,6 +257,37 @@ class _MyHomePageState extends State<MyHomePage> {
           copiedFile.path,
           "b55306bc-20d0-4ee6-adb1-d3307c308502",
           "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
+          (json) {
+            Log.d(json, tag);
+          },
+        ).catchError((e) {
+          Log.error("uploadImageFuture", error: e);
+        });
+      }
+    }
+  }
+
+  Future<void> _selectFile() async {
+    var selectedFile = await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
+      Log.error("selectImage", error: error);
+    });
+
+    if (selectedFile != null) {
+      var emptyFile = await BaseFileUtils.getLocalFile(
+        "imagesDir",
+        '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
+      );
+
+      var copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
+        Log.error("selectImage copy", error: error);
+      });
+
+      if (copiedFile != null && await copiedFile.exists()) {
+        NetworkManager(token).uploadFileFuture(
+          copiedFile.path,
+          "b55306bc-20d0-4ee6-adb1-d3307c308502",
+          "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
+          "{\"displayName\": \"document name\",\"description\": \"description\",\"createDate\":\"2020-09-02T07:30:47\",\"visibility\":\"PUBLIC\",\"typeId\": \"3c3b5ae4-955c-4b9d-8bd9-3d564767a2e8\"}",
           (json) {
             Log.d(json, tag);
           },

@@ -74,8 +74,8 @@ class NetworkManager extends BaseNetworkManager {
     return await doServerCall<List<Object>>(call, handlePositiveResultBody);
   }
 
-  Future<void> uploadImageFuture(String pathFile, String companyId, String workspaceId, handlePositiveResultBody)
-  async {
+  Future<void> uploadImageFuture(
+      String pathFile, String companyId, String workspaceId, handlePositiveResultBody) async {
     File file = File(pathFile);
 
     Call call = new Call.name(
@@ -85,6 +85,27 @@ class NetworkManager extends BaseNetworkManager {
       file: file,
       fileName: pathFile.substring(pathFile.lastIndexOf("/") + 1),
       mediaType: MediaType("image", "jpg"),
+      onUploadProgress: (sentBytes, totalBytes) {
+        Log.w("$sentBytes - $totalBytes", "onUploadProgress");
+      },
+      refreshOn401: false,
+    );
+
+    return await doServerCall<void>(call, handlePositiveResultBody);
+  }
+
+  Future<void> uploadFileFuture(
+      String pathFile, String companyId, String workspaceId, String data, handlePositiveResultBody) async {
+    File file = File(pathFile);
+
+    Call call = new Call.name(
+      CallMethod.UPLOAD,
+      "v1/companies/$companyId/workspaces/$workspaceId/documents",
+      token: _token,
+      file: file,
+      fileName: pathFile.substring(pathFile.lastIndexOf("/") + 1),
+      mediaType: MediaType("image", "jpg"),
+      params: {"data": data},
       onUploadProgress: (sentBytes, totalBytes) {
         Log.w("$sentBytes - $totalBytes", "onUploadProgress");
       },
