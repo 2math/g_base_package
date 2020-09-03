@@ -220,6 +220,10 @@ class BaseNetworkManager {
 
     var requestMultipart = http.MultipartRequest("", Uri.parse("uri"));
 
+    if(call.params!= null){
+      requestMultipart.fields.addAll(call.params);
+    }
+
     requestMultipart.files.add(multipartFile);
 
     var msStream = requestMultipart.finalize();
@@ -265,7 +269,8 @@ class BaseNetworkManager {
     await request.addStream(streamUpload);
 
     Log.d(
-        "$url\nHeaders :\n${_printMap(headers)}"
+        "$url\nParams :\n${_printMap(call.params)}"
+            "\nHeaders :\n${_printMap(headers)}"
             "\nFile : ${call.file.path}"
             "\nfilename : ${call.fileName}"
             "\ncontentType : ${call.mediaType}"
