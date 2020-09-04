@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:g_base_package/base/utils/utils.dart';
 import 'package:http_parser/http_parser.dart';
 
 import 'package:example/model/page.dart';
@@ -17,7 +18,7 @@ class NetworkManager extends BaseNetworkManager {
 
   @override
   Future<String> tryToRefreshSession() async {
-    var session = await login("mm@mm.mm", "mmmmmm", (json) {
+    var session = await login("g.blagoev@futurist-labs.com", "123456", (json) {
       try {
         var session = Session.fromJson(jsonDecode(json));
         _token = session?.sessionId;
@@ -92,5 +93,67 @@ class NetworkManager extends BaseNetworkManager {
     );
 
     return await doServerCall<void>(call, handlePositiveResultBody);
+  }
+
+  Future<void> uploadFileFuture(
+      String pathFile, String companyId, String workspaceId, String data, handlePositiveResultBody) async {
+    File file = File(pathFile);
+
+    Call call = new Call.name(
+      CallMethod.UPLOAD,
+      "v1/companies/$companyId/workspaces/$workspaceId/documents",
+      token: _token,
+      file: file,
+      fileName: pathFile.substring(pathFile.lastIndexOf("/") + 1),
+      mediaType: MediaType("image", "jpg"),
+      params: {"data": data},
+      onUploadProgress: (sentBytes, totalBytes) {
+        Log.w("$sentBytes - $totalBytes", "onUploadProgress");
+      },
+      refreshOn401: false,
+    );
+
+    return await doServerCall<void>(call, handlePositiveResultBody);
+  }
+
+  Future<void> updateFileFuture(
+  {String pathFile, String companyId, String workspaceId, String documentId, String data, handlePositiveResultBody})
+  async {
+    File file = BaseUtils.isNotEmptyStr(pathFile) ? File(pathFile) : null;
+
+    Call call = new Call.name(
+      CallMethod.UPLOAD_UPDATE,
+      "v1/companies/$companyId/workspaces/$workspaceId/documents/$documentId",
+      token: _token,
+      file: file,
+      fileName: file != null ? pathFile.substring(pathFile.lastIndexOf("/") + 1) : null,
+      mediaType: MediaType("image", "jpg"),
+      params: {"data": data},
+      onUploadProgress: (sentBytes, totalBytes) {
+        Log.w("$sentBytes - $totalBytes", "onUploadProgress");
+      },
+    );
+
+    return await doServerCall<void>(call, handlePositiveResultBody);
+  }
+
+  Future<void> deleteFile(String companyId, String workspaceId, String documentId, handlePositiveResultBody) async {
+    Call call = new Call.name(
+      CallMethod.DELETE,
+      "v1/companies/$companyId/workspaces/$workspaceId/documents/$documentId",
+      token: _token,
+    );
+
+    return await doServerCall<void>(call, handlePositiveResultBody);
+  }
+
+  Future<void> getFile(String companyId, String workspaceId) async {
+    Call call = new Call.name(
+      CallMethod.GET,
+      "v1/companies/$companyId/workspaces/$workspaceId/documents",
+      token: _token,
+    );
+
+    return await doServerCall<void>(call, (_) {});
   }
 }

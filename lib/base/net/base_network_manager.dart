@@ -84,6 +84,8 @@ class BaseNetworkManager {
         return _doDownloadFileRequest(call);
       case CallMethod.UPLOAD:
         return call.onUploadProgress != null ? _doUploadFileMultipart(call) : _doUploadFile(call);
+      case CallMethod.UPLOAD_UPDATE:
+        return _doUploadFileMultipart(call);
       default:
         throw AppException(errorMessage: 'Call without method', code: AppException.NO_CALL_METHOD_ERROR, data: call);
     }
@@ -206,25 +208,29 @@ class BaseNetworkManager {
   }
 
   Future<http.Response> _doUploadFileMultipart(Call call) async {
-    if (call.file == null || !await call.file.exists()) {
+    if (call.callMethod == CallMethod.UPLOAD && (call.file == null || !await call.file.exists())) {
       throw AppException(
           errorMessage: 'Uploading File without actual file set', code: AppException.NO_CALL_METHOD_ERROR, data: call);
     }
 
     String url = _getUrl(call);
 
-    final request = await new HttpClient().postUrl(Uri.parse(url));
+    final request = call.callMethod == CallMethod.UPLOAD_UPDATE
+        ? await new HttpClient().putUrl(Uri.parse(url))
+        : await new HttpClient().postUrl(Uri.parse(url));
 
+    var requestMultipart = http.MultipartRequest("", Uri.parse("uri"));
+
+    if(call.file != null && await call.file.exists()) {
     var multipartFile =
     await http.MultipartFile.fromPath("file", call.file.path, filename: call.fileName, contentType: call.mediaType);
 
-    var requestMultipart = http.MultipartRequest("", Uri.parse("uri"));
+      requestMultipart.files.add(multipartFile);
+    }
 
     if(call.params!= null){
       requestMultipart.fields.addAll(call.params);
     }
-
-    requestMultipart.files.add(multipartFile);
 
     var msStream = requestMultipart.finalize();
 
@@ -232,8 +238,8 @@ class BaseNetworkManager {
 
     request.contentLength = totalByteLength;
 
-    Map<String, String> headers =
-    _getUpdatedHeaders(call.token, call.language, requestMultipart.headers[HttpHeaders.contentTypeHeader] , call.headers);
+    Map<String, String> headers = _getUpdatedHeaders(
+        call.token, call.language, requestMultipart.headers[HttpHeaders.contentTypeHeader], call.headers);
     headers.forEach((key, value) {
       request.headers.set(key, value);
     });
@@ -271,7 +277,7 @@ class BaseNetworkManager {
     Log.d(
         "$url\nParams :\n${_printMap(call.params)}"
             "\nHeaders :\n${_printMap(headers)}"
-            "\nFile : ${call.file.path}"
+            "\nFile : ${call.file?.path}"
             "\nfilename : ${call.fileName}"
             "\ncontentType : ${call.mediaType}"
             "\ncontentLength : $totalByteLength",
