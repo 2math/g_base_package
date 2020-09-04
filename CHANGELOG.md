@@ -1,3 +1,6 @@
+## [0.1.14-bloc] -  CallMethod.UPLOAD_UPDATE is PUT and you can make a multipart request without sending a file, just
+ file fields (server's weird requirement)
+
 ## [0.1.13-bloc] -  add params as fields to multipart file
 
 ## [0.1.12-bloc] -  Support to have locales per flavors, each flavor has its custom strings in "locales" and similar

@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 
 class BaseNetworkManager {
   final String netTag = "NET";
+
   Future<T> doServerCall<T>(Call call, Function handlePositiveResultBody) async {
     if (call == null) {
       throw AppException(errorMessage: 'Trying to do a call with null Call?');
@@ -26,10 +27,10 @@ class BaseNetworkManager {
       return await _onPositiveResponse(call, response, handlePositiveResultBody);
     } else {
       if (response.statusCode == 401 && call.refreshOn401) {
-        Log.d("tryToRefreshSession",netTag);
+        Log.d("tryToRefreshSession", netTag);
         String newToken = await tryToRefreshSession();
         if (newToken != null) {
-          Log.d("repeat call with new session",netTag);
+          Log.d("repeat call with new session", netTag);
           call.token = newToken;
           final response2 = await _doCall(call);
           if (response2.statusCode < 300) {
@@ -52,10 +53,10 @@ class BaseNetworkManager {
 
   Future<Version> getVersions() async {
 //    return Version(clientVersion: "1.10.7", currentVersion: 5, minimalVersion: 2);
-    Call call = new Call.name(CallMethod.GET, "versions/${Platform.isIOS?"IOS":"ANDROID"}");
+    Call call = new Call.name(CallMethod.GET, "versions/${Platform.isIOS ? "IOS" : "ANDROID"}");
 
-    return await doServerCall<Version>(call, (json){
-      Log.d(json,"$netTag versions");
+    return await doServerCall<Version>(call, (json) {
+      Log.d(json, "$netTag versions");
       return Version.fromJson(jsonDecode(json));
     });
   }
@@ -84,6 +85,8 @@ class BaseNetworkManager {
         return _doDownloadFileRequest(call);
       case CallMethod.UPLOAD:
         return call.onUploadProgress != null ? _doUploadFileMultipart(call) : _doUploadFile(call);
+      case CallMethod.UPLOAD_UPDATE:
+        return _doUploadFileMultipart(call);
       default:
         throw AppException(errorMessage: 'Call without method', code: AppException.NO_CALL_METHOD_ERROR, data: call);
     }
@@ -109,7 +112,8 @@ class BaseNetworkManager {
   String _getBodyAsUtf8(http.Response response) => utf8.decode(response.bodyBytes);
 
   Future<http.Response> _doPostRequest(Call call) async {
-    String contentType = call.params != null ? "application/x-www-form-urlencoded; charset=utf-8" : "application/json; charset=utf-8";
+    String contentType =
+        call.params != null ? "application/x-www-form-urlencoded; charset=utf-8" : "application/json; charset=utf-8";
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
 
     String url = _getUrl(call);
@@ -120,8 +124,8 @@ class BaseNetworkManager {
         "$netTag POST");
 
     // make POST request
-    http.Response response = await http.post(url, headers: headers, body: call.body != null ? call.body : call.params,
-        encoding: Encoding.getByName("utf-8"));
+    http.Response response = await http.post(url,
+        headers: headers, body: call.body != null ? call.body : call.params, encoding: Encoding.getByName("utf-8"));
     Log.d(
         "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
@@ -131,7 +135,8 @@ class BaseNetworkManager {
   }
 
   Future<http.Response> _doPutRequest(Call call) async {
-    Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, "application/json; charset=utf-8", call.headers);
+    Map<String, String> headers =
+        _getUpdatedHeaders(call.token, call.language, "application/json; charset=utf-8", call.headers);
 
     String url = _getUrl(call);
 
@@ -206,23 +211,27 @@ class BaseNetworkManager {
   }
 
   Future<http.Response> _doUploadFileMultipart(Call call) async {
-    if (call.file == null || !await call.file.exists()) {
+    if (call.callMethod == CallMethod.UPLOAD && (call.file == null || !await call.file.exists())) {
       throw AppException(
           errorMessage: 'Uploading File without actual file set', code: AppException.NO_CALL_METHOD_ERROR, data: call);
     }
 
     String url = _getUrl(call);
 
-    final request = await new HttpClient().postUrl(Uri.parse(url));
-
-    var multipartFile =
-    await http.MultipartFile.fromPath("file", call.file.path, filename: call.fileName, contentType: call.mediaType);
+    final request = call.callMethod == CallMethod.UPLOAD_UPDATE
+        ? await new HttpClient().putUrl(Uri.parse(url))
+        : await new HttpClient().postUrl(Uri.parse(url));
 
     var requestMultipart = http.MultipartRequest("", Uri.parse("uri"));
 
-    requestMultipart.files.add(multipartFile);
+    if(call.file != null && await call.file.exists()) {
+      var multipartFile =
+      await http.MultipartFile.fromPath("file", call.file.path, filename: call.fileName, contentType: call.mediaType);
 
-    if(call.params!= null){
+      requestMultipart.files.add(multipartFile);
+    }
+
+    if (call.params != null) {
       requestMultipart.fields.addAll(call.params);
     }
 
@@ -232,8 +241,8 @@ class BaseNetworkManager {
 
     request.contentLength = totalByteLength;
 
-    Map<String, String> headers =
-    _getUpdatedHeaders(call.token, call.language, requestMultipart.headers[HttpHeaders.contentTypeHeader] , call.headers);
+    Map<String, String> headers = _getUpdatedHeaders(
+        call.token, call.language, requestMultipart.headers[HttpHeaders.contentTypeHeader], call.headers);
     headers.forEach((key, value) {
       request.headers.set(key, value);
     });
@@ -271,7 +280,7 @@ class BaseNetworkManager {
     Log.d(
         "$url\nParams :\n${_printMap(call.params)}"
             "\nHeaders :\n${_printMap(headers)}"
-            "\nFile : ${call.file.path}"
+            "\nFile : ${call.file?.path}"
             "\nfilename : ${call.fileName}"
             "\ncontentType : ${call.mediaType}"
             "\ncontentLength : $totalByteLength",
@@ -311,7 +320,7 @@ class BaseNetworkManager {
     var request = new http.MultipartRequest("POST", Uri.parse(url));
 
     var multipartFile =
-    new http.MultipartFile('file', stream, length, filename: call.fileName, contentType: call.mediaType);
+        new http.MultipartFile('file', stream, length, filename: call.fileName, contentType: call.mediaType);
 
     request.files.add(multipartFile);
 
@@ -418,7 +427,7 @@ class BaseNetworkManager {
   void _throwNoNetwork() {
     throw AppException(
         errorMessage:
-        FlavorConfig.instance.noNetworkKey != null ? Txt.get(FlavorConfig.instance.noNetworkKey) : "No network",
+            FlavorConfig.instance.noNetworkKey != null ? Txt.get(FlavorConfig.instance.noNetworkKey) : "No network",
         code: AppException.OFFLINE_ERROR);
   }
 

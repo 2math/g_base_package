@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:g_base_package/base/utils/base_utils.dart';
 import 'package:http_parser/http_parser.dart';
 
 import 'package:example/model/page.dart';
@@ -113,5 +114,46 @@ class NetworkManager extends BaseNetworkManager {
     );
 
     return await doServerCall<void>(call, handlePositiveResultBody);
+  }
+
+  Future<void> updateFileFuture(
+  {String pathFile, String companyId, String workspaceId, String documentId, String data, handlePositiveResultBody})
+  async {
+    File file = BaseUtils.isNotEmptyStr(pathFile) ? File(pathFile) : null;
+
+    Call call = new Call.name(
+      CallMethod.UPLOAD_UPDATE,
+      "v1/companies/$companyId/workspaces/$workspaceId/documents/$documentId",
+      token: _token,
+      file: file,
+      fileName: file != null ? pathFile.substring(pathFile.lastIndexOf("/") + 1) : null,
+      mediaType: MediaType("image", "jpg"),
+      params: {"data": data},
+      onUploadProgress: (sentBytes, totalBytes) {
+        Log.w("$sentBytes - $totalBytes", "onUploadProgress");
+      },
+    );
+
+    return await doServerCall<void>(call, handlePositiveResultBody);
+  }
+
+  Future<void> deleteFile(String companyId, String workspaceId, String documentId, handlePositiveResultBody) async {
+    Call call = new Call.name(
+      CallMethod.DELETE,
+      "v1/companies/$companyId/workspaces/$workspaceId/documents/$documentId",
+      token: _token,
+    );
+
+    return await doServerCall<void>(call, handlePositiveResultBody);
+  }
+
+  Future<void> getFile(String companyId, String workspaceId) async {
+    Call call = new Call.name(
+      CallMethod.GET,
+      "v1/companies/$companyId/workspaces/$workspaceId/documents",
+      token: _token,
+    );
+
+    return await doServerCall<void>(call, (_) {});
   }
 }
