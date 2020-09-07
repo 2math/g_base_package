@@ -130,7 +130,7 @@ class NetworkManager extends BaseNetworkManager {
       mediaType: MediaType("image", "jpg"),
       params: {"data": data},
       onUploadProgress: (sentBytes, totalBytes) {
-        Log.w("$sentBytes - $totalBytes", "onUploadProgress");
+        Log.w("$sentBytes - $totalBytes : ${(sentBytes / (totalBytes / 100)).floor()}%", "onUploadProgress");
       },
     );
 
