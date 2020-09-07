@@ -16,8 +16,8 @@ abstract class BaseBlock<Event, State, T, P> extends Bloc<Event, State> {
 //  State get initialState;
 
   BaseBlock(State initialState) : super(initialState) {
-    remoteRepository = InstanceProvider.getInstance().provideRepository();
-    localRepository = InstanceProvider.getInstance().provideLocalRepository();
+    remoteRepository = InstanceProvider.getInstance()?.provideRepository();
+    localRepository = InstanceProvider.getInstance()?.provideLocalRepository();
   }
 
   @override

@@ -50,7 +50,7 @@ class Log {
 
   static void printInDebugOnly(String tag, String log, Level level , {bool addToCrashReporter = true}) {
     if (fromUI && addToCrashReporter) {
-      InstanceProvider.getInstance().crashReporter?.log(log, tag); //always save in Crash Reporter
+      InstanceProvider.getInstance()?.crashReporter?.log(log, tag); //always save in Crash Reporter
     }
     if (!Foundation.kReleaseMode) {
       _print('$tag : $log', level);

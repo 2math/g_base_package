@@ -8,6 +8,7 @@ import 'package:example/res/strings/main/en_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:g_base_package/base/app_exception.dart';
+import 'package:g_base_package/base/ui/base_state.dart';
 import 'package:g_base_package/base/ui/logs_screen.dart';
 import 'package:g_base_package/base/utils/dialogs.dart';
 import 'package:g_base_package/base/utils/logger.dart';
@@ -71,7 +72,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
   final String tag = "MyHomePage";
   int _counter = 0;
   String token, companyId;
@@ -250,6 +251,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 _editFile(true);
               },
             ),
+            FlatButton(
+              child: Text("Check Internet"),
+              onPressed: () async {
+                Log.d(DateTime.now().toIso8601String());
+                bool res = await NetUtil().checkInternet();
+                Log.d(DateTime.now().toIso8601String());
+                showInfoMessage(res ? "Has internet" : "No internet");
+              },
+            ),
           ],
         ),
       ),
@@ -325,42 +335,43 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _editFile(bool dataOnly) async {
-    var selectedFile = dataOnly ? null : await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
-      Log.error("selectImage", error: error);
-    });
+    var selectedFile = dataOnly
+        ? null
+        : await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
+            Log.error("selectImage", error: error);
+          });
 
     var copiedFile;
 
     if (selectedFile != null) {
       var emptyFile = await BaseFileUtils.getLocalFile(
         "imagesDir",
-        '${DateTime
-            .now()
-            .millisecondsSinceEpoch
-            .toString()}.jpg',
+        '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
       copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
         Log.error("selectImage copy", error: error);
       });
     }
-      // if (copiedFile != null && await copiedFile.exists()) {
-        NetworkManager(token).updateFileFuture(
-          pathFile: copiedFile?.path,
-          companyId: "b55306bc-20d0-4ee6-adb1-d3307c308502",
-          workspaceId: "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
-          documentId: "b9c8bfc6-9e94-4fef-9c35-725958e21090",
-          data: "{\"displayName\": \"document name1\",\"description\": \"description1\",\"createDate\":"
-              "\"2020-09-02T07:30:47"
-              "\",\"visibility\":\"PUBLIC\",\"typeId\": \"3c3b5ae4-955c-4b9d-8bd9-3d564767a2e8\",\"keepResource\": $dataOnly}",
-              //,\"mimeType\": \"image/jpg\"
-          handlePositiveResultBody: (json) {
-            Log.d(json, tag);
-          },
-        ).catchError((e) {
-          Log.error("uploadImageFuture", error: e);
-        });
-      // }
+    // if (copiedFile != null && await copiedFile.exists()) {
+    NetworkManager(token)
+        .updateFileFuture(
+      pathFile: copiedFile?.path,
+      companyId: "b55306bc-20d0-4ee6-adb1-d3307c308502",
+      workspaceId: "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
+      documentId: "b9c8bfc6-9e94-4fef-9c35-725958e21090",
+      data: "{\"displayName\": \"document name1\",\"description\": \"description1\",\"createDate\":"
+          "\"2020-09-02T07:30:47"
+          "\",\"visibility\":\"PUBLIC\",\"typeId\": \"3c3b5ae4-955c-4b9d-8bd9-3d564767a2e8\",\"keepResource\": $dataOnly}",
+      //,\"mimeType\": \"image/jpg\"
+      handlePositiveResultBody: (json) {
+        Log.d(json, tag);
+      },
+    )
+        .catchError((e) {
+      Log.error("uploadImageFuture", error: e);
+    });
+    // }
     // }
   }
 

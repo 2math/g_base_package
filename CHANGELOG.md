@@ -1,3 +1,5 @@
+## [0.1.15-bloc] -  check real internet connection
+
 ## [0.1.14-bloc] -  CallMethod.UPLOAD_UPDATE is PUT and you can make a multipart request without sending a file, just
  file fields (server's weird requirement)
 

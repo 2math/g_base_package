@@ -25,10 +25,10 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
 
     Log.d("init state", tag);
 
-    InstanceProvider.getInstance().analyticsUtil.logCurrentScreen(tag);
+    InstanceProvider.getInstance()?.analyticsUtil?.logCurrentScreen(tag);
 
-    remoteRepository = InstanceProvider.getInstance().provideRepository();
-    localRepository = InstanceProvider.getInstance().provideLocalRepository();
+    remoteRepository = InstanceProvider.getInstance()?.provideRepository();
+    localRepository = InstanceProvider.getInstance()?.provideLocalRepository();
   }
 
   showProgressIndicator({String msgKey, String text}) {
