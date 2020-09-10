@@ -212,8 +212,9 @@ class BaseNetworkManager {
 
   Future<http.Response> _doUploadFileMultipart(Call call) async {
     if (call.callMethod == CallMethod.UPLOAD && (call.file == null || !await call.file.exists())) {
-      throw AppException(
-          errorMessage: 'Uploading File without actual file set', code: AppException.NO_CALL_METHOD_ERROR, data: call);
+      Log.w('Uploading File without actual file set', "$netTag UploadFile");
+      // throw AppException(
+      //     errorMessage: 'Uploading File without actual file set', code: AppException.NO_CALL_METHOD_ERROR, data: call);
     }
 
     String url = _getUrl(call);

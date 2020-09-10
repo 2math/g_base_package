@@ -1,3 +1,5 @@
+## [0.1.16-bloc] -  option for multipart request without file (please don't laugh)
+
 ## [0.1.15-bloc] -  check real internet connection
 
 ## [0.1.14-bloc] -  CallMethod.UPLOAD_UPDATE is PUT and you can make a multipart request without sending a file, just
