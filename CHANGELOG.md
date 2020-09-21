@@ -1,3 +1,5 @@
+## [0.0.20] - better log on transition and check function for blocking progress dialog shown
+
 ## [0.0.19] - Check real internet and let multipart request execute without a file
 
 ## [0.0.18] - CallMethod.UPLOAD_UPDATE is PUT and you can make a multipart request without sending a file, just file fields (server's weird requirement)

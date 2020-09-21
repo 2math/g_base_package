@@ -19,6 +19,10 @@ abstract class BaseState<T extends StatefulWidget, K> extends State<T> {
     repository = InstanceProvider.getInstance().provideRepository();
   }
 
+  bool canShowProgressDialog(){
+    return progressDialog = null;
+  }
+
   showProgressIndicator({String msgKey, String text}) {
     if (progressDialog == null || msgKey != null) {
       String message;
