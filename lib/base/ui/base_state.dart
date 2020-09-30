@@ -53,7 +53,13 @@ abstract class BaseState<T extends StatefulWidget, K> extends State<T> {
     FocusScope.of(context).requestFocus(nextFocus);
   }
 
-  void showError(e, {BuildContext buildContext, Color bkgColor}) {
+  void showError(e, {BuildContext buildContext, Color bkgColor,
+    TextStyle textStyle,
+    double marginBottom = 0,
+    Duration duration,
+    String closeAction,
+    Color closeActionColor,
+    SnackBarAction action}) {
     hideProgressIndicator();
 //    Log.e("login_screen", "$e");
     var msg = getErrorMessage(e);
@@ -62,10 +68,17 @@ abstract class BaseState<T extends StatefulWidget, K> extends State<T> {
   }
 
   void showInfoMessage(String msg,
-      {BuildContext buildContext, TextStyle textStyle, Color bkgColor, double marginBottom = 0, Duration duration}) {
+      {BuildContext buildContext,
+        TextStyle textStyle,
+        Color bkgColor,
+        double marginBottom = 0,
+        Duration duration,
+        String closeAction,
+        Color closeActionColor,
+        SnackBarAction action}) {
 //    Log.e("login_screen", "$e");
-    Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg, bkgColor: bkgColor, textStyle:
-    textStyle, duration: duration, marginBottom: marginBottom);
+    Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg,
+        bkgColor: bkgColor, textStyle: textStyle, duration: duration, marginBottom: marginBottom);
   }
 
   String getErrorMessage(error, {String defaultMessage}) {
