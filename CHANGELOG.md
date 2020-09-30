@@ -1,3 +1,5 @@
+## [0.1.19-bloc] -  base state show new snackbar
+
 ## [0.1.18-bloc] -  add action to snackbar
 
 ## [0.1.17-bloc] -  better log on transition and check function for blocking progress dialog shown
