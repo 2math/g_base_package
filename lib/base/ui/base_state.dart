@@ -19,7 +19,7 @@ abstract class BaseState<T extends StatefulWidget, K> extends State<T> {
     repository = InstanceProvider.getInstance().provideRepository();
   }
 
-  bool canShowProgressDialog(){
+  bool canShowProgressDialog() {
     return progressDialog = null;
   }
 
@@ -53,32 +53,54 @@ abstract class BaseState<T extends StatefulWidget, K> extends State<T> {
     FocusScope.of(context).requestFocus(nextFocus);
   }
 
-  void showError(e, {BuildContext buildContext, Color bkgColor,
-    TextStyle textStyle,
-    double marginBottom = 0,
-    Duration duration,
-    String closeAction,
-    Color closeActionColor,
-    SnackBarAction action}) {
+  void showError(e,
+      {BuildContext buildContext,
+      Color bkgColor,
+      TextStyle textStyle,
+      double marginBottom = 0,
+      Duration duration,
+      String closeAction,
+      Color closeActionColor,
+      SnackBarAction action}) {
     hideProgressIndicator();
 //    Log.e("login_screen", "$e");
     var msg = getErrorMessage(e);
     Log.e(msg);
-    Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg, bkgColor: bkgColor);
+
+    Dialogs.showSnackBar(
+      buildContext != null ? buildContext : context,
+      msg,
+      bkgColor: bkgColor,
+      textStyle: textStyle,
+      duration: duration,
+      marginBottom: marginBottom,
+      closeAction: closeAction,
+      closeActionColor: closeActionColor,
+      action: action,
+    );
   }
 
   void showInfoMessage(String msg,
       {BuildContext buildContext,
-        TextStyle textStyle,
-        Color bkgColor,
-        double marginBottom = 0,
-        Duration duration,
-        String closeAction,
-        Color closeActionColor,
-        SnackBarAction action}) {
+      TextStyle textStyle,
+      Color bkgColor,
+      double marginBottom = 0,
+      Duration duration,
+      String closeAction,
+      Color closeActionColor,
+      SnackBarAction action}) {
 //    Log.e("login_screen", "$e");
-    Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg,
-        bkgColor: bkgColor, textStyle: textStyle, duration: duration, marginBottom: marginBottom);
+    Dialogs.showSnackBar(
+      buildContext != null ? buildContext : context,
+      msg,
+      bkgColor: bkgColor,
+      textStyle: textStyle,
+      duration: duration,
+      marginBottom: marginBottom,
+      closeAction: closeAction,
+      closeActionColor: closeActionColor,
+      action: action,
+    );
   }
 
   String getErrorMessage(error, {String defaultMessage}) {
