@@ -1,3 +1,5 @@
+## [0.1.18-bloc] -  add action to snackbar
+
 ## [0.1.17-bloc] -  better log on transition and check function for blocking progress dialog shown
 
 ## [0.1.16-bloc] -  option for multipart request without file (please don't laugh)

@@ -146,147 +146,176 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-        Text(
-        Txt.get(StrKey.appName),
-      ),
-      Text(
-        'You have pushed the button this many times:',
-      ),
-      Text(
-        '$_counter',
-        style: Theme
-            .of(context)
-            .textTheme
-            .headline4,
-      ),
-      FlatButton(
-        child: Text("Logout"),
-        onPressed: () {
-          NetworkManager(token).logout().then((isOK) {
-            if (isOK ?? false) {
-              token = null;
-            }
-          });
-        },
-      ),
-      LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
-          return FlatButton(
-            child: Text("Get versions"),
-            onPressed: () async {
-              var versions = await NetworkManager(null).getVersions();
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              Txt.get(StrKey.appName),
+            ),
+            Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            FlatButton(
+              child: Text("Logout"),
+              onPressed: () {
+                NetworkManager(token).logout().then((isOK) {
+                  if (isOK ?? false) {
+                    token = null;
+                  }
+                });
+              },
+            ),
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return FlatButton(
+                  child: Text("Get versions"),
+                  onPressed: () async {
+                    var versions = await NetworkManager(null).getVersions();
 
-              if (versions == null) {
-                return;
-              }
+                    if (versions == null) {
+                      return;
+                    }
 
-              int status = versions.getStatus();
-              Log.d("status : $status");
+                    int status = versions.getStatus();
+                    Log.d("status : $status");
 
-              if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
-                bool isBlocking = status == Version.UPDATE_REQUIRED;
-                int result = await Dialogs.showVersions(
-                    context,
-                    Text("App Name"),
-                    Text(isBlocking
-                        ? "You are using a version which "
-                        "is no longer supported.\nTo continue using this app, please install latest version."
-                        : "There is a new version available."),
-                    Text(isBlocking ? "Exit" : "Next Time"),
-                    Text("Go To Store"));
-                if (result == Version.UPDATE_REQUIRED) {
-                  //go to store
-                  LaunchReview.launch(
-                    androidAppId: "com.facebook.katana",
-                    iOSAppId: "284882215",
-                  );
-                } else if (isBlocking) {
-                  //exit app
-                  await System.popToExit(animated: true);
-                } else {
-                  Dialogs.showSnackBar(context, "Continue",
-                      marginBottom: SizeConfig.screenHeight / 2.4,
+                    if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
+                      bool isBlocking = status == Version.UPDATE_REQUIRED;
+                      int result = await Dialogs.showVersions(
+                          context,
+                          Text("App Name"),
+                          Text(isBlocking
+                              ? "You are using a version which "
+                                  "is no longer supported.\nTo continue using this app, please install latest version."
+                              : "There is a new version available."),
+                          Text(isBlocking ? "Exit" : "Next Time"),
+                          Text("Go To Store"));
+                      if (result == Version.UPDATE_REQUIRED) {
+                        //go to store
+                        LaunchReview.launch(
+                          androidAppId: "com.facebook.katana",
+                          iOSAppId: "284882215",
+                        );
+                      } else if (isBlocking) {
+                        //exit app
+                        await System.popToExit(animated: true);
+                      } else {
+                        Dialogs.showSnackBar(context, "Continue",
+                            marginBottom: SizeConfig.screenHeight / 2.4,
+                            textStyle: TextStyle(color: Colors.black),
+                            bkgColor: Colors.blue,
+                            duration: Duration(seconds: 2));
+                      }
+                    } else {
+                      Dialogs.showSnackBar(context, "Continue");
+                    }
+                  },
+                );
+              },
+            ),
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return FlatButton(
+                  child: Text("Show snackbar"),
+                  onPressed: () {
+                    Dialogs.showSnackBar(
+                      context,
+                      "Normal",
+                      marginBottom: 0,
+                      closeAction: "Close",
+                    );
+                  },
+                );
+              },
+            ),
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return FlatButton(
+                  child: Text("Show snackbar 150"),
+                  onPressed: () {
+                    Dialogs.showSnackBar(
+                      context,
+                      "bottom 150",
                       textStyle: TextStyle(color: Colors.black),
                       bkgColor: Colors.blue,
-                      duration: Duration(seconds: 2));
-                }
-              } else {
-                Dialogs.showSnackBar(context, "Continue");
-              }
-            },
-          );
-        },
+                      marginBottom: 150,
+                      closeAction: "Close",
+                    );
+                  },
+                );
+              },
+            ),
+            FlatButton(
+              child: Text("Select and Upload Image"),
+              onPressed: () {
+                _selectImage();
+              },
+            ),
+            FlatButton(
+              child: Text("Select and Upload Document"),
+              onPressed: () {
+                _selectFile();
+              },
+            ),
+            FlatButton(
+              child: Text("delete Document"),
+              onPressed: () {
+                _deleteFiles();
+              },
+            ),
+            FlatButton(
+              child: Text("Fetch Documents"),
+              onPressed: () {
+                _fetchFiles();
+              },
+            ),
+            FlatButton(
+              child: Text("Edit Document With file"),
+              onPressed: () {
+                _editFile(false);
+              },
+            ),
+            FlatButton(
+              child: Text("Edit Document Without file"),
+              onPressed: () {
+                _editFile(true);
+              },
+            ),
+            FlatButton(
+                child: Text("Check Internet"),
+                onPressed: () async {
+                  Log.d(DateTime.now().toIso8601String());
+                  bool res = await NetUtil().checkInternet();
+                  Log.d(DateTime.now().toIso8601String());
+                  showInfoMessage(res ? "Has internet" : "No internet");
+                }),
+            FlatButton(
+              child: Text("check"),
+              onPressed: () {
+                Call call = new Call.name(
+                    CallMethod.GET,
+                    "v1/companies/b55306bc-20d0-4ee6-adb1-d3307c308502/workspaces/2ac"
+                    "7d50d-da40-41a8-b84d-3a87c0fb9e4a/documents/types",
+                    token: token);
+                // Call call = new Call.name(CallMethod.POST, "https://vinci.travelsecurity.net/api_mobile/v1"
+                //     ".1/mobileusers/signup_one_email", refreshOn401: false, body: '{"email":"zinaidasaevska2+30@gmail'
+                //     '.com"}', isFullUrl: true);
+                NetworkManager(null).doServerCall(call, (_) {});
+              },
+            ),
+          ],
+        ),
       ),
-      FlatButton(
-        child: Text("Select and Upload Image"),
-        onPressed: () {
-          _selectImage();
-        },
-      ),
-      FlatButton(
-        child: Text("Select and Upload Document"),
-        onPressed: () {
-          _selectFile();
-        },
-      ),
-      FlatButton(
-        child: Text("delete Document"),
-        onPressed: () {
-          _deleteFiles();
-        },
-      ),
-      FlatButton(
-        child: Text("Fetch Documents"),
-        onPressed: () {
-          _fetchFiles();
-        },
-      ),
-      FlatButton(
-        child: Text("Edit Document With file"),
-        onPressed: () {
-          _editFile(false);
-        },
-      ),
-      FlatButton(
-        child: Text("Edit Document Without file"),
-        onPressed: () {
-          _editFile(true);
-        },
-      ),
-      FlatButton(
-          child: Text("Check Internet"),
-          onPressed: () async {
-            Log.d(DateTime.now().toIso8601String());
-            bool res = await NetUtil().checkInternet();
-            Log.d(DateTime.now().toIso8601String());
-            showInfoMessage(res ? "Has internet" : "No internet");
-          }
-      ),
-      FlatButton(
-        child: Text("check"),
-        onPressed: () {
-          Call call = new Call.name(CallMethod.GET, "v1/companies/b55306bc-20d0-4ee6-adb1-d3307c308502/workspaces/2ac"
-              "7d50d-da40-41a8-b84d-3a87c0fb9e4a/documents/types", token: token);
-          // Call call = new Call.name(CallMethod.POST, "https://vinci.travelsecurity.net/api_mobile/v1"
-          //     ".1/mobileusers/signup_one_email", refreshOn401: false, body: '{"email":"zinaidasaevska2+30@gmail'
-          //     '.com"}', isFullUrl: true);
-          NetworkManager(null).doServerCall(call, (_){
-
-          });
-        },
-      ),
-      ],
-    ),
-    ),
-    floatingActionButton: FloatingActionButton(
-    onPressed: _incrementCounter,
-    tooltip: 'Increment',
-    child: Icon(Icons.add),
-    ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
-    }
+  }
 
   Future<void> _selectImage() async {
     var selectedFile = await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
@@ -296,10 +325,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
     if (selectedFile != null) {
       var emptyFile = await BaseFileUtils.getLocalFile(
         "imagesDir",
-        '${DateTime
-            .now()
-            .millisecondsSinceEpoch
-            .toString()}.jpg',
+        '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
       var copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
@@ -311,7 +337,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
           copiedFile.path,
           "b55306bc-20d0-4ee6-adb1-d3307c308502",
           "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
-              (json) {
+          (json) {
             Log.d(json, tag);
           },
         ).catchError((e) {
@@ -329,10 +355,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
     if (selectedFile != null) {
       var emptyFile = await BaseFileUtils.getLocalFile(
         "imagesDir",
-        '${DateTime
-            .now()
-            .millisecondsSinceEpoch
-            .toString()}.jpg',
+        '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
       var copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
@@ -346,7 +369,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
           "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
           "{\"displayName\": \"Dox 1\",\"description\": \"description\",\"createDate\":\"2020-09-02T07:30:47\","
               "\"visibility\":\"PUBLIC\",\"typeId\": \"3c3b5ae4-955c-4b9d-8bd9-3d564767a2e8\"}",
-              (json) {
+          (json) {
             Log.d(json, tag);
           },
         ).catchError((e) {
@@ -360,18 +383,15 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
     var selectedFile = dataOnly
         ? null
         : await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
-      Log.error("selectImage", error: error);
-    });
+            Log.error("selectImage", error: error);
+          });
 
     var copiedFile;
 
     if (selectedFile != null) {
       var emptyFile = await BaseFileUtils.getLocalFile(
         "imagesDir",
-        '${DateTime
-            .now()
-            .millisecondsSinceEpoch
-            .toString()}.jpg',
+        '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
       copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
@@ -417,7 +437,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
       "b55306bc-20d0-4ee6-adb1-d3307c308502",
       "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
       "c064f29e-1a64-4777-9acc-c0fcb9a68e55",
-          (_) {},
+      (_) {},
     )
         .catchError((e) {
       Log.error("uploadImageFuture", error: e);
