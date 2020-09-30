@@ -52,7 +52,7 @@ class BaseNetworkManager {
 
   Future<Version> getVersions() async {
 //    return Version(clientVersion: "1.10.7", currentVersion: 5, minimalVersion: 2);
-    Call call = new Call.name(CallMethod.GET, "versions/${Platform.isIOS?"IOS":"ANDROID"}");
+    Call call = new Call.name(CallMethod.GET, "versions/${Platform.isIOS?"IOS":"ANDROID_ASSETTRAX"}");
 
     return await doServerCall<Version>(call, (json){
       Log.d(json,"$netTag versions");

@@ -204,10 +204,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             marginBottom: SizeConfig.screenHeight / 2.4,
                             textStyle: TextStyle(color: Colors.black),
                             bkgColor: Colors.blue,
+                            closeAction: "Close",
                             duration: Duration(seconds: 2));
                       }
                     } else {
-                      Dialogs.showSnackBar(context, "Continue");
+                      Dialogs.showSnackBar(
+                        context, "Continue",
+                        marginBottom: 0,
+                        // closeAction: "Close",
+                      );
                     }
                   },
                 );
@@ -217,6 +222,38 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Text("Select and Upload Image"),
               onPressed: () {
                 _selectImage();
+              },
+            ),
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return FlatButton(
+                  child: Text("Show snackbar"),
+                  onPressed: () {
+                    Dialogs.showSnackBar(
+                      context,
+                      "Normal",
+                      marginBottom: 0,
+                      closeAction: "Close",
+                    );
+                  },
+                );
+              },
+            ),
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return FlatButton(
+                  child: Text("Show snackbar 150"),
+                  onPressed: () {
+                    Dialogs.showSnackBar(
+                      context,
+                      "bottom 150",
+                      textStyle: TextStyle(color: Colors.black),
+                      bkgColor: Colors.blue,
+                      marginBottom: 150,
+                      closeAction: "Close",
+                    );
+                  },
+                );
               },
             ),
             FlatButton(
@@ -324,42 +361,43 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _editFile(bool dataOnly) async {
-    var selectedFile = dataOnly ? null : await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
-      Log.error("selectImage", error: error);
-    });
+    var selectedFile = dataOnly
+        ? null
+        : await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
+            Log.error("selectImage", error: error);
+          });
 
     var copiedFile;
 
     if (selectedFile != null) {
       var emptyFile = await BaseFileUtils.getLocalFile(
         "imagesDir",
-        '${DateTime
-            .now()
-            .millisecondsSinceEpoch
-            .toString()}.jpg',
+        '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
       copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
         Log.error("selectImage copy", error: error);
       });
     }
-      // if (copiedFile != null && await copiedFile.exists()) {
-        NetworkManager(token).updateFileFuture(
-          pathFile: copiedFile?.path,
-          companyId: "b55306bc-20d0-4ee6-adb1-d3307c308502",
-          workspaceId: "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
-          documentId: "b9c8bfc6-9e94-4fef-9c35-725958e21090",
-          data: "{\"displayName\": \"document name1\",\"description\": \"description1\",\"createDate\":"
-              "\"2020-09-02T07:30:47"
-              "\",\"visibility\":\"PUBLIC\",\"typeId\": \"3c3b5ae4-955c-4b9d-8bd9-3d564767a2e8\",\"keepResource\": $dataOnly}",
-              //,\"mimeType\": \"image/jpg\"
-          handlePositiveResultBody: (json) {
-            Log.d(json, tag);
-          },
-        ).catchError((e) {
-          Log.error("uploadImageFuture", error: e);
-        });
-      // }
+    // if (copiedFile != null && await copiedFile.exists()) {
+    NetworkManager(token)
+        .updateFileFuture(
+      pathFile: copiedFile?.path,
+      companyId: "b55306bc-20d0-4ee6-adb1-d3307c308502",
+      workspaceId: "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
+      documentId: "b9c8bfc6-9e94-4fef-9c35-725958e21090",
+      data: "{\"displayName\": \"document name1\",\"description\": \"description1\",\"createDate\":"
+          "\"2020-09-02T07:30:47"
+          "\",\"visibility\":\"PUBLIC\",\"typeId\": \"3c3b5ae4-955c-4b9d-8bd9-3d564767a2e8\",\"keepResource\": $dataOnly}",
+      //,\"mimeType\": \"image/jpg\"
+      handlePositiveResultBody: (json) {
+        Log.d(json, tag);
+      },
+    )
+        .catchError((e) {
+      Log.error("uploadImageFuture", error: e);
+    });
+    // }
     // }
   }
 

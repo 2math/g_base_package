@@ -1,3 +1,5 @@
+## [0.0.21] - add action to snackbar
+
 ## [0.0.20] - better log on transition and check function for blocking progress dialog shown
 
 ## [0.0.19] - Check real internet and let multipart request execute without a file

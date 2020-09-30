@@ -91,18 +91,34 @@ class Dialogs {
   }
 
   static showSnackBar(BuildContext context, String msg,
-      {TextStyle textStyle, Color bkgColor, double marginBottom = 0, Duration duration}) {
+      {TextStyle textStyle,
+      Color bkgColor,
+      double marginBottom = 0,
+      Duration duration,
+      String closeAction,
+      Color closeActionColor,
+      SnackBarAction action}) {
+    SnackBarAction snackBarAction = _getAction(action, closeAction, closeActionColor);
     final snackBar = marginBottom == 0
         ? SnackBar(
             content: Text(msg, style: textStyle),
             backgroundColor: bkgColor,
             duration: duration ?? Duration(milliseconds: 4000),
+            action: snackBarAction,
           )
         : SnackBar(
             content: Container(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(msg, style: textStyle),
+                padding: snackBarAction != null ? const EdgeInsets.only(left:8.0, top:8.0, bottom: 8.0) : const
+                EdgeInsets
+                    .all(8.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(child: Text(msg, style: textStyle)),
+                    snackBarAction ?? SizedBox(width: 0, height: 0),
+                  ],
+                ),
               ),
               margin: EdgeInsets.fromLTRB(0, 0, 0, marginBottom),
               decoration: BoxDecoration(
@@ -131,5 +147,23 @@ class Dialogs {
         },
       );
     }
+  }
+
+  static SnackBarAction _getAction(SnackBarAction action, String closeAction, Color closeActionColor) {
+    return action != null
+        ? action
+        : closeAction != null
+            ? SnackBarAction(
+                label: closeAction,
+                textColor: closeActionColor ?? Colors.white,
+                onPressed: () {
+                  //this is no need , because is handled by the snackbar
+                  // ScaffoldState scaffoldState = Scaffold.of(context, nullOk: true);
+                  // if (scaffoldState != null) {
+                  //   scaffoldState.hideCurrentSnackBar(reason:SnackBarClosedReason.action);
+                  // }
+                },
+              )
+            : null;
   }
 }
