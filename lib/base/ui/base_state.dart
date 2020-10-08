@@ -32,7 +32,7 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
   }
 
   bool canShowProgressDialog() {
-    return progressDialog = null;
+    return progressDialog == null;
   }
 
   showProgressIndicator({String msgKey, String text}) {
