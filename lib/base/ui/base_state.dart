@@ -76,7 +76,18 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
 //    Log.e("login_screen", "$e");
     var msg = getErrorMessage(e);
     Log.e(msg);
-    Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg, bkgColor: bkgColor);
+
+    Dialogs.showSnackBar(
+      buildContext != null ? buildContext : context,
+      msg,
+      bkgColor: bkgColor,
+      textStyle: textStyle,
+      duration: duration,
+      marginBottom: marginBottom,
+      closeAction: closeAction,
+      closeActionColor: closeActionColor,
+      action: action,
+    );
   }
 
   void showInfoMessage(String msg,
@@ -90,7 +101,14 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
       SnackBarAction action}) {
 //    Log.e("login_screen", "$e");
     Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg,
-        bkgColor: bkgColor, textStyle: textStyle, duration: duration, marginBottom: marginBottom);
+      bkgColor: bkgColor,
+      textStyle: textStyle,
+      duration: duration,
+      marginBottom: marginBottom,
+      closeAction: closeAction,
+      closeActionColor: closeActionColor,
+      action: action,
+    );
   }
 
   String getErrorMessage(error, {String defaultMessage}) {

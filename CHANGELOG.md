@@ -1,3 +1,5 @@
+## [0.1.21] -  fixed an issue with show snackbar action button
+
 ## [0.1.20] -  fixed an issue with check blocking progress is visible
 
 ## [0.1.19-bloc] -  base state show new snackbar
