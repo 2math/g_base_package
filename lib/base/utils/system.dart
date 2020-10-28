@@ -46,9 +46,14 @@ class SizeConfig {
 
   static double safeAreaBottom;
 
-  ///return false if is initialized already
+  ///return false if is initialized already and has same size
+  ///Best solution will be to call it in build function on first screen that remain bellow the others
+  ///and on screen resize will be rebuild according with the screen above
   bool init(BuildContext context) {
-    if (screenWidth != null) {
+    _mediaQueryData = MediaQuery.of(context);
+
+    if (screenWidth == _mediaQueryData.size.width) {
+      //this is measured already and the screen is not resized
       return false;
     }
 

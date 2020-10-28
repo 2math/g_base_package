@@ -31,6 +31,15 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     localRepository = InstanceProvider.getInstance()?.provideLocalRepository();
   }
 
+  // @override
+  // @mustCallSuper
+  // // ignore: missing_return
+  // Widget build(BuildContext context) {
+  //   if (SizeConfig().init(context)) {
+  //     Log.d(SizeConfig().toString());
+  //   }
+  // }
+
   bool canShowProgressDialog() {
     return progressDialog == null;
   }
