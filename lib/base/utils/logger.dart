@@ -19,6 +19,9 @@ class Log {
   ///This must be set from UI on start
   static bool fromUI = false;
 
+  ///option to print logs in release mode, should be used only for testing releases
+  static bool printInRelease = false;
+
   static var _logger = Logger(
     printer: PrettyPrinter(
       printTime: false,
@@ -52,7 +55,7 @@ class Log {
     if (fromUI && addToCrashReporter) {
       InstanceProvider.getInstance()?.crashReporter?.log(log, tag); //always save in Crash Reporter
     }
-    if (!Foundation.kReleaseMode) {
+    if (printInRelease || !Foundation.kReleaseMode) {
       _print('$tag : $log', level);
     }
   }
@@ -94,7 +97,7 @@ class Log {
       InstanceProvider.getInstance()?.crashReporter?.logError(log, tag, error);
     }
 
-    if (!Foundation.kReleaseMode) {
+    if (printInRelease || !Foundation.kReleaseMode) {
       String systemTag = '$tagError $appTag';
       if (tag != null && error != null) {
         _print('$systemTag $tag : $log \n $error', Level.error, error: error, stackTrace: error?.stackTrace);
