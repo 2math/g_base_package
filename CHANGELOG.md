@@ -1,4 +1,4 @@
-## [0.1.22] -  option to show NET logs, also hide just response body which can be huge
+## [0.1.24] -  option to show NET logs, also hide just response body which can be huge
 
 ## [0.1.21] -  fixed an issue with show snackbar action button
 
