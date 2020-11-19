@@ -1,3 +1,5 @@
+## [0.1.22] -  option to show NET logs, also hide just response body which can be huge
+
 ## [0.1.21] -  fixed an issue with show snackbar action button
 
 ## [0.1.20] -  fixed an issue with check blocking progress is visible

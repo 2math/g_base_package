@@ -95,6 +95,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         NetworkManager(null).login("g.blagoev@futurist-labs.com", "123456", (json) {
           try {
             token = jsonDecode(json)['sessionId'] as String;
+            //companyId = jsonDecode(json)["user"]['company']["id"] as String;
           } catch (e) {
             Log.e("weird error parsing session", tag, e);
           }

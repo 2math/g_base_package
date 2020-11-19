@@ -96,16 +96,20 @@ class BaseNetworkManager {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     String url = _getUrl(call);
 
-    Log.d("$url\nHeaders :\n${_printMap(headers)}", "$netTag GET");
+    if (call.printLogs) {
+      Log.d("$url\nHeaders :\n${_printMap(headers)}", "$netTag GET");
+    }
     // make GET request
     http.Response response = await http.get(url, headers: headers); //todo add timeout
 
 //    String responseHeaders = _printMap(response.headers);
-    Log.d(
-        "$url\nResponse Code : ${response.statusCode}\n"
+    if (call.printLogs) {
+      Log.d(
+          "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-            "Body :\n${_printJson(_getBodyAsUtf8(response))}",
-        "$netTag Response GET");
+              "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}",
+          "$netTag Response GET");
+    }
     return response;
   }
 
@@ -117,20 +121,23 @@ class BaseNetworkManager {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
 
     String url = _getUrl(call);
-
-    Log.d(
-        "$url\nHeaders :\n${_printMap(headers)}\n"
-            "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}",
-        "$netTag POST");
-
+    if (call.printLogs) {
+      Log.d(
+          "$url\nHeaders :\n${_printMap(headers)}\n"
+              "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}",
+          "$netTag POST");
+    }
     // make POST request
     http.Response response = await http.post(url,
         headers: headers, body: call.body != null ? call.body : call.params, encoding: Encoding.getByName("utf-8"));
-    Log.d(
-        "$url\nResponse Code : ${response.statusCode}\n"
+
+    if (call.printLogs) {
+      Log.d(
+          "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-            "Body :\n${_printJson(_getBodyAsUtf8(response))}",
-        "$netTag Response POST");
+              "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}",
+          "$netTag Response POST");
+    }
     return response;
   }
 
@@ -139,22 +146,25 @@ class BaseNetworkManager {
         _getUpdatedHeaders(call.token, call.language, "application/json; charset=utf-8", call.headers);
 
     String url = _getUrl(call);
-
-    Log.d(
-        "$url\nHeaders :\n${_printMap(headers)}\n"
-            "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}",
-        "$netTag ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
+    if (call.printLogs) {
+      Log.d(
+          "$url\nHeaders :\n${_printMap(headers)}\n"
+              "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}",
+          "$netTag ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
+    }
 
     // make PUT request
     http.Response response = call.callMethod == CallMethod.PUT
         ? await http.put(url, headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"))
         : await http.patch(url, headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"));
 
-    Log.d(
-        "$url\nResponse Code : ${response.statusCode}\n"
+    if (call.printLogs) {
+      Log.d(
+          "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-            "Body :\n${_printJson(_getBodyAsUtf8(response))}",
-        "$netTag Response ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
+              "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}",
+          "$netTag Response ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
+    }
     return response;
   }
 
@@ -162,24 +172,29 @@ class BaseNetworkManager {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     String url = _getUrl(call);
 
-    Log.d("$url\nHeaders :\n${_printMap(headers)}", "$netTag DELETE");
+    if (call.printLogs) {
+      Log.d("$url\nHeaders :\n${_printMap(headers)}", "$netTag DELETE");
+    }
     // make GET request
     http.Response response = await http.delete(url, headers: headers);
 
 //    String responseHeaders = _printMap(response.headers);
-    Log.d(
-        "$url\nResponse Code : ${response.statusCode}\n"
+    if (call.printLogs) {
+      Log.d(
+          "$url\nResponse Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-            "Body :\n${_printJson(_getBodyAsUtf8(response))}",
-        "$netTag Response DELETE");
+              "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}",
+          "$netTag Response DELETE");
+    }
     return response;
   }
 
   Future<http.Response> _doDownloadFileRequest(Call call) async {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     String fileURL = _getUrl(call);
-
-    Log.d("$fileURL\nHeaders :\n${_printMap(headers)}", "$netTag GET");
+    if (call.printLogs) {
+      Log.d("$fileURL\nHeaders :\n${_printMap(headers)}", "$netTag GET");
+    }
     // make GET request
     http.Response response = await http.get(fileURL, headers: headers); //todo add timeout
 
@@ -198,13 +213,17 @@ class BaseNetworkManager {
         // extracts file name from URL
         fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1, fileURL.length);
       }
-      Log.d(
-          "$fileURL\nResponse Code : ${response.statusCode}\nContent-Disposition = $disposition"
-              "\nContent-Length = ${response.contentLength}\nfileName = $fileName"
-              "\nResponse Headers\n$responseHeaders",
-          "$netTag Response Download");
+      if (call.printLogs) {
+        Log.d(
+            "$fileURL\nResponse Code : ${response.statusCode}\nContent-Disposition = $disposition"
+                "\nContent-Length = ${response.contentLength}\nfileName = $fileName"
+                "\nResponse Headers\n$responseHeaders",
+            "$netTag Response Download");
+      }
     } else {
-      Log.d("$fileURL\nResponse Code : ${response.statusCode}\n", "$netTag Response Download");
+      if (call.printLogs) {
+        Log.d("$fileURL\nResponse Code : ${response.statusCode}\n", "$netTag Response Download");
+      }
     }
 
     return response;
@@ -225,9 +244,9 @@ class BaseNetworkManager {
 
     var requestMultipart = http.MultipartRequest("", Uri.parse("uri"));
 
-    if(call.file != null && await call.file.exists()) {
-      var multipartFile =
-      await http.MultipartFile.fromPath("file", call.file.path, filename: call.fileName, contentType: call.mediaType);
+    if (call.file != null && await call.file.exists()) {
+      var multipartFile = await http.MultipartFile.fromPath("file", call.file.path,
+          filename: call.fileName, contentType: call.mediaType);
 
       requestMultipart.files.add(multipartFile);
     }
@@ -248,8 +267,9 @@ class BaseNetworkManager {
       request.headers.set(key, value);
     });
 
-    Log.d(requestMultipart.headers[HttpHeaders.contentTypeHeader]);
-
+    if (call.printLogs) {
+      Log.d(requestMultipart.headers[HttpHeaders.contentTypeHeader]);
+    }
 //    request.headers.set(HttpHeaders.contentTypeHeader, requestMultipart.headers[HttpHeaders.contentTypeHeader]);
 
     int byteCount = 0;
@@ -277,26 +297,28 @@ class BaseNetworkManager {
     );
 
     await request.addStream(streamUpload);
-
-    Log.d(
-        "$url\nParams :\n${_printMap(call.params)}"
-            "\nHeaders :\n${_printMap(headers)}"
-            "\nFile : ${call.file?.path}"
-            "\nfilename : ${call.fileName}"
-            "\ncontentType : ${call.mediaType}"
-            "\ncontentLength : $totalByteLength",
-        "$netTag UploadFile");
+    if (call.printLogs) {
+      Log.d(
+          "$url\nParams :\n${_printMap(call.params)}"
+              "\nHeaders :\n${_printMap(headers)}"
+              "\nFile : ${call.file?.path}"
+              "\nfilename : ${call.fileName}"
+              "\ncontentType : ${call.mediaType}"
+              "\ncontentLength : $totalByteLength",
+          "$netTag UploadFile");
+    }
     final httpResponse = await request.close();
 //    var response = await request.send();
 //
 //    http.Response httpResponse = await http.Response.fromStream(response);
 
     String res = await _readResponseAsString(httpResponse);
-    Log.d(
-        "$url\nResponse Code : ${httpResponse.statusCode}\n"
-            "Body :\n${_printJson(res)}",
-        "$netTag Response UploadFile");
-
+    if (call.printLogs) {
+      Log.d(
+          "$url\nResponse Code : ${httpResponse.statusCode}\n"
+              "${call.printResponseBody ? "Body :\n${_printJson(res)}" : ""}",
+          "$netTag Response UploadFile");
+    }
     return http.Response(res, httpResponse.statusCode);
   }
 
@@ -327,21 +349,23 @@ class BaseNetworkManager {
 
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     request.headers.addAll(headers);
-
-    Log.d(
-        "$url\nHeaders :\n${_printMap(request.headers)}"
-            "\nFile : ${call.file.path}"
-            "\nfilename : ${call.fileName}"
-            "\ncontentType : ${call.mediaType}"
-            "\ncontentLenght : $length",
-        "$netTag UploadFile");
-
+    if (call.printLogs) {
+      Log.d(
+          "$url\nHeaders :\n${_printMap(request.headers)}"
+              "\nFile : ${call.file.path}"
+              "\nfilename : ${call.fileName}"
+              "\ncontentType : ${call.mediaType}"
+              "\ncontentLenght : $length",
+          "$netTag UploadFile");
+    }
     var response = await request.send();
     http.Response httpResponse = await http.Response.fromStream(response);
-    Log.d(
-        "$url\nResponse Code : ${response.statusCode}\n"
-            "Body :\n${_printJson(httpResponse.body)}",
-        "$netTag Response UploadFile");
+    if (call.printLogs) {
+      Log.d(
+          "$url\nResponse Code : ${response.statusCode}\n"
+              "${call.printResponseBody ? "Body :\n${_printJson(httpResponse.body)}" : ""}",
+          "$netTag Response UploadFile");
+    }
     return httpResponse;
   }
 
@@ -385,7 +409,9 @@ class BaseNetworkManager {
     if (FlavorConfig.instance.headerOS != null) {
       String os = Platform.isAndroid
           ? FlavorConfig.instance.headerValueAndroid
-          : Platform.isIOS ? FlavorConfig.instance.headerValueIOS : "unknown" ?? "headerValue not set";
+          : Platform.isIOS
+              ? FlavorConfig.instance.headerValueIOS
+              : "unknown" ?? "headerValue not set";
       customHeadersToAdd[FlavorConfig.instance.headerOS] = os;
     }
     return customHeadersToAdd;

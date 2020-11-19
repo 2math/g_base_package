@@ -23,30 +23,32 @@ Company _$CompanyFromJson(Map<String, dynamic> json) {
     color: json['color'] as String,
     accentColor: json['accentColor'] as String,
     language: json['language'] as String,
+    timeZone: json['timeZone'] as String,
     defaultCategoryId: json['defaultCategoryId'] as String,
     isApproved: json['isApproved'] as bool,
   );
 }
 
 Map<String, dynamic> _$CompanyToJson(Company instance) => <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'description': instance.description,
-      'address': instance.address,
-      'city': instance.city,
-      'state': instance.state,
-      'zip': instance.zip,
-      'phone_1': instance.phone_1,
-      'phone_2': instance.phone_2,
-      'phone_3': instance.phone_3,
-      'sign': instance.sign,
-      'logo': instance.logo,
-      'color': instance.color,
-      'accentColor': instance.accentColor,
-      'language': instance.language,
-      'defaultCategoryId': instance.defaultCategoryId,
-      'isApproved': instance.isApproved,
-    };
+  'id': instance.id,
+  'name': instance.name,
+  'description': instance.description,
+  'address': instance.address,
+  'city': instance.city,
+  'state': instance.state,
+  'zip': instance.zip,
+  'phone_1': instance.phone_1,
+  'phone_2': instance.phone_2,
+  'phone_3': instance.phone_3,
+  'sign': instance.sign,
+  'logo': instance.logo,
+  'color': instance.color,
+  'timeZone': instance.timeZone,
+  'accentColor': instance.accentColor,
+  'language': instance.language,
+  'defaultCategoryId': instance.defaultCategoryId,
+  'isApproved': instance.isApproved,
+};
 
 Category _$CategoryFromJson(Map<String, dynamic> json) {
   return Category()
@@ -56,57 +58,59 @@ Category _$CategoryFromJson(Map<String, dynamic> json) {
     ..isDefault = json['isDefault'] as bool
     ..attributes = (json['attributes'] as List)
         ?.map((e) =>
-            e == null ? null : Attribute.fromJson(e as Map<String, dynamic>))
+    e == null ? null : Attribute.fromJson(e as Map<String, dynamic>))
         ?.toList();
 }
 
 Map<String, dynamic> _$CategoryToJson(Category instance) => <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'companyId': instance.companyId,
-      'isDefault': instance.isDefault,
-      'attributes': instance.attributes?.map((e) => e?.toJson())?.toList(),
-    };
+  'id': instance.id,
+  'name': instance.name,
+  'companyId': instance.companyId,
+  'isDefault': instance.isDefault,
+  'attributes': instance.attributes?.map((e) => e?.toJson())?.toList(),
+};
 
 Attribute _$AttributeFromJson(Map<String, dynamic> json) {
   return Attribute(
     id: json['id'] as String,
     name: json['name'] as String,
     label: json['label'] as String,
-    type: _$enumDecodeNullable(_$AttributeTypeEnumMap, json['type']),
+    type: _$enumDecodeNullable(_$AttributeTypeEnumMap, json['type'],
+        unknownValue: AttributeType.TEXT),
     isRequired: json['isRequired'] as bool,
     orderNumber: json['orderNumber'] as int,
     options: (json['options'] as List)
         ?.map((e) =>
-            e == null ? null : Option.fromJson(e as Map<String, dynamic>))
+    e == null ? null : Option.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     isActive: json['isActive'] as bool,
     currencySign: json['currencySign'] as String,
-    dataFormat:
-        _$enumDecodeNullable(_$FieldDateFormatEnumMap, json['dataFormat']),
+    dateTimeFormat: _$enumDecodeNullable(
+        _$FieldDateFormatEnumMap, json['dateTimeFormat'],
+        unknownValue: FieldDateFormat.US),
     valuePrecision: json['valuePrecision'] as int,
   );
 }
 
 Map<String, dynamic> _$AttributeToJson(Attribute instance) => <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'label': instance.label,
-      'currencySign': instance.currencySign,
-      'dataFormat': _$FieldDateFormatEnumMap[instance.dataFormat],
-      'type': _$AttributeTypeEnumMap[instance.type],
-      'isRequired': instance.isRequired,
-      'isActive': instance.isActive,
-      'orderNumber': instance.orderNumber,
-      'valuePrecision': instance.valuePrecision,
-      'options': instance.options,
-    };
+  'id': instance.id,
+  'name': instance.name,
+  'label': instance.label,
+  'currencySign': instance.currencySign,
+  'dateTimeFormat': _$FieldDateFormatEnumMap[instance.dateTimeFormat],
+  'type': _$AttributeTypeEnumMap[instance.type],
+  'isRequired': instance.isRequired,
+  'isActive': instance.isActive,
+  'orderNumber': instance.orderNumber,
+  'valuePrecision': instance.valuePrecision,
+  'options': instance.options,
+};
 
 T _$enumDecode<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
+    Map<T, dynamic> enumValues,
+    dynamic source, {
+      T unknownValue,
+    }) {
   if (source == null) {
     throw ArgumentError('A value must be provided. Supported values: '
         '${enumValues.values.join(', ')}');
@@ -124,10 +128,10 @@ T _$enumDecode<T>(
 }
 
 T _$enumDecodeNullable<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
+    Map<T, dynamic> enumValues,
+    dynamic source, {
+      T unknownValue,
+    }) {
   if (source == null) {
     return null;
   }
@@ -143,6 +147,8 @@ const _$AttributeTypeEnumMap = {
   AttributeType.MULTI_SELECT: 'MULTI_SELECT',
   AttributeType.GPS: 'GPS',
   AttributeType.DATE: 'DATE',
+  AttributeType.BARCODE: 'BARCODE',
+  AttributeType.TEXT_AREA: 'TEXT_AREA',
 };
 
 const _$FieldDateFormatEnumMap = {
@@ -160,7 +166,7 @@ Option _$OptionFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$OptionToJson(Option instance) => <String, dynamic>{
-      'id': instance.id,
-      'value': instance.value,
-      'attributeId': instance.attributeId,
-    };
+  'id': instance.id,
+  'value': instance.value,
+  'attributeId': instance.attributeId,
+};

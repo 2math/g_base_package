@@ -45,7 +45,8 @@ class NetworkManager extends BaseNetworkManager {
       'username': email,
       'password': pass,
     };
-    Call call = new Call.name(CallMethod.POST, NetConstants.SESSIONS, body: jsonEncode(body), refreshOn401: false);
+    Call call = new Call.name(CallMethod.POST, NetConstants.SESSIONS, body: jsonEncode(body), refreshOn401: false,
+        printResponseBody: false);
 
 //    call = new Call.name(
 //        CallMethod.GET, "http://www.mocky.io/v2/5e4285162f00007b0087f697",
@@ -70,7 +71,13 @@ class NetworkManager extends BaseNetworkManager {
 
   ///Get all workspaces of mine
   Future<List<Object>> getWorkspaces(String companyId, Function handlePositiveResultBody) async {
-    Call call = new Call.name(CallMethod.GET, "v1/companies/$companyId/workspaces", token: _token);
+    Call call = new Call.name(
+      CallMethod.GET,
+      "v1/companies/workspaces",
+      token: _token,
+      printLogs: false,
+      printResponseBody: false,
+    );
 
     return await doServerCall<List<Object>>(call, handlePositiveResultBody);
   }
@@ -117,8 +124,12 @@ class NetworkManager extends BaseNetworkManager {
   }
 
   Future<void> updateFileFuture(
-  {String pathFile, String companyId, String workspaceId, String documentId, String data, handlePositiveResultBody})
-  async {
+      {String pathFile,
+      String companyId,
+      String workspaceId,
+      String documentId,
+      String data,
+      handlePositiveResultBody}) async {
     File file = BaseUtils.isNotEmptyStr(pathFile) ? File(pathFile) : null;
 
     Call call = new Call.name(

@@ -20,7 +20,7 @@ class Company {
       logo,
       color,
       accentColor,
-      language,
+      language,timeZone,
       defaultCategoryId;
   bool isApproved;
 
@@ -40,6 +40,7 @@ class Company {
       this.color,
       this.accentColor,
       this.language,
+      this.timeZone,
       this.defaultCategoryId,
       this.isApproved});
 
@@ -71,21 +72,32 @@ class Category {
   }
 }
 
-enum AttributeType { TEXT, NUMBER, VIN, UPC, DROPDOWN, MULTI_SELECT, GPS, DATE }
-enum FieldDateFormat {US , EU , GENERAL }
+enum AttributeType { TEXT, NUMBER, VIN, UPC, DROPDOWN, MULTI_SELECT, GPS, DATE, BARCODE, TEXT_AREA }
+enum FieldDateFormat { US, EU, GENERAL }
 
 @JsonSerializable()
 class Attribute {
   String id, name, label, currencySign;
-  FieldDateFormat dataFormat;
+  @JsonKey(unknownEnumValue: FieldDateFormat.US)
+  FieldDateFormat dateTimeFormat;
+  @JsonKey(unknownEnumValue: AttributeType.TEXT)
   AttributeType type;
   bool isRequired, isActive;
   int orderNumber, valuePrecision;
   List<Option> options;
 
   Attribute(
-      {this.id, this.name, this.label, this.type, this.isRequired, this.orderNumber, this.options, this.isActive,
-  this.currencySign, this.dataFormat, this.valuePrecision});
+      {this.id,
+      this.name,
+      this.label,
+      this.type,
+      this.isRequired,
+      this.orderNumber,
+      this.options,
+      this.isActive,
+      this.currencySign,
+      this.dateTimeFormat,
+      this.valuePrecision});
 
   factory Attribute.fromJson(Map<String, dynamic> json) => _$AttributeFromJson(json);
 
