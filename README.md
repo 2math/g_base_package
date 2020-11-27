@@ -1,4 +1,4 @@
-## 0.1.24
+## 0.1.25
 ##Check latest tag here : https://github.com/2math/g_base_package/tags
 
 # g_base_package

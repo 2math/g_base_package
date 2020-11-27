@@ -76,15 +76,17 @@ class Dialogs {
     );
   }
 
-  static AlertDialog createProgressDialog(String title, String message) {
+  static AlertDialog createProgressDialog(String title, String message, {TextStyle textStyle}) {
     return new AlertDialog(
         title: title != null ? new Text(title) : null,
         content: new Row(
           children: <Widget>[
             new CircularProgressIndicator(),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: new Text(message),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: new Text(message, softWrap: true, style: textStyle),
+              ),
             ),
           ],
         ));

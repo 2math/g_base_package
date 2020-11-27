@@ -162,6 +162,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
             FlatButton(
               child: Text("Logout"),
               onPressed: () {
+                // showProgressIndicator(text: "some really long text mmmmmmmmmmmmmmmmmmm mmmmmmmmmmmmmmmmmmmmmmmmmmm");
                 NetworkManager(token).logout().then((isOK) {
                   if (isOK ?? false) {
                     token = null;
