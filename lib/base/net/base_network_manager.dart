@@ -384,6 +384,7 @@ class BaseNetworkManager {
 
   Map<String, String> _getUpdatedHeaders(String token, String language, String contentType,
       [Map<String, String> customHeadersToAdd]) {
+    Log.w("flavor ${FlavorConfig.instance}");
     if (customHeadersToAdd == null) {
       customHeadersToAdd = new Map<String, String>();
     }
@@ -391,22 +392,22 @@ class BaseNetworkManager {
     customHeadersToAdd["accept-encoding"] = "utf-8";
     customHeadersToAdd["accept-charset"] = "utf-8";
 
-    if (token != null && FlavorConfig.instance.headerToken != null) {
+    if (token != null && FlavorConfig.instance?.headerToken != null) {
       customHeadersToAdd[FlavorConfig.instance.headerToken] = token;
     }
 
-    if (language != null && FlavorConfig.instance.headerLanguage != null) {
+    if (language != null && FlavorConfig.instance?.headerLanguage != null) {
       customHeadersToAdd[FlavorConfig.instance.headerLanguage] = language;
     }
 
-    if (contentType != null && FlavorConfig.instance.headerContentType != null) {
+    if (contentType != null && FlavorConfig.instance?.headerContentType != null) {
       customHeadersToAdd[FlavorConfig.instance.headerContentType] = contentType;
     }
 
-    if (FlavorConfig.instance.headerVersion != null) {
+    if (FlavorConfig.instance?.headerVersion != null) {
       customHeadersToAdd[FlavorConfig.instance.headerVersion] = FlavorConfig.instance.buildNumber;
     }
-    if (FlavorConfig.instance.headerOS != null) {
+    if (FlavorConfig.instance?.headerOS != null) {
       String os = Platform.isAndroid
           ? FlavorConfig.instance.headerValueAndroid
           : Platform.isIOS

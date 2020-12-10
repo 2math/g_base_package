@@ -47,7 +47,7 @@ class FlavorConfig {
       this.headerOS,
       this.headerValueAndroid,
       this.headerValueIOS}) {
-    _instance ??= this;
+    _instance = this;
 
     if (!isTesting()) {
       WidgetsFlutterBinding.ensureInitialized();
@@ -62,11 +62,13 @@ class FlavorConfig {
             e is Error ? e : AssertionError("$e"));
       });
     }
+
+    Log.w("init flavor $this");
   }
 
   @override
   String toString() {
-    return 'FlavorConfig{flavor: $flavor, _appName: $_appName, _packageName: $_packageName, _version: $_version, _buildNumber: $_buildNumber}';
+    return 'FlavorConfig{flavor: $flavor, baseUrl: $baseUrl, _appName: $_appName, _packageName: $_packageName, _version: $_version, _buildNumber: $_buildNumber, msgLoadingKey: $msgLoadingKey, unauthorizedKey: $unauthorizedKey, forbiddenKey: $forbiddenKey, notFoundKey: $notFoundKey, unsupportedVersionKey: $unsupportedVersionKey, noNetworkKey: $noNetworkKey, serverErrorKey: $serverErrorKey, headerLanguage: $headerLanguage, headerToken: $headerToken, headerContentType: $headerContentType, headerVersion: $headerVersion, headerOS: $headerOS, headerValueAndroid: $headerValueAndroid, headerValueIOS: $headerValueIOS}';
   }
 
   static FlavorConfig get instance {
