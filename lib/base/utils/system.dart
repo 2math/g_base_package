@@ -28,7 +28,7 @@ class System {
 }
 
 class SizeConfig {
-  static MediaQueryData _mediaQueryData;
+  static MediaQueryData mediaQueryData;
   static double screenWidth;
   static double screenHeight;
 
@@ -50,35 +50,35 @@ class SizeConfig {
   ///Best solution will be to call it in build function on first screen that remain bellow the others
   ///and on screen resize will be rebuild according with the screen above
   bool init(BuildContext context) {
-    _mediaQueryData = MediaQuery.of(context);
+    mediaQueryData = MediaQuery.of(context);
 
-    if (screenWidth == _mediaQueryData.size.width) {
+    if (screenWidth == mediaQueryData.size.width) {
       //this is measured already and the screen is not resized
       return false;
     }
 
-    _mediaQueryData = MediaQuery.of(context);
+    mediaQueryData = MediaQuery.of(context);
 
-    screenWidth = _mediaQueryData.size.width;
-    screenHeight = _mediaQueryData.size.height;
+    screenWidth = mediaQueryData.size.width;
+    screenHeight = mediaQueryData.size.height;
 
     blockSizeHorizontal = screenWidth / 100;
     blockSizeVertical = screenHeight / 100;
 
-    _safeAreaHorizontal = _mediaQueryData.padding.left + _mediaQueryData.padding.right;
-    _safeAreaVertical = _mediaQueryData.padding.top + _mediaQueryData.padding.bottom;
+    _safeAreaHorizontal = mediaQueryData.padding.left + mediaQueryData.padding.right;
+    _safeAreaVertical = mediaQueryData.padding.top + mediaQueryData.padding.bottom;
 
     safeBlockHorizontal = (screenWidth - _safeAreaHorizontal) / 100;
     safeBlockVertical = (screenHeight - _safeAreaVertical) / 100;
 
-    safeAreaBottom = _mediaQueryData.padding.bottom;
+    safeAreaBottom = mediaQueryData.padding.bottom;
 
     return true;
   }
 
   @override
   String toString() {
-    return 'SizeConfig{\n_mediaQueryData: $_mediaQueryData,\nscreenWidth: $screenWidth,\n'
+    return 'SizeConfig{\n_mediaQueryData: $mediaQueryData,\nscreenWidth: $screenWidth,\n'
         'screenHeight: $screenHeight,\nblockSizeHorizontal: $blockSizeHorizontal,\nblockSizeVertical: $blockSizeVertical,\n_safeAreaHorizontal: $_safeAreaHorizontal,\n_safeAreaVertical: $_safeAreaVertical,\nsafeBlockHorizontal: $safeBlockHorizontal,\nsafeBlockVertical: $safeBlockVertical}';
   }
 }

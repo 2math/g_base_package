@@ -1,3 +1,5 @@
+## [0.1.26] -  SizeConfig.mediaQueryData public
+
 ## [0.1.25] -  show longer message on progress dialog with style
 
 ## [0.1.24] -  option to show NET logs, also hide just response body which can be huge
