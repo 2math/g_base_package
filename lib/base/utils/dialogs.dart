@@ -135,7 +135,7 @@ class Dialogs {
     );
 
 // Find the Scaffold in the Widget tree and use it to show a SnackBar
-    ScaffoldState scaffoldState = Scaffold.of(context, nullOk: true);
+    ScaffoldMessengerState scaffoldState = ScaffoldMessenger.of(context);
     if (scaffoldState != null) {
       scaffoldState.removeCurrentSnackBar();
       scaffoldState.showSnackBar(snackBar);
