@@ -23,7 +23,7 @@ class BaseNetworkManager {
 
     final response = await _doCall(call);
 
-    if (response.statusCode < 300) {
+    if (response.statusCode < 300 || response.statusCode == 304) {
       return await _onPositiveResponse(call, response, handlePositiveResultBody);
     } else {
       if (response.statusCode == 401 && call.refreshOn401) {
