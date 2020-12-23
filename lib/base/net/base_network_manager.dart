@@ -23,7 +23,7 @@ class BaseNetworkManager {
 
     final response = await _doCall(call);
 
-    if (response.statusCode < 300 || response.statusCode == 304) {
+    if (response.statusCode < 300) {
       return await _onPositiveResponse(call, response, handlePositiveResultBody);
     } else {
       if (response.statusCode == 401 && call.refreshOn401) {
@@ -31,14 +31,21 @@ class BaseNetworkManager {
         String newToken = await tryToRefreshSession();
         if (newToken != null) {
           Log.d("repeat call with new session", netTag);
+
           call.token = newToken;
+
           final response2 = await _doCall(call);
+
           if (response2.statusCode < 300) {
             return await _onPositiveResponse(call, response2, handlePositiveResultBody);
+          } else {
+            throw AppException(
+                errorMessage: 'Server Error', code: response2.statusCode, data: _getBodyAsUtf8(response2));
           }
+        } else {
+          //return original response if we couldn't auto login!
+          throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
         }
-        //return original response if we couldn't auto login!
-        throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
       } else {
         // If that call was not successful, throw an error.
         throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
