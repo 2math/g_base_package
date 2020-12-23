@@ -101,7 +101,7 @@ class Dialogs {
         Color closeActionColor,
         SnackBarAction action}) {
     SnackBarAction snackBarAction = _getAction(action, closeAction, closeActionColor);
-    final snackBar = marginBottom == 0
+    final snackBar = (marginBottom == 0)
         ? SnackBar(
       content: Text(msg, style: textStyle),
       backgroundColor: bkgColor,
@@ -135,7 +135,8 @@ class Dialogs {
     );
 
 // Find the Scaffold in the Widget tree and use it to show a SnackBar
-    ScaffoldMessengerState scaffoldState = ScaffoldMessenger.of(context);
+    ScaffoldState scaffoldState = Scaffold.of(context);
+    // ScaffoldMessengerState scaffoldState = ScaffoldMessenger.of(context);
     if (scaffoldState != null) {
       scaffoldState.removeCurrentSnackBar();
       scaffoldState.showSnackBar(snackBar);
