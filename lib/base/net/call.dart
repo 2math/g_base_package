@@ -10,7 +10,7 @@ class Call {
   String endpoint;
   Map<String, String> params, headers;
   String body, toLog, token, language, fileName;
-  bool isFullUrl, isServerUrl, refreshOn401, printLogs, printResponseBody;
+  bool isFullUrl, isServerUrl, refreshOn401, printLogs, printResponseBody, shouldCheckCustomErrors;
   File file;
   MediaType mediaType;
   OnUploadProgressCallback onUploadProgress;
@@ -32,6 +32,7 @@ class Call {
     this.mediaType,
     this.fileName,
     this.refreshOn401 = true,
+    this.shouldCheckCustomErrors = true,
     this.onUploadProgress,
   });
 }

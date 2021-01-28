@@ -26,6 +26,15 @@ class BaseNetworkManager {
     if (response.statusCode < 300) {
       return await _onPositiveResponse(call, response, handlePositiveResultBody);
     } else {
+      if (call.shouldCheckCustomErrors && getCustomErrorResponseCodes().contains(response.statusCode)) {
+        var res = await handleCustomError(call, response);
+
+        if (res != null) {
+          //return the response
+          return res;
+        }
+      }
+
       if (response.statusCode == 401 && call.refreshOn401) {
         Log.d("tryToRefreshSession", netTag);
         String newToken = await tryToRefreshSession();
@@ -55,6 +64,19 @@ class BaseNetworkManager {
 
   ///override this function if you want to refresh session on 401 and repeat call
   Future<String> tryToRefreshSession() async {
+    return Future.value(null);
+  }
+
+  ///override this function if you want to be called when custom response code is received and want to handle it
+  ///globally
+  List<int> getCustomErrorResponseCodes() {
+    return [];
+  }
+
+  ///override this function to be called when response code is in getCustomErrorResponseCodes()
+  ///should return null if we want to continue as regular or return some object to stop
+  ///You can also trow some AppException
+  Future<dynamic> handleCustomError(Call call, http.Response response) async {
     return Future.value(null);
   }
 
