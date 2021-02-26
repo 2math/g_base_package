@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:convert';
 
 import 'package:example/flavors/main_dev.dart';
@@ -133,208 +132,183 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: SingleChildScrollView(
-          child: Column(
-            // Column is also a layout widget. It takes a list of children and
-            // arranges them vertically. By default, it sizes itself to fit its
-            // children horizontally, and tries to be as tall as its parent.
-            //
-            // Invoke "debug painting" (press "p" in the console, choose the
-            // "Toggle Debug Paint" action from the Flutter Inspector in Android
-            // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-            // to see the wireframe for each widget.
-            //
-            // Column has various properties to control how it sizes itself and
-            // how it positions its children. Here we use mainAxisAlignment to
-            // center the children vertically; the main axis here is the vertical
-            // axis because Columns are vertical (the cross axis would be
-            // horizontal).
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                Txt.get(StrKey.appName),
-              ),
-              Text(
-                'You have pushed the button this many times:',
-              ),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headline4,
-              ),
-              FlatButton(
-                child: Text("Logout"),
-                onPressed: () {
-                  // showProgressIndicator(text: "some really long text mmmmmmmmmmmmmmmmmmm mmmmmmmmmmmmmmmmmmmmmmmmmmm");
-                  NetworkManager(token).logout().then((isOK) {
-                    if (isOK ?? false) {
-                      token = null;
-                    }
-                  });
-                },
-              ),
-              LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  return FlatButton(
-                    child: Text("Get versions"),
-                    onPressed: () async {
-                      var versions = await NetworkManager(null).getVersions();
-
-                      if (versions == null) {
-                        return;
-                      }
-
-                      int status = versions.getStatus();
-                      Log.d("status : $status");
-
-                      if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
-                        bool isBlocking = status == Version.UPDATE_REQUIRED;
-                        int result = await Dialogs.showVersions(
-                            context,
-                            Text("App Name"),
-                            Text(isBlocking
-                                ? "You are using a version which "
-                                    "is no longer supported.\nTo continue using this app, please install latest version."
-                                : "There is a new version available."),
-                            Text(isBlocking ? "Exit" : "Next Time"),
-                            Text("Go To Store"));
-                        if (result == Version.UPDATE_REQUIRED) {
-                          //go to store
-                          LaunchReview.launch(
-                            androidAppId: "com.facebook.katana",
-                            iOSAppId: "284882215",
-                          );
-                        } else if (isBlocking) {
-                          //exit app
-                          await System.popToExit(animated: true);
-                        } else {
-                          Dialogs.showSnackBar(context, "Continue",
-                              marginBottom: SizeConfig.screenHeight / 2.4,
-                              textStyle: TextStyle(color: Colors.black),
-                              bkgColor: Colors.blue,
-                              duration: Duration(seconds: 2));
-                        }
-                      } else {
-                        Dialogs.showSnackBar(context, "Continue");
-                      }
-                    },
-                  );
-                },
-              ),
-              LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  return FlatButton(
-                    child: Text("Show snackbar"),
-                    onPressed: () {
-                      Dialogs.showSnackBar(
-                        context,
-                        "Normal",
-                        marginBottom: 0,
-                        closeAction: "Close",
-                      );
-                    },
-                  );
-                },
-              ),
-              LayoutBuilder(
-                builder: (BuildContext context, BoxConstraints constraints) {
-                  return FlatButton(
-                    child: Text("Show snackbar 150"),
-                    onPressed: () {
-                      Dialogs.showSnackBar(
-                        context,
-                        "bottom 150",
-                        textStyle: TextStyle(color: Colors.black),
-                        bkgColor: Colors.blue,
-                        marginBottom: 150,
-                        closeAction: "Close",
-                      );
-                    },
-                  );
-                },
-              ),
-              FlatButton(
-                child: Text("Select and Upload Image"),
-                onPressed: () {
-                  _selectImage();
-                },
-              ),
-              FlatButton(
-                child: Text("Select and Upload Document"),
-                onPressed: () {
-                  _selectFile();
-                },
-              ),
-              FlatButton(
-                child: Text("delete Document"),
-                onPressed: () {
-                  _deleteFiles();
-                },
-              ),
-              FlatButton(
-                child: Text("Fetch Documents"),
-                onPressed: () {
-                  _fetchFiles();
-                },
-              ),
-              FlatButton(
-                child: Text("Edit Document With file"),
-                onPressed: () {
-                  _editFile(false);
-                },
-              ),
-              FlatButton(
-                child: Text("Edit Document Without file"),
-                onPressed: () {
-                  _editFile(true);
-                },
-              ),
-              FlatButton(
-                  child: Text("Check Internet"),
+        child: Column(
+          // Column is also a layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Invoke "debug painting" (press "p" in the console, choose the
+          // "Toggle Debug Paint" action from the Flutter Inspector in Android
+          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+          // to see the wireframe for each widget.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              Txt.get(StrKey.appName),
+            ),
+            Text(
+              'You have pushed the button this many times:',
+            ),
+            Text(
+              '$_counter',
+              style: Theme.of(context).textTheme.headline4,
+            ),
+            FlatButton(
+              child: Text("Logout"),
+              onPressed: () {
+                // showProgressIndicator(text: "some really long text mmmmmmmmmmmmmmmmmmm mmmmmmmmmmmmmmmmmmmmmmmmmmm");
+                NetworkManager(token).logout().then((isOK) {
+                  if (isOK ?? false) {
+                    token = null;
+                  }
+                });
+              },
+            ),
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return FlatButton(
+                  child: Text("Get versions"),
                   onPressed: () async {
-                    Log.d(DateTime.now().toIso8601String());
-                    bool res = await NetUtil().checkInternet();
-                    Log.d(DateTime.now().toIso8601String());
-                    showInfoMessage(res ? "Has internet" : "No internet");
-                  }),
-              FlatButton(
-                child: Text("check"),
-                onPressed: () {
-                  // Call call = new Call.name(
-                  //     CallMethod.GET,
-                  //     "v1/companies/b55306bc-20d0-4ee6-adb1-d3307c308502/workspaces/2ac"
-                  //     "7d50d-da40-41a8-b84d-3a87c0fb9e4a/documents/types",
-                  //     token: token);
-                  // // Call call = new Call.name(CallMethod.POST, "https://vinci.travelsecurity.net/api_mobile/v1"
-                  // //     ".1/mobileusers/signup_one_email", refreshOn401: false, body: '{"email":"zinaidasaevska2+30@gmail'
-                  // //     '.com"}', isFullUrl: true);
-                  // NetworkManager(null).doServerCall(call, (_) {});
+                    var versions = await NetworkManager(null).getVersions();
 
-                  Map<String, String> params = HashMap();
-                  params['P_ORG_ID'] = '401';
-                  params['P_RESOURCE_TYPE'] = 'RS_EMPLOYEE';
-                  params['P_RESOURCE_ID'] = '100004071';
+                    if (versions == null) {
+                      return;
+                    }
 
-                  Map<String, String> headers = HashMap();
-                  headers['Authorization'] = 'Basic VkxBRElNSVJfV1NPTDpHSm1HVDJ5enh2MnM1Slg=';
-                  // headers['Content-Type'] = 'application/json';
+                    int status = versions.getStatus();
+                    Log.d("status : $status");
 
-                  Call call = new Call.name(
-                      CallMethod.POST,
-                      "https://ebsdevdmz-donna.vertiv"
-                      ".com/webservices/rest/xxcsmfsgsr000002pkg/main/MAIN",
-                      headers: headers,
-                      isFullUrl: true,
-                      // params: params,
-                      body: jsonEncode(TestVertivTasks(InputParameters: InputParametersObject()).toMap())
-                  );
-
-                  NetworkManager(null).doServerCall(call, (json) {
-                    // return TasksResponse.fromJson(jsonDecode(json));
-                  });
-                },
-              ),
-            ],
-          ),
+                    if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
+                      bool isBlocking = status == Version.UPDATE_REQUIRED;
+                      int result = await Dialogs.showVersions(
+                          context,
+                          Text("App Name"),
+                          Text(isBlocking
+                              ? "You are using a version which "
+                                  "is no longer supported.\nTo continue using this app, please install latest version."
+                              : "There is a new version available."),
+                          Text(isBlocking ? "Exit" : "Next Time"),
+                          Text("Go To Store"));
+                      if (result == Version.UPDATE_REQUIRED) {
+                        //go to store
+                        LaunchReview.launch(
+                          androidAppId: "com.facebook.katana",
+                          iOSAppId: "284882215",
+                        );
+                      } else if (isBlocking) {
+                        //exit app
+                        await System.popToExit(animated: true);
+                      } else {
+                        Dialogs.showSnackBar(context, "Continue",
+                            marginBottom: SizeConfig.screenHeight / 2.4,
+                            textStyle: TextStyle(color: Colors.black),
+                            bkgColor: Colors.blue,
+                            duration: Duration(seconds: 2));
+                      }
+                    } else {
+                      Dialogs.showSnackBar(context, "Continue");
+                    }
+                  },
+                );
+              },
+            ),
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return FlatButton(
+                  child: Text("Show snackbar"),
+                  onPressed: () {
+                    Dialogs.showSnackBar(
+                      context,
+                      "Normal",
+                      marginBottom: 0,
+                      closeAction: "Close",
+                    );
+                  },
+                );
+              },
+            ),
+            LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+                return FlatButton(
+                  child: Text("Show snackbar 150"),
+                  onPressed: () {
+                    Dialogs.showSnackBar(
+                      context,
+                      "bottom 150",
+                      textStyle: TextStyle(color: Colors.black),
+                      bkgColor: Colors.blue,
+                      marginBottom: 150,
+                      closeAction: "Close",
+                    );
+                  },
+                );
+              },
+            ),
+            FlatButton(
+              child: Text("Select and Upload Image"),
+              onPressed: () {
+                _selectImage();
+              },
+            ),
+            FlatButton(
+              child: Text("Select and Upload Document"),
+              onPressed: () {
+                _selectFile();
+              },
+            ),
+            FlatButton(
+              child: Text("delete Document"),
+              onPressed: () {
+                _deleteFiles();
+              },
+            ),
+            FlatButton(
+              child: Text("Fetch Documents"),
+              onPressed: () {
+                _fetchFiles();
+              },
+            ),
+            FlatButton(
+              child: Text("Edit Document With file"),
+              onPressed: () {
+                _editFile(false);
+              },
+            ),
+            FlatButton(
+              child: Text("Edit Document Without file"),
+              onPressed: () {
+                _editFile(true);
+              },
+            ),
+            FlatButton(
+                child: Text("Check Internet"),
+                onPressed: () async {
+                  Log.d(DateTime.now().toIso8601String());
+                  bool res = await NetUtil().checkInternet();
+                  Log.d(DateTime.now().toIso8601String());
+                  showInfoMessage(res ? "Has internet" : "No internet");
+                }),
+            FlatButton(
+              child: Text("check"),
+              onPressed: () {
+                Call call = new Call.name(
+                    CallMethod.GET,
+                    "v1/companies/b55306bc-20d0-4ee6-adb1-d3307c308502/workspaces/2ac"
+                    "7d50d-da40-41a8-b84d-3a87c0fb9e4a/documents/types",
+                    token: token);
+                // Call call = new Call.name(CallMethod.POST, "https://vinci.travelsecurity.net/api_mobile/v1"
+                //     ".1/mobileusers/signup_one_email", refreshOn401: false, body: '{"email":"zinaidasaevska2+30@gmail'
+                //     '.com"}', isFullUrl: true);
+                NetworkManager(null).doServerCall(call, (_) {});
+              },
+            ),
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -470,52 +444,5 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         .catchError((e) {
       Log.error("uploadImageFuture", error: e);
     });
-  }
-}
-
-
-
-
-class TestVertivTasks{
-  InputParametersObject InputParameters;
-
-  TestVertivTasks({this.InputParameters});
-
-  factory TestVertivTasks.fromMap(Map<String, dynamic> map) {
-    return new TestVertivTasks(
-      InputParameters: map['InputParameters'] as InputParametersObject,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    // ignore: unnecessary_cast
-    return {
-      'InputParameters': this.InputParameters.toMap(),
-    } as Map<String, dynamic>;
-  }
-}
-
-class InputParametersObject {
-  int P_ORG_ID = 401;
-  int P_RESOURCE_ID = 101001925;
-  String P_RESOURCE_TYPE = "RS_EMPLOYEE";
-
-  InputParametersObject({this.P_ORG_ID = 401, this.P_RESOURCE_ID = 101001925, this.P_RESOURCE_TYPE = "RS_EMPLOYEE"});
-
-  factory InputParametersObject.fromMap(Map<String, dynamic> map) {
-    return new InputParametersObject(
-      P_ORG_ID: map['P_ORG_ID'] as int,
-      P_RESOURCE_ID: map['P_RESOURCE_ID'] as int,
-      P_RESOURCE_TYPE: map['P_RESOURCE_TYPE'] as String,
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    // ignore: unnecessary_cast
-    return {
-      'P_ORG_ID': this.P_ORG_ID,
-      'P_RESOURCE_ID': this.P_RESOURCE_ID,
-      'P_RESOURCE_TYPE': this.P_RESOURCE_TYPE,
-    } as Map<String, dynamic>;
   }
 }
