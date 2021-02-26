@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:g_base_package/base/provider/instance_provider.dart';
+
 import '../lang/localization.dart';
 import '../flavor_config.dart';
 import '../utils/logger.dart';
@@ -125,21 +127,30 @@ class BaseNetworkManager {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     String url = _getUrl(call);
 
+    String requestLog = "$url\nHeaders :\n${_printMap(headers)}";
+
     if (call.printLogs) {
-      Log.d("$url\nHeaders :\n${_printMap(headers)}", "$netTag GET");
+      Log.d(requestLog, "$netTag GET");
     }
     // make GET request
     http.Response response = await http.get(url, headers: headers); //todo add timeout
 
 //    String responseHeaders = _printMap(response.headers);
-    if (call.printLogs) {
-      Log.d(
-          "$url\nResponse Code : ${response.statusCode}\n"
+    String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-              "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}",
-          "$netTag Response GET");
+        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
+
+    _logLastRequestAndResponse("GET", requestLog, responseLog);
+
+    if (call.printLogs) {
+      Log.d("$url\n$responseLog", "$netTag Response GET");
     }
     return response;
+  }
+
+  void _logLastRequestAndResponse(String method, String requestLog, String responseLog) {
+    InstanceProvider.getInstance().crashReporter?.setString("Last Call", '$method : $requestLog');
+    InstanceProvider.getInstance().crashReporter?.setString("Last Call response", responseLog);
   }
 
   String _getBodyAsUtf8(http.Response response) => utf8.decode(response.bodyBytes);
@@ -150,22 +161,25 @@ class BaseNetworkManager {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
 
     String url = _getUrl(call);
+
+    String requestLog = "$url\nHeaders :\n${_printMap(headers)}\n"
+        "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}";
+
     if (call.printLogs) {
-      Log.d(
-          "$url\nHeaders :\n${_printMap(headers)}\n"
-              "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}",
-          "$netTag POST");
+      Log.d(requestLog, "$netTag POST");
     }
     // make POST request
     http.Response response = await http.post(url,
         headers: headers, body: call.body != null ? call.body : call.params, encoding: Encoding.getByName("utf-8"));
 
-    if (call.printLogs) {
-      Log.d(
-          "$url\nResponse Code : ${response.statusCode}\n"
+    String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-              "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}",
-          "$netTag Response POST");
+        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
+
+    _logLastRequestAndResponse("POST", requestLog, responseLog);
+
+    if (call.printLogs) {
+      Log.d("$url\n$responseLog", "$netTag Response POST");
     }
     return response;
   }
@@ -175,11 +189,12 @@ class BaseNetworkManager {
         _getUpdatedHeaders(call.token, call.language, "application/json; charset=utf-8", call.headers);
 
     String url = _getUrl(call);
+
+    String requestLog = "$url\nHeaders :\n${_printMap(headers)}\n"
+        "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}";
+
     if (call.printLogs) {
-      Log.d(
-          "$url\nHeaders :\n${_printMap(headers)}\n"
-              "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}",
-          "$netTag ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
+      Log.d(requestLog, "$netTag ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
     }
 
     // make PUT request
@@ -187,12 +202,15 @@ class BaseNetworkManager {
         ? await http.put(url, headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"))
         : await http.patch(url, headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"));
 
-    if (call.printLogs) {
-      Log.d(
-          "$url\nResponse Code : ${response.statusCode}\n"
+    String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-              "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}",
-          "$netTag Response ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
+        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
+
+    _logLastRequestAndResponse(
+        "$netTag ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}", requestLog, responseLog);
+
+    if (call.printLogs) {
+      Log.d("$url\n$responseLog", "$netTag Response ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
     }
     return response;
   }
@@ -201,19 +219,23 @@ class BaseNetworkManager {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     String url = _getUrl(call);
 
+    String requestLog = "$url\nHeaders :\n${_printMap(headers)}";
+
     if (call.printLogs) {
-      Log.d("$url\nHeaders :\n${_printMap(headers)}", "$netTag DELETE");
+      Log.d(requestLog, "$netTag DELETE");
     }
     // make GET request
     http.Response response = await http.delete(url, headers: headers);
 
 //    String responseHeaders = _printMap(response.headers);
-    if (call.printLogs) {
-      Log.d(
-          "$url\nResponse Code : ${response.statusCode}\n"
+    String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-              "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}",
-          "$netTag Response DELETE");
+        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
+
+    _logLastRequestAndResponse("$netTag DELETE", requestLog, responseLog);
+
+    if (call.printLogs) {
+      Log.d("$url\n$responseLog", "$netTag Response DELETE");
     }
     return response;
   }
@@ -221,13 +243,18 @@ class BaseNetworkManager {
   Future<http.Response> _doDownloadFileRequest(Call call) async {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     String fileURL = _getUrl(call);
+
+    String requestLog = "$fileURL\nHeaders :\n${_printMap(headers)}";
+
     if (call.printLogs) {
-      Log.d("$fileURL\nHeaders :\n${_printMap(headers)}", "$netTag GET");
+      Log.d(requestLog, "$netTag GET");
     }
     // make GET request
     http.Response response = await http.get(fileURL, headers: headers); //todo add timeout
 
     String responseHeaders = _printMap(response.headers);
+
+    String responseLog;
 
     if (response.statusCode < 300) {
       String fileName = "";
@@ -242,18 +269,23 @@ class BaseNetworkManager {
         // extracts file name from URL
         fileName = fileURL.substring(fileURL.lastIndexOf("/") + 1, fileURL.length);
       }
+
+      //    String responseHeaders = _printMap(response.headers);
+      responseLog = "Response Code : ${response.statusCode}\nContent-Disposition = $disposition"
+          "\nContent-Length = ${response.contentLength}\nfileName = $fileName"
+          "\nResponse Headers\n$responseHeaders";
+
       if (call.printLogs) {
-        Log.d(
-            "$fileURL\nResponse Code : ${response.statusCode}\nContent-Disposition = $disposition"
-                "\nContent-Length = ${response.contentLength}\nfileName = $fileName"
-                "\nResponse Headers\n$responseHeaders",
-            "$netTag Response Download");
+        Log.d("$fileURL\n$responseLog", "$netTag Response Download");
       }
     } else {
+      responseLog = "Response Code : ${response.statusCode}";
       if (call.printLogs) {
-        Log.d("$fileURL\nResponse Code : ${response.statusCode}\n", "$netTag Response Download");
+        Log.d("$fileURL\n$responseLog", "$netTag Response Download");
       }
     }
+
+    _logLastRequestAndResponse("$netTag Download", requestLog, responseLog);
 
     return response;
   }
@@ -326,14 +358,17 @@ class BaseNetworkManager {
     );
 
     await request.addStream(streamUpload);
+
+    String requestLog = "$url\nParams :\n${_printMap(call.params)}"
+        "\nHeaders :\n${_printMap(headers)}"
+        "\nFile : ${call.file?.path}"
+        "\nfilename : ${call.fileName}"
+        "\ncontentType : ${call.mediaType}"
+        "\ncontentLength : $totalByteLength";
+
     if (call.printLogs) {
       Log.d(
-          "$url\nParams :\n${_printMap(call.params)}"
-              "\nHeaders :\n${_printMap(headers)}"
-              "\nFile : ${call.file?.path}"
-              "\nfilename : ${call.fileName}"
-              "\ncontentType : ${call.mediaType}"
-              "\ncontentLength : $totalByteLength",
+          requestLog,
           "$netTag UploadFile");
     }
     final httpResponse = await request.close();
@@ -342,10 +377,15 @@ class BaseNetworkManager {
 //    http.Response httpResponse = await http.Response.fromStream(response);
 
     String res = await _readResponseAsString(httpResponse);
+
+    String responseLog = "Response Code : ${httpResponse.statusCode}\n"
+        "${call.printResponseBody ? "Body :\n${_printJson(res)}" : ""}";
+
+    _logLastRequestAndResponse("$netTag UploadFile", requestLog, responseLog);
+
     if (call.printLogs) {
       Log.d(
-          "$url\nResponse Code : ${httpResponse.statusCode}\n"
-              "${call.printResponseBody ? "Body :\n${_printJson(res)}" : ""}",
+          "$url\n$responseLog",
           "$netTag Response UploadFile");
     }
     return http.Response(res, httpResponse.statusCode);
@@ -378,21 +418,29 @@ class BaseNetworkManager {
 
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     request.headers.addAll(headers);
+
+    String requestLog = "$url\nHeaders :\n${_printMap(request.headers)}"
+        "\nFile : ${call.file.path}"
+        "\nfilename : ${call.fileName}"
+        "\ncontentType : ${call.mediaType}"
+        "\ncontentLenght : $length";
+
     if (call.printLogs) {
       Log.d(
-          "$url\nHeaders :\n${_printMap(request.headers)}"
-              "\nFile : ${call.file.path}"
-              "\nfilename : ${call.fileName}"
-              "\ncontentType : ${call.mediaType}"
-              "\ncontentLenght : $length",
+          requestLog,
           "$netTag UploadFile");
     }
     var response = await request.send();
     http.Response httpResponse = await http.Response.fromStream(response);
+
+    String responseLog = "Response Code : ${response.statusCode}\n"
+        "${call.printResponseBody ? "Body :\n${_printJson(httpResponse.body)}" : ""}";
+
+    _logLastRequestAndResponse("$netTag UploadFile", requestLog, responseLog);
+
     if (call.printLogs) {
       Log.d(
-          "$url\nResponse Code : ${response.statusCode}\n"
-              "${call.printResponseBody ? "Body :\n${_printJson(httpResponse.body)}" : ""}",
+          "$url\n$responseLog",
           "$netTag Response UploadFile");
     }
     return httpResponse;

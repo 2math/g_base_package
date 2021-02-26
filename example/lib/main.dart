@@ -132,183 +132,185 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              Txt.get(StrKey.appName),
-            ),
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-            FlatButton(
-              child: Text("Logout"),
-              onPressed: () {
-                // showProgressIndicator(text: "some really long text mmmmmmmmmmmmmmmmmmm mmmmmmmmmmmmmmmmmmmmmmmmmmm");
-                NetworkManager(token).logout().then((isOK) {
-                  if (isOK ?? false) {
-                    token = null;
-                  }
-                });
-              },
-            ),
-            LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return FlatButton(
-                  child: Text("Get versions"),
-                  onPressed: () async {
-                    var versions = await NetworkManager(null).getVersions();
-
-                    if (versions == null) {
-                      return;
+        child: SingleChildScrollView(
+          child: Column(
+            // Column is also a layout widget. It takes a list of children and
+            // arranges them vertically. By default, it sizes itself to fit its
+            // children horizontally, and tries to be as tall as its parent.
+            //
+            // Invoke "debug painting" (press "p" in the console, choose the
+            // "Toggle Debug Paint" action from the Flutter Inspector in Android
+            // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+            // to see the wireframe for each widget.
+            //
+            // Column has various properties to control how it sizes itself and
+            // how it positions its children. Here we use mainAxisAlignment to
+            // center the children vertically; the main axis here is the vertical
+            // axis because Columns are vertical (the cross axis would be
+            // horizontal).
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                Txt.get(StrKey.appName),
+              ),
+              Text(
+                'You have pushed the button this many times:',
+              ),
+              Text(
+                '$_counter',
+                style: Theme.of(context).textTheme.headline4,
+              ),
+              FlatButton(
+                child: Text("Logout"),
+                onPressed: () {
+                  // showProgressIndicator(text: "some really long text mmmmmmmmmmmmmmmmmmm mmmmmmmmmmmmmmmmmmmmmmmmmmm");
+                  NetworkManager(token).logout().then((isOK) {
+                    if (isOK ?? false) {
+                      token = null;
                     }
+                  });
+                },
+              ),
+              LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return FlatButton(
+                    child: Text("Get versions"),
+                    onPressed: () async {
+                      var versions = await NetworkManager(null).getVersions();
 
-                    int status = versions.getStatus();
-                    Log.d("status : $status");
-
-                    if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
-                      bool isBlocking = status == Version.UPDATE_REQUIRED;
-                      int result = await Dialogs.showVersions(
-                          context,
-                          Text("App Name"),
-                          Text(isBlocking
-                              ? "You are using a version which "
-                                  "is no longer supported.\nTo continue using this app, please install latest version."
-                              : "There is a new version available."),
-                          Text(isBlocking ? "Exit" : "Next Time"),
-                          Text("Go To Store"));
-                      if (result == Version.UPDATE_REQUIRED) {
-                        //go to store
-                        LaunchReview.launch(
-                          androidAppId: "com.facebook.katana",
-                          iOSAppId: "284882215",
-                        );
-                      } else if (isBlocking) {
-                        //exit app
-                        await System.popToExit(animated: true);
-                      } else {
-                        Dialogs.showSnackBar(context, "Continue",
-                            marginBottom: SizeConfig.screenHeight / 2.4,
-                            textStyle: TextStyle(color: Colors.black),
-                            bkgColor: Colors.blue,
-                            duration: Duration(seconds: 2));
+                      if (versions == null) {
+                        return;
                       }
-                    } else {
-                      Dialogs.showSnackBar(context, "Continue");
-                    }
-                  },
-                );
-              },
-            ),
-            LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return FlatButton(
-                  child: Text("Show snackbar"),
-                  onPressed: () {
-                    Dialogs.showSnackBar(
-                      context,
-                      "Normal",
-                      marginBottom: 0,
-                      closeAction: "Close",
-                    );
-                  },
-                );
-              },
-            ),
-            LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints constraints) {
-                return FlatButton(
-                  child: Text("Show snackbar 150"),
-                  onPressed: () {
-                    Dialogs.showSnackBar(
-                      context,
-                      "bottom 150",
-                      textStyle: TextStyle(color: Colors.black),
-                      bkgColor: Colors.blue,
-                      marginBottom: 150,
-                      closeAction: "Close",
-                    );
-                  },
-                );
-              },
-            ),
-            FlatButton(
-              child: Text("Select and Upload Image"),
-              onPressed: () {
-                _selectImage();
-              },
-            ),
-            FlatButton(
-              child: Text("Select and Upload Document"),
-              onPressed: () {
-                _selectFile();
-              },
-            ),
-            FlatButton(
-              child: Text("delete Document"),
-              onPressed: () {
-                _deleteFiles();
-              },
-            ),
-            FlatButton(
-              child: Text("Fetch Documents"),
-              onPressed: () {
-                _fetchFiles();
-              },
-            ),
-            FlatButton(
-              child: Text("Edit Document With file"),
-              onPressed: () {
-                _editFile(false);
-              },
-            ),
-            FlatButton(
-              child: Text("Edit Document Without file"),
-              onPressed: () {
-                _editFile(true);
-              },
-            ),
-            FlatButton(
-                child: Text("Check Internet"),
-                onPressed: () async {
-                  Log.d(DateTime.now().toIso8601String());
-                  bool res = await NetUtil().checkInternet();
-                  Log.d(DateTime.now().toIso8601String());
-                  showInfoMessage(res ? "Has internet" : "No internet");
-                }),
-            FlatButton(
-              child: Text("check"),
-              onPressed: () {
-                Call call = new Call.name(
-                    CallMethod.GET,
-                    "v1/companies/b55306bc-20d0-4ee6-adb1-d3307c308502/workspaces/2ac"
-                    "7d50d-da40-41a8-b84d-3a87c0fb9e4a/documents/types",
-                    token: token);
-                // Call call = new Call.name(CallMethod.POST, "https://vinci.travelsecurity.net/api_mobile/v1"
-                //     ".1/mobileusers/signup_one_email", refreshOn401: false, body: '{"email":"zinaidasaevska2+30@gmail'
-                //     '.com"}', isFullUrl: true);
-                NetworkManager(null).doServerCall(call, (_) {});
-              },
-            ),
-          ],
+
+                      int status = versions.getStatus();
+                      Log.d("status : $status");
+
+                      if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
+                        bool isBlocking = status == Version.UPDATE_REQUIRED;
+                        int result = await Dialogs.showVersions(
+                            context,
+                            Text("App Name"),
+                            Text(isBlocking
+                                ? "You are using a version which "
+                                    "is no longer supported.\nTo continue using this app, please install latest version."
+                                : "There is a new version available."),
+                            Text(isBlocking ? "Exit" : "Next Time"),
+                            Text("Go To Store"));
+                        if (result == Version.UPDATE_REQUIRED) {
+                          //go to store
+                          LaunchReview.launch(
+                            androidAppId: "com.facebook.katana",
+                            iOSAppId: "284882215",
+                          );
+                        } else if (isBlocking) {
+                          //exit app
+                          await System.popToExit(animated: true);
+                        } else {
+                          Dialogs.showSnackBar(context, "Continue",
+                              marginBottom: SizeConfig.screenHeight / 2.4,
+                              textStyle: TextStyle(color: Colors.black),
+                              bkgColor: Colors.blue,
+                              duration: Duration(seconds: 2));
+                        }
+                      } else {
+                        Dialogs.showSnackBar(context, "Continue");
+                      }
+                    },
+                  );
+                },
+              ),
+              LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return FlatButton(
+                    child: Text("Show snackbar"),
+                    onPressed: () {
+                      Dialogs.showSnackBar(
+                        context,
+                        "Normal",
+                        marginBottom: 0,
+                        closeAction: "Close",
+                      );
+                    },
+                  );
+                },
+              ),
+              LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  return FlatButton(
+                    child: Text("Show snackbar 150"),
+                    onPressed: () {
+                      Dialogs.showSnackBar(
+                        context,
+                        "bottom 150",
+                        textStyle: TextStyle(color: Colors.black),
+                        bkgColor: Colors.blue,
+                        marginBottom: 150,
+                        closeAction: "Close",
+                      );
+                    },
+                  );
+                },
+              ),
+              FlatButton(
+                child: Text("Select and Upload Image"),
+                onPressed: () {
+                  _selectImage();
+                },
+              ),
+              FlatButton(
+                child: Text("Select and Upload Document"),
+                onPressed: () {
+                  _selectFile();
+                },
+              ),
+              FlatButton(
+                child: Text("delete Document"),
+                onPressed: () {
+                  _deleteFiles();
+                },
+              ),
+              FlatButton(
+                child: Text("Fetch Documents"),
+                onPressed: () {
+                  _fetchFiles();
+                },
+              ),
+              FlatButton(
+                child: Text("Edit Document With file"),
+                onPressed: () {
+                  _editFile(false);
+                },
+              ),
+              FlatButton(
+                child: Text("Edit Document Without file"),
+                onPressed: () {
+                  _editFile(true);
+                },
+              ),
+              FlatButton(
+                  child: Text("Check Internet"),
+                  onPressed: () async {
+                    Log.d(DateTime.now().toIso8601String());
+                    bool res = await NetUtil().checkInternet();
+                    Log.d(DateTime.now().toIso8601String());
+                    showInfoMessage(res ? "Has internet" : "No internet");
+                  }),
+              FlatButton(
+                child: Text("check"),
+                onPressed: () {
+                  Call call = new Call.name(
+                      CallMethod.GET,
+                      "v1/companies/b55306bc-20d0-4ee6-adb1-d3307c308502/workspaces/2ac"
+                      "7d50d-da40-41a8-b84d-3a87c0fb9e4a/documents/types",
+                      token: token);
+                  // Call call = new Call.name(CallMethod.POST, "https://vinci.travelsecurity.net/api_mobile/v1"
+                  //     ".1/mobileusers/signup_one_email", refreshOn401: false, body: '{"email":"zinaidasaevska2+30@gmail'
+                  //     '.com"}', isFullUrl: true);
+                  NetworkManager(null).doServerCall(call, (_) {});
+                },
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
