@@ -1,3 +1,6 @@
+## [1.25.5] -  Saving last network call and response in the CrashReporter as property. This way if we have big amount
+of logs we can see quickly what was last request
+
 ## [1.25.4] -  handle custom error response codes
 
 ## [0.1.26] -  SizeConfig.mediaQueryData public
