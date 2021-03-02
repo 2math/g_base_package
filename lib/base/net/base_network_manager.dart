@@ -367,9 +367,7 @@ class BaseNetworkManager {
         "\ncontentLength : $totalByteLength";
 
     if (call.printLogs) {
-      Log.d(
-          requestLog,
-          "$netTag UploadFile");
+      Log.d(requestLog, "$netTag UploadFile");
     }
     final httpResponse = await request.close();
 //    var response = await request.send();
@@ -384,9 +382,7 @@ class BaseNetworkManager {
     _logLastRequestAndResponse("$netTag UploadFile", requestLog, responseLog);
 
     if (call.printLogs) {
-      Log.d(
-          "$url\n$responseLog",
-          "$netTag Response UploadFile");
+      Log.d("$url\n$responseLog", "$netTag Response UploadFile");
     }
     return http.Response(res, httpResponse.statusCode);
   }
@@ -426,9 +422,7 @@ class BaseNetworkManager {
         "\ncontentLenght : $length";
 
     if (call.printLogs) {
-      Log.d(
-          requestLog,
-          "$netTag UploadFile");
+      Log.d(requestLog, "$netTag UploadFile");
     }
     var response = await request.send();
     http.Response httpResponse = await http.Response.fromStream(response);
@@ -439,9 +433,7 @@ class BaseNetworkManager {
     _logLastRequestAndResponse("$netTag UploadFile", requestLog, responseLog);
 
     if (call.printLogs) {
-      Log.d(
-          "$url\n$responseLog",
-          "$netTag Response UploadFile");
+      Log.d("$url\n$responseLog", "$netTag Response UploadFile");
     }
     return httpResponse;
   }
@@ -481,7 +473,9 @@ class BaseNetworkManager {
     }
 
     if (FlavorConfig.instance.headerVersion != null) {
-      customHeadersToAdd[FlavorConfig.instance.headerVersion] = FlavorConfig.instance.buildNumber;
+      customHeadersToAdd[FlavorConfig.instance.headerVersion] = Platform.isIOS && FlavorConfig.instance.useVersionForIOS
+          ? FlavorConfig.instance.version
+          : FlavorConfig.instance.buildNumber;
     }
     if (FlavorConfig.instance.headerOS != null) {
       String os = Platform.isAndroid

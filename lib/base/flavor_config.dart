@@ -30,6 +30,7 @@ class FlavorConfig {
       headerVersion,
       headerOS;
   final String headerValueAndroid, headerValueIOS;
+  final bool useVersionForIOS;
 
   FlavorConfig(this.flavor,
       {@required this.baseUrl,
@@ -46,7 +47,8 @@ class FlavorConfig {
       this.headerVersion,
       this.headerOS,
       this.headerValueAndroid,
-      this.headerValueIOS}) {
+      this.headerValueIOS,
+      this.useVersionForIOS = false}) {
     _instance ??= this;
 
     if (!isTesting()) {
