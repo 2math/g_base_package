@@ -1,4 +1,6 @@
-## [1.25.5] -  Option to send to the server version name instead of build number for iOS apps
+## [1.25.7] -  Log.error creates dummy Exception if only log is sent
+
+## [1.25.6] -  Option to send to the server version name instead of build number for iOS apps
 
 ## [1.25.5] -  Saving last network call and response in the CrashReporter as property. This way if we have big amount
 of logs we can see quickly what was last request

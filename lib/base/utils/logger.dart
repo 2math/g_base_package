@@ -85,9 +85,12 @@ class Log {
 
   ///Use this method to print in logs your error messages.
   static error(String log, {String tag, dynamic error}) {
-    if (error != null && !(error is Error)) {
+    if(error == null){
+      error  = AppException(data: "Handled error!");
+    }else if (!(error is Error)) {
       error = AppException(data: error);
     }
+
     e(log, tag, error);
   }
 
