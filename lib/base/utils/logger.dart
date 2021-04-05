@@ -85,19 +85,22 @@ class Log {
 
   ///Use this method to print in logs your error messages.
   static error(String log, {String tag, dynamic error}) {
+    e(log, tag, error);
+  }
+
+  static _fixError(error) {
     if(error == null){
       error  = AppException(data: "Handled error!");
     }else if (!(error is Error)) {
       error = AppException(data: error);
     }
-
-    e(log, tag, error);
+    return error;
   }
 
   ///Use this method to print in logs your error messages.
   static e(String log, [String tag, Error error]) {
     if (fromUI) {
-      InstanceProvider.getInstance()?.crashReporter?.logError(log, tag, error);
+      InstanceProvider.getInstance()?.crashReporter?.logError(log, tag, _fixError(error));
     }
 
     if (printInRelease || !Foundation.kReleaseMode) {
