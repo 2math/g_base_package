@@ -4,6 +4,10 @@ version: 0.1.13
 author: Galeen
 homepage: https://github.com/2math/g_base_package
 
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
 environment:
   sdk: ">=2.6.0 <3.0.0"
 
