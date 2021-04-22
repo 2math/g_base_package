@@ -23,6 +23,7 @@ class FlavorConfig {
   final String notFoundKey;
   final String unsupportedVersionKey;
   final String noNetworkKey;
+  final String socketExceptionKey;
   final String serverErrorKey;
   final String headerLanguage,
       headerToken,
@@ -40,6 +41,7 @@ class FlavorConfig {
       this.notFoundKey,
       this.unsupportedVersionKey,
       this.noNetworkKey,
+      this.socketExceptionKey,
       this.serverErrorKey,
       this.headerLanguage,
       this.headerToken,

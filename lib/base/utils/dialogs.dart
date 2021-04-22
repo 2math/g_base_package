@@ -5,6 +5,8 @@ import 'dart:async';
 
 import 'package:g_base_package/base/utils/versions.dart';
 
+import 'logger.dart';
+
 class Dialogs {
   static Future<Null> showErrorMessage(BuildContext context, String errorTitle, String errorMessage) async {
     return showDialog<Null>(
@@ -135,7 +137,12 @@ class Dialogs {
     );
 
 // Find the Scaffold in the Widget tree and use it to show a SnackBar
-    ScaffoldState scaffoldState = Scaffold.of(context);
+    ScaffoldState scaffoldState;
+    try {
+      scaffoldState = Scaffold.of(context);
+    } catch (e) {
+      Log.error('Wrong context?',error: e);
+    }
     // ScaffoldMessengerState scaffoldState = ScaffoldMessenger.of(context);
     if (scaffoldState != null) {
       scaffoldState.removeCurrentSnackBar();

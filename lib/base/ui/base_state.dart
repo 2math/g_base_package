@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import '../flavor_config.dart';
 import '../lang/localization.dart';
 import '../provider/instance_provider.dart';
@@ -74,13 +76,15 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     FocusScope.of(context).requestFocus(nextFocus);
   }
 
-  void showError(e, {BuildContext buildContext, Color bkgColor,
-    TextStyle textStyle,
-    double marginBottom = 0,
-    Duration duration,
-    String closeAction,
-    Color closeActionColor,
-    SnackBarAction action}) {
+  void showError(e,
+      {BuildContext buildContext,
+      Color bkgColor,
+      TextStyle textStyle,
+      double marginBottom = 0,
+      Duration duration,
+      String closeAction,
+      Color closeActionColor,
+      SnackBarAction action}) {
     hideProgressIndicator();
 //    Log.e("login_screen", "$e");
     var msg = getErrorMessage(e);
@@ -109,7 +113,9 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
       Color closeActionColor,
       SnackBarAction action}) {
 //    Log.e("login_screen", "$e");
-    Dialogs.showSnackBar(buildContext != null ? buildContext : context, msg,
+    Dialogs.showSnackBar(
+      buildContext != null ? buildContext : context,
+      msg,
       bkgColor: bkgColor,
       textStyle: textStyle,
       duration: duration,
@@ -162,6 +168,8 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
         return defaultMessage;
       }
       return error.data is String && BaseUtils.isNotEmptyStr(error.data) ? error.data : error.error;
+    } else if (error is SocketException && FlavorConfig.instance.socketExceptionKey != null) {
+      return Txt.get(FlavorConfig.instance.noNetworkKey);
     } else {
       return "$error";
     }
