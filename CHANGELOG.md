@@ -1,3 +1,5 @@
+## [1.25.11] - SingleScrollView handle rotations
+
 ## [1.25.10] - Message for Socketexception
 
 ## [1.25.9] -  Sort boolean and dynamic items
