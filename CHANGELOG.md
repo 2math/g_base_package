@@ -1,3 +1,5 @@
+## [1.25.9] -  Sort boolean and dynamic items
+
 ## [1.25.8] -  Log.e creates dummy Exception if only log is sent
 
 ## [1.25.7] -  Log.error creates dummy Exception if only log is sent
