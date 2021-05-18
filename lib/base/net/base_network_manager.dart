@@ -132,6 +132,9 @@ class BaseNetworkManager {
     if (call.printLogs) {
       Log.d(requestLog, "$netTag GET");
     }
+
+    _logLastRequest("GET", requestLog);
+
     // make GET request
     http.Response response = await http.get(url, headers: headers); //todo add timeout
 
@@ -140,7 +143,7 @@ class BaseNetworkManager {
 //            "Headers :\n$responseHeaders\n"
         "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
 
-    _logLastRequestAndResponse("GET", requestLog, responseLog);
+    _logLastResponse("GET", url, responseLog);
 
     if (call.printLogs) {
       Log.d("$url\n$responseLog", "$netTag Response GET");
@@ -149,9 +152,18 @@ class BaseNetworkManager {
   }
 
   void _logLastRequestAndResponse(String method, String requestLog, String responseLog) {
-    InstanceProvider.getInstance().crashReporter?.setString("Last Call", '$method : $requestLog');
-    InstanceProvider.getInstance().crashReporter?.setString("Last Call response", responseLog);
+    InstanceProvider.getInstance()?.crashReporter?.setString("Last Call", '$method : $requestLog');
+    InstanceProvider.getInstance()?.crashReporter?.setString("Last Call response", responseLog);
   }
+
+  void _logLastRequest(String method, String requestLog) {
+    InstanceProvider.getInstance()?.crashReporter?.setString("Last Call", '$method : $requestLog');
+  }
+
+  void _logLastResponse(String method, String url, String responseLog) {
+    InstanceProvider.getInstance()?.crashReporter?.setString("Last Call response", '$method $url : $responseLog');
+  }
+
 
   String _getBodyAsUtf8(http.Response response) => utf8.decode(response.bodyBytes);
 
@@ -165,6 +177,8 @@ class BaseNetworkManager {
     String requestLog = "$url\nHeaders :\n${_printMap(headers)}\n"
         "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}";
 
+    _logLastRequest("POST", requestLog);
+
     if (call.printLogs) {
       Log.d(requestLog, "$netTag POST");
     }
@@ -176,7 +190,7 @@ class BaseNetworkManager {
 //            "Headers :\n$responseHeaders\n"
         "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
 
-    _logLastRequestAndResponse("POST", requestLog, responseLog);
+    _logLastResponse("POST", url, responseLog);
 
     if (call.printLogs) {
       Log.d("$url\n$responseLog", "$netTag Response POST");
@@ -193,6 +207,8 @@ class BaseNetworkManager {
     String requestLog = "$url\nHeaders :\n${_printMap(headers)}\n"
         "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}";
 
+    _logLastRequest("${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}", requestLog);
+
     if (call.printLogs) {
       Log.d(requestLog, "$netTag ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
     }
@@ -206,8 +222,7 @@ class BaseNetworkManager {
 //            "Headers :\n$responseHeaders\n"
         "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
 
-    _logLastRequestAndResponse(
-        "$netTag ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}", requestLog, responseLog);
+    _logLastResponse("${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}", url, responseLog);
 
     if (call.printLogs) {
       Log.d("$url\n$responseLog", "$netTag Response ${call.callMethod == CallMethod.PUT ? "PUT" : "PATCH"}");
@@ -221,6 +236,8 @@ class BaseNetworkManager {
 
     String requestLog = "$url\nHeaders :\n${_printMap(headers)}";
 
+    _logLastRequest("DELETE", requestLog);
+
     if (call.printLogs) {
       Log.d(requestLog, "$netTag DELETE");
     }
@@ -232,7 +249,7 @@ class BaseNetworkManager {
 //            "Headers :\n$responseHeaders\n"
         "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
 
-    _logLastRequestAndResponse("$netTag DELETE", requestLog, responseLog);
+    _logLastResponse("DELETE", url, responseLog);
 
     if (call.printLogs) {
       Log.d("$url\n$responseLog", "$netTag Response DELETE");
@@ -245,6 +262,8 @@ class BaseNetworkManager {
     String fileURL = _getUrl(call);
 
     String requestLog = "$fileURL\nHeaders :\n${_printMap(headers)}";
+
+    _logLastRequest("DELETE", requestLog);
 
     if (call.printLogs) {
       Log.d(requestLog, "$netTag GET");
@@ -285,7 +304,7 @@ class BaseNetworkManager {
       }
     }
 
-    _logLastRequestAndResponse("$netTag Download", requestLog, responseLog);
+    _logLastResponse("Download", fileURL, responseLog);
 
     return response;
   }
@@ -366,6 +385,8 @@ class BaseNetworkManager {
         "\ncontentType : ${call.mediaType}"
         "\ncontentLength : $totalByteLength";
 
+    _logLastRequest("UploadFile", requestLog);
+
     if (call.printLogs) {
       Log.d(requestLog, "$netTag UploadFile");
     }
@@ -379,7 +400,7 @@ class BaseNetworkManager {
     String responseLog = "Response Code : ${httpResponse.statusCode}\n"
         "${call.printResponseBody ? "Body :\n${_printJson(res)}" : ""}";
 
-    _logLastRequestAndResponse("$netTag UploadFile", requestLog, responseLog);
+    _logLastResponse("UploadFile", url, responseLog);
 
     if (call.printLogs) {
       Log.d("$url\n$responseLog", "$netTag Response UploadFile");
@@ -421,6 +442,8 @@ class BaseNetworkManager {
         "\ncontentType : ${call.mediaType}"
         "\ncontentLenght : $length";
 
+    _logLastRequest("UploadFile", requestLog);
+
     if (call.printLogs) {
       Log.d(requestLog, "$netTag UploadFile");
     }
@@ -430,7 +453,7 @@ class BaseNetworkManager {
     String responseLog = "Response Code : ${response.statusCode}\n"
         "${call.printResponseBody ? "Body :\n${_printJson(httpResponse.body)}" : ""}";
 
-    _logLastRequestAndResponse("$netTag UploadFile", requestLog, responseLog);
+    _logLastResponse("UploadFile", url, responseLog);
 
     if (call.printLogs) {
       Log.d("$url\n$responseLog", "$netTag Response UploadFile");

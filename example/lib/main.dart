@@ -24,9 +24,21 @@ import 'model/session.dart';
 
 void main() {
   DevConfig();
+
   Localization.init(null, [EnUSStrings(), BgStrings()], EnUSStrings(),
       globalLocales: [EnUSGlobalStrings(), BgGlobalStrings()]);
+
+  initLogs();
+
   runApp(MyApp());
+}
+
+Future initLogs() async {
+  var now = DateTime.now();
+
+  String fileName = '${now.day}-${now.month}-${now.year}';
+
+  await FileLogs().init(fileName: fileName);
 }
 
 //todo Galeen (02 Apr 2020) : Make example of basic use, copy what can from Zoef
