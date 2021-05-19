@@ -38,7 +38,7 @@ Future initLogs() async {
 
   String fileName = '${now.day}-${now.month}-${now.year}';
 
-  await FileLogs().init(fileName: fileName);
+  await FileLogs().init(fileName: fileName, keepVersionsCount: 5);
 }
 
 //todo Galeen (02 Apr 2020) : Make example of basic use, copy what can from Zoef
@@ -111,6 +111,8 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
           } catch (e) {
             Log.e("weird error parsing session", tag, e);
           }
+        }).catchError((error){
+          Log.error("login error", tag: tag, error: error);
         });
       } else {
         NetworkManager(token).getWorkspaces(companyId, (json) {
@@ -171,6 +173,13 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               Text(
                 '$_counter',
                 style: Theme.of(context).textTheme.headline4,
+              ),
+              FlatButton(
+                child: Text("Print Log files"),
+                onPressed: () async{
+                  var list = await FileLogs().getLogFileVersions();
+                  Log.w("file versions $list");
+                },
               ),
               FlatButton(
                 child: Text("Logout"),
@@ -443,7 +452,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
       "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
     )
         .catchError((e) {
-      Log.error("uploadImageFuture", error: e);
+      Log.error("_fetchFiles", error: e);
     });
   }
 

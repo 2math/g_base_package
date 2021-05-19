@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:g_base_package/base/app_exception.dart';
 
+import '../flavor_config.dart';
 import '../provider/instance_provider.dart';
 import 'package:flutter/foundation.dart' as Foundation;
 import 'package:logger/logger.dart';
@@ -35,13 +36,16 @@ class Log {
     ),
   );
 
-  static init({File fileToLog, Future<File> Function(File currentFile) getNewFile}) {
-    _logger = Logger(
+  static Logger _fileLogger;
+
+  static initFileLogger({File fileToLog, Future<File> Function(File currentFile) getNewFile}) {
+    _fileLogger = Logger(
+        filter: ProductionFilter(),
         printer: PrettyPrinter(
           printTime: false,
           methodCount: 0,
         ),
-        output: MultiOutput([ConsoleOutput(), CustomFileOutput(file: fileToLog, getNewFile: getNewFile)]));
+        output: CustomFileOutput(file: fileToLog, getNewFile: getNewFile));
   }
 
   //TODO set live template
@@ -70,37 +74,44 @@ class Log {
     if (fromUI && addToCrashReporter) {
       InstanceProvider.getInstance()?.crashReporter?.log(log, tag); //always save in Crash Reporter
     }
+
     if (printInRelease || !Foundation.kReleaseMode) {
-      _print('$tag : $log', level);
+      _print('$tag : $log', level, _logger);
+    }
+
+    if (_fileLogger != null) {
+      _print('$tag : $log', level, _fileLogger);
     }
   }
 
-  static void _print(String textToLog, Level level, {dynamic error, StackTrace stackTrace}) {
+  static void _print(String textToLog, Level level, Logger logger, {dynamic error, StackTrace stackTrace}) {
+    if (logger == null) return;
 //    print("${DateTime.now()} $textToLog");
+
     textToLog = "${DateTime.now()} $textToLog";
     if (level == null) {
-      _logger.d(textToLog);
+      logger.d(textToLog);
       return;
     }
     switch (level) {
       case Level.info:
-        _logger.i(textToLog);
+        logger.i(textToLog);
         break;
       case Level.warning:
-        _logger.w(textToLog);
+        logger.w(textToLog);
         break;
       case Level.error:
-        _logger.e(textToLog, error, stackTrace);
+        logger.e(textToLog, error, stackTrace);
         break;
       default:
-        _logger.d(textToLog);
+        logger.d(textToLog);
         break;
     }
   }
 
   ///Use this method to print in logs your error messages.
   static error(String log, {String tag, dynamic error}) {
-    e(log, tag, error);
+    e(log, tag, _fixError(error));
   }
 
   static _fixError(error) {
@@ -114,22 +125,33 @@ class Log {
 
   ///Use this method to print in logs your error messages.
   static e(String log, [String tag, Error error]) {
+    error = _fixError(error);
     if (fromUI) {
-      InstanceProvider.getInstance()?.crashReporter?.logError(log, tag, _fixError(error));
+      InstanceProvider.getInstance()?.crashReporter?.logError(log, tag, error);
     }
 
     if (printInRelease || !Foundation.kReleaseMode) {
-      String systemTag = '$tagError $appTag';
-      if (tag != null && error != null) {
-        _print('$systemTag $tag : $log \n $error', Level.error, error: error, stackTrace: error?.stackTrace);
-      } else if (tag != null) {
-        _print('$systemTag $tag : $log', Level.error, error: error, stackTrace: error?.stackTrace);
-      } else if (error != null) {
-        _print('$systemTag : $log \n $error', Level.error, error: error, stackTrace: error?.stackTrace);
-      } else {
-        _print('$systemTag : $log', Level.error, error: error, stackTrace: error?.stackTrace);
-      }
+      _printError(tag, error, log, _logger);
       return true;
+    }
+
+    if (_fileLogger != null) {
+      _printError(tag, error, log, _fileLogger);
+    }
+  }
+
+  static void _printError(String tag, Error error, String log, Logger logger) {
+    if (logger == null) return;
+
+    String systemTag = '$tagError $appTag';
+    if (tag != null && error != null) {
+      _print('$systemTag $tag : $log \n $error', Level.error, logger, error: error, stackTrace: error?.stackTrace);
+    } else if (tag != null) {
+      _print('$systemTag $tag : $log', Level.error, logger, error: error, stackTrace: error?.stackTrace);
+    } else if (error != null) {
+      _print('$systemTag : $log \n $error', Level.error, logger, error: error, stackTrace: error?.stackTrace);
+    } else {
+      _print('$systemTag : $log', Level.error, logger, error: error, stackTrace: error?.stackTrace);
     }
   }
 
@@ -140,12 +162,20 @@ class Log {
 }
 
 class FileLogs {
-  Future init({String dirName = 'logs', @required String fileName, bool deleteOtherLogFiles = true}) async {
+  Future init(
+      {String dirName = 'logs',
+      String fileName,
+      bool deleteOtherLogFiles = true,
+      int keepVersionsCount = 5}) async {
     Directory dir = await BaseFileUtils.getLocalDir(dirName);
 
     var files = dir.listSync();
 
     int latestVersion = 0;
+
+    if(fileName == null){
+      fileName = generateDefaultFileName(fileName);
+    }
 
     String initialFileName = fileName;
 
@@ -156,31 +186,62 @@ class FileLogs {
 
         if (version >= latestVersion) {
           fileName = '${initialFileName}_${version + 1}';
+          latestVersion = version;
         }
-      } else if(deleteOtherLogFiles){
+      } else if (deleteOtherLogFiles) {
         // this is logs from previous day delete it to free space
         localFile.delete();
       }
     }
+
+    _deleteOldLogFile(latestVersion, keepVersionsCount, initialFileName, dirName);
 
     File fileToLog = await BaseFileUtils.getLocalFile(dirName, fileName);
 
     fileToLog = await fileToLog.writeAsString(
       "\n\n*******************************************"
       "\nNew Session - ${DateTime.now().toIso8601String()}"
+      "\n${FlavorConfig.instance.toString()}"
+      "\nis release : $kReleaseMode"
       "\n*******************************************\n\n",
       mode: FileMode.append,
     );
 
-    Log.init(
+    Log.initFileLogger(
         fileToLog: fileToLog,
         getNewFile: (currentFile) {
           int version = getFileVersion(currentFile.path);
+
+          _deleteOldLogFile(version, keepVersionsCount, initialFileName, dirName);
 
           String fileName = '${initialFileName}_${version + 1}';
 
           return BaseFileUtils.getLocalFile(dirName, fileName);
         });
+  }
+
+  String generateDefaultFileName(String fileName) {
+    var now = DateTime.now();
+
+    fileName = '${now.day}-${now.month}-${now.year}';
+    return fileName;
+  }
+
+  Future _deleteOldLogFile(int latestVersion, int keepVersionsCount, String initialFileName, String dirName) async {
+    // Log.w('Latest version $latestVersion', '_deleteOldLogFile');
+    if (latestVersion >= keepVersionsCount) {
+      String fileNameToDelete = latestVersion == keepVersionsCount - 1
+          ? initialFileName
+          : '${initialFileName}_${latestVersion - (keepVersionsCount - 1)}';
+
+      File fileToDelete = await BaseFileUtils.getLocalFile(dirName, fileNameToDelete);
+
+      try {
+        fileToDelete.delete();
+      } catch (e) {
+        Log.error('delete old log file', error: e);
+      }
+    }
   }
 
   String getFileName(String path) {
@@ -201,10 +262,14 @@ class FileLogs {
     return int.tryParse(version) ?? 0;
   }
 
-  Future<List<File>> getLogFileVersions({String dirName = 'logs', @required String fileName}) async {
+  Future<List<File>> getLogFileVersions({String dirName = 'logs', String fileName}) async {
     Directory dir = await BaseFileUtils.getLocalDir(dirName);
 
     var files = dir.listSync();
+
+    if(fileName == null){
+      fileName = generateDefaultFileName(fileName);
+    }
 
     String initialFileName = fileName;
 

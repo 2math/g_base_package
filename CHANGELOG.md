@@ -1,7 +1,9 @@
-## [1.25.12] - Option to save logs into a file and print in console at the same time. 
-Files are split by 10 000 lines. 
+## [1.25.13] - Log in file for production builds and keep only X file versions of the file logs
+
+## [1.25.12] - Option to save logs into a file and print in console at the same time.
+Files are split by 10 000 lines.
 Get all files for today.
-Save in crash reporter last call and response separately   
+Save in crash reporter last call and response separately
 
 ## [1.25.11] - SingleScrollView handle rotations
 
