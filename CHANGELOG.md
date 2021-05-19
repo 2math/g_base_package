@@ -1,3 +1,5 @@
+## [1.25.14] - fix to write error logs in the file, better marking in the file for error logs
+
 ## [1.25.13] - Log in file for production builds and keep only X file versions of the file logs
 
 ## [1.25.12] - Option to save logs into a file and print in console at the same time.
