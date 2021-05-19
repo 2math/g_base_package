@@ -130,13 +130,13 @@ class Log {
       InstanceProvider.getInstance()?.crashReporter?.logError(log, tag, error);
     }
 
+    if (_fileLogger != null) {
+      _printError(tag, error, log, _fileLogger);
+    }
+
     if (printInRelease || !Foundation.kReleaseMode) {
       _printError(tag, error, log, _logger);
       return true;
-    }
-
-    if (_fileLogger != null) {
-      _printError(tag, error, log, _fileLogger);
     }
   }
 
@@ -163,17 +163,14 @@ class Log {
 
 class FileLogs {
   Future init(
-      {String dirName = 'logs',
-      String fileName,
-      bool deleteOtherLogFiles = true,
-      int keepVersionsCount = 5}) async {
+      {String dirName = 'logs', String fileName, bool deleteOtherLogFiles = true, int keepVersionsCount = 5}) async {
     Directory dir = await BaseFileUtils.getLocalDir(dirName);
 
     var files = dir.listSync();
 
     int latestVersion = 0;
 
-    if(fileName == null){
+    if (fileName == null) {
       fileName = generateDefaultFileName(fileName);
     }
 
@@ -267,7 +264,7 @@ class FileLogs {
 
     var files = dir.listSync();
 
-    if(fileName == null){
+    if (fileName == null) {
       fileName = generateDefaultFileName(fileName);
     }
 
@@ -318,7 +315,15 @@ class CustomFileOutput extends LogOutput {
     if (isOpeningNewFile) return;
 
     try {
+      if (event.level == Level.error) {
+        _sink?.writeln('\n\n*********Error*********');
+      }
+
       _sink?.writeAll(event.lines, '\n');
+
+      if (event.level == Level.error) {
+        _sink?.writeln('\n*********Error END*********\n');
+      }
 
       linesCount += event?.lines?.length ?? 0;
 
