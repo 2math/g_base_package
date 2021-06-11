@@ -79,7 +79,7 @@ class Log {
       _print('$tag : $log', level, _logger);
     }
 
-    if (_fileLogger != null) {
+    if (_fileLogger != null && addToCrashReporter) {
       _print('$tag : $log', level, _fileLogger);
     }
   }

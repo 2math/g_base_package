@@ -1,3 +1,5 @@
+## [1.25.15] - do not write sensitive info to the file logs that are logged by Log.s
+
 ## [1.25.14] - fix to write error logs in the file, better marking in the file for error logs
 
 ## [1.25.13] - Log in file for production builds and keep only X file versions of the file logs
