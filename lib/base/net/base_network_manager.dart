@@ -136,7 +136,7 @@ class BaseNetworkManager {
     _logLastRequest("GET", requestLog);
 
     // make GET request
-    http.Response response = await http.get(url, headers: headers); //todo add timeout
+    http.Response response = await http.get(Uri.parse(url), headers: headers); //todo add timeout
 
 //    String responseHeaders = _printMap(response.headers);
     String responseLog = "Response Code : ${response.statusCode}\n"
@@ -164,7 +164,6 @@ class BaseNetworkManager {
     InstanceProvider.getInstance()?.crashReporter?.setString("Last Call response", '$method $url : $responseLog');
   }
 
-
   String _getBodyAsUtf8(http.Response response) => utf8.decode(response.bodyBytes);
 
   Future<http.Response> _doPostRequest(Call call) async {
@@ -183,7 +182,7 @@ class BaseNetworkManager {
       Log.d(requestLog, "$netTag POST");
     }
     // make POST request
-    http.Response response = await http.post(url,
+    http.Response response = await http.post(Uri.parse(url),
         headers: headers, body: call.body != null ? call.body : call.params, encoding: Encoding.getByName("utf-8"));
 
     String responseLog = "Response Code : ${response.statusCode}\n"
@@ -215,8 +214,8 @@ class BaseNetworkManager {
 
     // make PUT request
     http.Response response = call.callMethod == CallMethod.PUT
-        ? await http.put(url, headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"))
-        : await http.patch(url, headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"));
+        ? await http.put(Uri.parse(url), headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"))
+        : await http.patch(Uri.parse(url), headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"));
 
     String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
@@ -242,7 +241,7 @@ class BaseNetworkManager {
       Log.d(requestLog, "$netTag DELETE");
     }
     // make GET request
-    http.Response response = await http.delete(url, headers: headers);
+    http.Response response = await http.delete(Uri.parse(url), headers: headers);
 
 //    String responseHeaders = _printMap(response.headers);
     String responseLog = "Response Code : ${response.statusCode}\n"
@@ -269,7 +268,7 @@ class BaseNetworkManager {
       Log.d(requestLog, "$netTag GET");
     }
     // make GET request
-    http.Response response = await http.get(fileURL, headers: headers); //todo add timeout
+    http.Response response = await http.get(Uri.parse(fileURL), headers: headers); //todo add timeout
 
     String responseHeaders = _printMap(response.headers);
 
@@ -462,9 +461,22 @@ class BaseNetworkManager {
   }
 
   String _getUrl(Call call) {
-    String url = call.isFullUrl ? call.endpoint : FlavorConfig.instance.baseUrl + call.endpoint;
+    // if (call.isHttp) {
+    //  return Uri.http(
+    //     call.isFullUrl ? call.endpoint : FlavorConfig.instance.baseUrl,
+    //     call.isFullUrl ? null : call.endpoint,
+    //     _isGetWithParams(call) ? call.params : null,
+    //   );
+    // } else {
+    //   Uri.https(
+    //     call.isFullUrl ? call.endpoint : FlavorConfig.instance.baseUrl,
+    //     call.isFullUrl ? null : call.endpoint,
+    //     _isGetWithParams(call) ? call.params : null,
+    //   );
+    // }
 
-    if (call.callMethod == CallMethod.GET && call.params != null && call.params.isNotEmpty) {
+    String url = call.isFullUrl ? call.endpoint : FlavorConfig.instance.baseUrl + call.endpoint;
+    if (_isGetWithParams(call)) {
       String urlParams = call.params.keys
           .map((key) => "${Uri.encodeComponent(key)}=${Uri.encodeComponent(call.params[key])}")
           .join("&");
@@ -473,6 +485,9 @@ class BaseNetworkManager {
 
     return url;
   }
+
+  bool _isGetWithParams(Call call) =>
+      call.callMethod == CallMethod.GET && call.params != null && call.params.isNotEmpty;
 
   Map<String, String> _getUpdatedHeaders(String token, String language, String contentType,
       [Map<String, String> customHeadersToAdd]) {

@@ -343,7 +343,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
   }
 
   Future<void> _selectImage() async {
-    var selectedFile = await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
+    var selectedFile = await ImagePicker().getImage(source: ImageSource.gallery).catchError((error) {
       Log.error("selectImage", error: error);
     });
 
@@ -353,7 +353,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
-      var copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
+      var copiedFile = await emptyFile.writeAsBytes(await selectedFile.readAsBytes()).catchError((error) {
         Log.error("selectImage copy", error: error);
       });
 
@@ -373,7 +373,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
   }
 
   Future<void> _selectFile() async {
-    var selectedFile = await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
+    var selectedFile = await ImagePicker().getImage(source: ImageSource.gallery).catchError((error) {
       Log.error("selectImage", error: error);
     });
 
@@ -383,7 +383,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
-      var copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
+      var copiedFile = await emptyFile.writeAsBytes(await selectedFile.readAsBytes()).catchError((error) {
         Log.error("selectImage copy", error: error);
       });
 
@@ -407,7 +407,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
   Future<void> _editFile(bool dataOnly) async {
     var selectedFile = dataOnly
         ? null
-        : await ImagePicker.pickImage(source: ImageSource.gallery).catchError((error) {
+        : await ImagePicker().getImage(source: ImageSource.gallery).catchError((error) {
             Log.error("selectImage", error: error);
           });
 
@@ -419,7 +419,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
-      copiedFile = await selectedFile.copy(emptyFile.path).catchError((error) {
+      copiedFile = await emptyFile.writeAsBytes(await selectedFile.readAsBytes()).catchError((error) {
         Log.error("selectImage copy", error: error);
       });
     }
