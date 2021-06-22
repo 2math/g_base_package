@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+// import 'package:test/test.dart';
 
 enum Validation { NotChecked, Valid, Invalid }
 
@@ -40,8 +40,8 @@ class Validator {
   }
 }
 
-void main() {
-  test("confirmPass", () {
-    expect(true, Validator.confirmPass("pass", "pass"));
-  });
-}
+// void main() {
+//   test("confirmPass", () {
+//     expect(true, Validator.confirmPass("pass", "pass"));
+//   });
+// }
