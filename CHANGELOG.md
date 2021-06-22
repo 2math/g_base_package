@@ -1,3 +1,5 @@
+## [1.25.17] - updated error log on parseErr
+
 ## [1.25.16] - fix on create directory
 
 ## [1.25.15] - do not write sensitive info to the file logs that are logged by Log.s
