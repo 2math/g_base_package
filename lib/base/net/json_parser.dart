@@ -13,7 +13,7 @@ class JsonParser {
           return jsonData["code"];
         }
       } catch (e) {
-        Log.e("parseErr", null, e is Error ? e : AssertionError(e));
+        Log.error("parseErr $exception", error: e);
         return exception.error;
       }
     }

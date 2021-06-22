@@ -26,9 +26,9 @@ class BaseFileUtils {
     String finalDir =
         dirToBeCreated == null ? baseDir : join(baseDir, dirToBeCreated);
     var dir = Directory(finalDir);
-    bool dirExists = await dir.exists();
-    if (!dirExists) {
-      dir.create(recursive: recursive);
+
+    if (!await dir.exists()) {
+      return dir.create(recursive: recursive);
     }
     return dir;
   }
