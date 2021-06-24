@@ -1,18 +1,18 @@
 import 'package:g_base_package/base/utils/logger.dart';
-
+import 'package:logger/logger.dart';
 import '../reporters/analytics.dart';
 import '../reporters/crash_reporter.dart';
 import 'package:flutter/foundation.dart';
 
-class InstanceProvider<R, P, C extends BaseCrashReporter,
-    A extends BaseAnalyticsUtil> {
+class InstanceProvider<R, P, C extends BaseCrashReporter, A extends BaseAnalyticsUtil> {
   static InstanceProvider _instance;
   static bool _ignoreInstanceForUnitTests = false;
 
   static InstanceProvider getInstance() {
     if (_instance == null && !_ignoreInstanceForUnitTests) {
 //            throw new AppException(errorMessage: "You must init repository on app start" );
-      Log.e("You must init repository on app start");
+      Log.printInDebugOnly("InstanceProvider", "You must init repository on app start", Level.warning,
+          addToCrashReporter: false);
     }
     return _instance;
   }
@@ -27,8 +27,7 @@ class InstanceProvider<R, P, C extends BaseCrashReporter,
   C _crashReporter;
   A _analyticsUtil;
 
-  InstanceProvider.init(
-      this._repositoryInstance,this._persistenceInstance, this._crashReporter, this._analyticsUtil) {
+  InstanceProvider.init(this._repositoryInstance, this._persistenceInstance, this._crashReporter, this._analyticsUtil) {
     _instance = this;
   }
 
