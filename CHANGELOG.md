@@ -1,3 +1,5 @@
+## [1.25.19] - fix on InstanceProvider log error if no instance
+
 ## [1.25.18] - validator fix
 
 ## [1.25.17] - updated error log on parseErr

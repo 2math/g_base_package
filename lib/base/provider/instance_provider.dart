@@ -1,5 +1,5 @@
 import 'package:g_base_package/base/utils/logger.dart';
-
+import 'package:logger/logger.dart';
 import '../reporters/analytics.dart';
 import '../reporters/crash_reporter.dart';
 import 'package:flutter/foundation.dart';
@@ -12,7 +12,8 @@ class InstanceProvider<R, P, C extends BaseCrashReporter,
   static InstanceProvider getInstance() {
     if (_instance == null && !_ignoreInstanceForUnitTests) {
 //            throw new AppException(errorMessage: "You must init repository on app start" );
-      Log.e("You must init repository on app start");
+      Log.printInDebugOnly("InstanceProvider", "You must init repository on app start", Level.warning,
+          addToCrashReporter: false);
     }
     return _instance;
   }
