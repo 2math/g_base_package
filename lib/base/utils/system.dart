@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -24,6 +27,39 @@ class System {
   ///this will close the app if you are on first screen, same as when you press back button on android
   static Future<void> popToExit({bool animated}) async {
     await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop', animated);
+  }
+
+  bool isWindows(){
+    return !kIsWeb && Platform.isWindows;
+  }
+
+  bool isMac(){
+    return !kIsWeb && Platform.isMacOS;
+  }
+
+  bool isLinux(){
+    return !kIsWeb && Platform.isLinux;
+  }
+
+  bool isWeb(){
+    return kIsWeb;
+  }
+
+  bool isAndroid(){
+    return !kIsWeb && Platform.isAndroid;
+  }
+
+  bool isIOS(){
+    return !kIsWeb && Platform.isIOS;
+  }
+
+  bool isMobile(){
+    return !kIsWeb && (Platform.isMacOS || Platform.isAndroid);
+  }
+
+  bool isDesktop(){
+    return !kIsWeb && (Platform.isWindows || Platform.isMacOS || Platform
+        .isLinux);
   }
 }
 

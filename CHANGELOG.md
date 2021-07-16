@@ -1,3 +1,5 @@
+## [1.26.1] - helper functions to check platform
+
 ## [1.26.0] - connectivity_plus and package_info_plus to support Windows
 
 ## [1.25.19] - fix on InstanceProvider log error if no instance
