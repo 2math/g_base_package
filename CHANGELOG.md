@@ -1,3 +1,5 @@
+## [1.26.2] - remove connectivity and platform, only plus versions remain
+
 ## [1.26.1] - helper functions to check platform
 
 ## [1.26.0] - connectivity_plus and package_info_plus to support Windows
