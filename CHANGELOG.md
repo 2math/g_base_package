@@ -1,3 +1,5 @@
+## [1.26.3] - updated path_provider to support windows
+
 ## [1.26.2] - remove connectivity and platform, only plus versions remain
 
 ## [1.26.1] - helper functions to check platform
