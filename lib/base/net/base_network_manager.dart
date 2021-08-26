@@ -264,7 +264,7 @@ class BaseNetworkManager {
 
     String requestLog = "$fileURL\nHeaders :\n${_printMap(headers)}";
 
-    _logLastRequest("DELETE", requestLog);
+    _logLastRequest("Download", requestLog);
 
     if (call.printLogs) {
       Log.d(requestLog, "$netTag GET");

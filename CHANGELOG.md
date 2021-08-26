@@ -1,3 +1,6 @@
+## [1.26.4] - updated logs to add device data on each new log file, fixed Log tag for DOWNLOAD file,
+showProgressIndicatorIfNotShowing
+
 ## [1.26.3] - updated path_provider to support windows
 
 ## [1.26.2] - remove connectivity and platform, only plus versions remain
