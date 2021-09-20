@@ -54,7 +54,7 @@ class System {
   }
 
   bool isMobile(){
-    return !kIsWeb && (Platform.isMacOS || Platform.isAndroid);
+    return !kIsWeb && (Platform.isIOS || Platform.isAndroid);
   }
 
   bool isDesktop(){
