@@ -17,8 +17,8 @@ class Localization {
   ///for a String will check first in "locales" and if is not there will check in "globalLocales".
   ///
   ///If your app does not care about multi flavors, can omit the "globalLocales" and send it's "locales" only
-  static bool init(
-      BuildContext context, List<AppLocale> locales, AppLocale defaultLocale, {List<AppLocale> globalLocales})
+  static bool init(BuildContext context, List<AppLocale> locales, AppLocale defaultLocale,
+      {List<AppLocale> globalLocales})
   /*async*/ {
     if (_defaultLocale == null) {
       _defaultLocale = defaultLocale;
@@ -68,8 +68,7 @@ class Localization {
     return _defaultLocale?.languageCode;
   }
 
-  static get currentLanguageCode =>
-      _currentLocale?.languageCode ?? deviceLanguageCode;
+  static get currentLanguageCode => _currentLocale?.languageCode ?? deviceLanguageCode;
 
   static Locale getAppLocale() {
     return Locale(_currentLocale.languageCode);
@@ -81,15 +80,15 @@ class Localization {
   static String getString(String key) {
     if (_currentLocale == null && _currentGlobalLocale == null) return "no locale";
 
-    String textToReturn = _currentLocale?.localizedStrings[key];
+    String textToReturn = _currentLocale?.localizedStrings != null ? _currentLocale.localizedStrings[key] : null;
 
-    if (textToReturn == null) {
+    if (textToReturn == null && _currentGlobalLocale?.localizedStrings != null) {
       textToReturn = _currentGlobalLocale?.localizedStrings[key];
+    }
 
     if (textToReturn == null) {
       Log.e("No text for id : $key");
       textToReturn = 'no text';
-    }
     }
     return textToReturn;
   }

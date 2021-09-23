@@ -1,3 +1,5 @@
+## [1.26.6] - fixed localization problem
+
 ## [1.26.5] - fixed System().isMobile
 
 ## [1.26.4] - updated logs to add device data on each new log file, fixed Log tag for DOWNLOAD file,
