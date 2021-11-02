@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'logger.dart';
 
 class BaseFileUtils {
-  static String _localPath;
+  static String? _localPath;
 
   ///If directory is null will use base local directory(ApplicationDocumentsDirectory).
   ///If directory does not exist will be created
@@ -20,7 +20,7 @@ class BaseFileUtils {
 
   ///Get or create a local directory , pass recursive as true if directory is recursive
   ///if dirToBeCreated == null will return main local directory
-  static Future<Directory> getLocalDir(String dirToBeCreated,
+  static Future<Directory> getLocalDir(String? dirToBeCreated,
       {bool recursive = false}) async {
     var baseDir = await localPath;
     String finalDir =
@@ -42,6 +42,6 @@ class BaseFileUtils {
 //      Log.d(directory.path);
       _localPath = directory.path;
     }
-    return _localPath;
+    return _localPath!;
   }
 }

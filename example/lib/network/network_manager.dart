@@ -12,19 +12,20 @@ import 'package:g_base_package/base/utils/logger.dart';
 import 'net_constants.dart';
 
 class NetworkManager extends BaseNetworkManager {
-  String _token;
+  String? _token;
 
   NetworkManager(this._token);
 
   @override
-  Future<String> tryToRefreshSession() async {
+  Future<String?> tryToRefreshSession() async {
     var session = await login("g.blagoev@futurist-labs.com", "123456", (json) {
       try {
         var session = Session.fromJson(jsonDecode(json));
-        _token = session?.sessionId;
+        _token = session.sessionId;
         return session;
       } catch (e) {
-        Log.e("weird error parsing session", "tryToRefreshSession", e);
+        Log.error("weird error parsing session", tag:"tryToRefreshSession",
+            error: e);
       }
       return null;
     });
@@ -40,13 +41,13 @@ class NetworkManager extends BaseNetworkManager {
 
   ///pass a function which will get the JsonBody as parameter and will be called in background
   ///only if the result is positive, so the app can handle there json parsing and persisting
-  Future<Session> login(String email, String pass, Function handlePositiveResultBody) async {
+  Future<Session?> login(String email, String pass, Function handlePositiveResultBody) async {
     var body = {
       'username': email,
       'password': pass,
     };
     Call call = new Call.name(CallMethod.POST, NetConstants.SESSIONS, body: jsonEncode(body), refreshOn401: false,
-        printResponseBody: false);
+        printResponseBody: true);
 
 //    call = new Call.name(
 //        CallMethod.GET, "http://www.mocky.io/v2/5e4285162f00007b0087f697",
@@ -54,7 +55,7 @@ class NetworkManager extends BaseNetworkManager {
     return await doServerCall<Session>(call, handlePositiveResultBody);
   }
 
-  Future<Page> getPage(String pageName, Function handlePositiveResultBody) async {
+  Future<Page?> getPage(String pageName, Function handlePositiveResultBody) async {
     Call call = new Call.name(CallMethod.GET, "${NetConstants.PAGE}/$pageName", token: _token);
 
     return await doServerCall<Page>(call, handlePositiveResultBody);
@@ -63,23 +64,23 @@ class NetworkManager extends BaseNetworkManager {
   /**authorized calls*/
 
   ///We must pass the sessionId , because is deleted from repository already
-  Future<bool> logout() async {
+  Future<bool?> logout() async {
     Call call = new Call.name(CallMethod.DELETE, NetConstants.SESSIONS, token: _token, refreshOn401: false);
 
     return await doServerCall<bool>(call, (json) {});
   }
 
   ///Get all workspaces of mine
-  Future<List<Object>> getWorkspaces(String companyId, Function handlePositiveResultBody) async {
+  Future<List<dynamic>?> getWorkspaces(String? companyId, Function handlePositiveResultBody) async {
     Call call = new Call.name(
       CallMethod.GET,
       "v1/companies/workspaces",
       token: _token,
       printLogs: false,
-      printResponseBody: false,
+      printResponseBody: true,
     );
 
-    return await doServerCall<List<Object>>(call, handlePositiveResultBody);
+    return await doServerCall<List<dynamic>>(call, handlePositiveResultBody);
   }
 
   Future<void> uploadImageFuture(
@@ -124,20 +125,20 @@ class NetworkManager extends BaseNetworkManager {
   }
 
   Future<void> updateFileFuture(
-      {String pathFile,
-      String companyId,
-      String workspaceId,
-      String documentId,
-      String data,
-      handlePositiveResultBody}) async {
-    File file = BaseUtils.isNotEmptyStr(pathFile) ? File(pathFile) : null;
+      {String? pathFile,
+      String? companyId,
+      String? workspaceId,
+      String? documentId,
+      required String data,
+      required handlePositiveResultBody}) async {
+    File? file = BaseUtils.isNotEmptyStr(pathFile) ? File(pathFile!) : null;
 
     Call call = new Call.name(
       CallMethod.UPLOAD_UPDATE,
       "v1/companies/$companyId/workspaces/$workspaceId/documents/$documentId",
       token: _token,
       file: file,
-      fileName: file != null ? pathFile.substring(pathFile.lastIndexOf("/") + 1) : null,
+      fileName: file != null ? pathFile!.substring(pathFile.lastIndexOf("/") + 1) : null,
       mediaType: MediaType("image", "jpg"),
       params: {"data": data},
       onUploadProgress: (sentBytes, totalBytes) {

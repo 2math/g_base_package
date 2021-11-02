@@ -57,13 +57,13 @@ class BaseAnalyticsUtil {
 //    Log.d('logSetUser succeeded', _TAG);
 //  }
 
-  Future<void> setUserId(String id) async {
+  Future<void> setUserId(String? id) async {
 //    if (_canNotLog()) return;
 //    await _analytics.setUserId(id);
 //    Log.d('logSetUserId succeeded $id', _TAG);
   }
 
-  Future<void> setUserProperty(String name, String value) async {
+  Future<void> setUserProperty(String name, String? value) async {
 //    if (_canNotLog()) return;
 //    await _analytics.setUserProperty(name: name, value: value);
 //    Log.d('logSetUserProperty succeeded $name : $value', _TAG);

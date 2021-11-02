@@ -14,7 +14,7 @@ class ImageUtil{
   ///
   ///To implement this code in your app, you need to add
   ///exif: ^1.0.3 and image: ^2.1.12 (or newest) packages as dependency
-  Future<File> fixExifRotation(String imagePath) async {
+  Future<File?> fixExifRotation(String imagePath) async {
     // final originalFile = File(imagePath);
     // List<int> imageBytes = await originalFile.readAsBytes();
     //

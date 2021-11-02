@@ -7,10 +7,10 @@ part 'session.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Session {
-  String sessionId;
-  User user;
+  String? sessionId;
+  User? user;
 
-  Company get company {
+  Company? get company {
     return user?.company ?? null;
   }
 

@@ -22,8 +22,8 @@ class Dialogs {
   ///throw and exception.
   ///Will return Version.UPDATE_AVAILABLE if btnSkip was clicked or Version.UPDATE_REQUIRED if btnGoToStore
   ///was clicked
-  static Future<int> showVersions(
-      BuildContext context, Widget title, Widget message, Widget btnSkip, Widget btnGoToStore) async {
+  static Future<int?> showVersions(
+      BuildContext context, Widget? title, Widget message, Widget? btnSkip, Widget? btnGoToStore) async {
     if (btnGoToStore == null && btnSkip == null) {
       throw AppException(errorMessage: "please provide atleast one button");
     }
@@ -78,7 +78,7 @@ class Dialogs {
     );
   }
 
-  static AlertDialog createProgressDialog(String title, String message, {TextStyle textStyle}) {
+  static AlertDialog createProgressDialog(String? title, String message, {TextStyle? textStyle}) {
     return new AlertDialog(
         title: title != null ? new Text(title) : null,
         content: new Row(
@@ -95,14 +95,14 @@ class Dialogs {
   }
 
   static showSnackBar(BuildContext context, String msg,
-      {TextStyle textStyle,
-        Color bkgColor,
+      {TextStyle? textStyle,
+        Color? bkgColor,
         double marginBottom = 0,
-        Duration duration,
-        String closeAction,
-        Color closeActionColor,
-        SnackBarAction action}) {
-    SnackBarAction snackBarAction = _getAction(action, closeAction, closeActionColor);
+        Duration? duration,
+        String? closeAction,
+        Color? closeActionColor,
+        SnackBarAction? action}) {
+    SnackBarAction? snackBarAction = _getAction(action, closeAction, closeActionColor);
     final snackBar = (marginBottom == 0)
         ? SnackBar(
       content: Text(msg, style: textStyle),
@@ -160,7 +160,7 @@ class Dialogs {
     }
   }
 
-  static SnackBarAction _getAction(SnackBarAction action, String closeAction, Color closeActionColor) {
+  static SnackBarAction? _getAction(SnackBarAction? action, String? closeAction, Color? closeActionColor) {
     return action != null
         ? action
         : closeAction != null

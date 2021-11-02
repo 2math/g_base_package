@@ -25,7 +25,7 @@ class System {
   }
 
   ///this will close the app if you are on first screen, same as when you press back button on android
-  static Future<void> popToExit({bool animated}) async {
+  static Future<void> popToExit({bool? animated}) async {
     await SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop', animated);
   }
 
@@ -64,23 +64,23 @@ class System {
 }
 
 class SizeConfig {
-  static MediaQueryData mediaQueryData;
-  static double screenWidth;
-  static double screenHeight;
+  static late MediaQueryData mediaQueryData;
+  static double? screenWidth;
+  static double? screenHeight;
 
   //we divide the screen by blocks 100*100 here is the size of 1 block
-  static double blockSizeHorizontal;
-  static double blockSizeVertical;
+  static double? blockSizeHorizontal;
+  static double? blockSizeVertical;
 
-  static double _safeAreaHorizontal;
-  static double _safeAreaVertical;
+  static late double _safeAreaHorizontal;
+  static late double _safeAreaVertical;
 
   //we divide the screen by blocks 100*100 here is the size of 1 block when
   //system bar, notches etc are removed
-  static double safeBlockHorizontal;
-  static double safeBlockVertical;
+  static double? safeBlockHorizontal;
+  static double? safeBlockVertical;
 
-  static double safeAreaBottom;
+  static double? safeAreaBottom;
 
   ///return false if is initialized already and has same size
   ///Best solution will be to call it in build function on first screen that remain bellow the others
@@ -93,19 +93,19 @@ class SizeConfig {
       return false;
     }
 
-    mediaQueryData = MediaQuery.of(context);
+    // mediaQueryData = MediaQuery.of(context);
 
     screenWidth = mediaQueryData.size.width;
     screenHeight = mediaQueryData.size.height;
 
-    blockSizeHorizontal = screenWidth / 100;
-    blockSizeVertical = screenHeight / 100;
+    blockSizeHorizontal = screenWidth! / 100;
+    blockSizeVertical = screenHeight! / 100;
 
     _safeAreaHorizontal = mediaQueryData.padding.left + mediaQueryData.padding.right;
     _safeAreaVertical = mediaQueryData.padding.top + mediaQueryData.padding.bottom;
 
-    safeBlockHorizontal = (screenWidth - _safeAreaHorizontal) / 100;
-    safeBlockVertical = (screenHeight - _safeAreaVertical) / 100;
+    safeBlockHorizontal = (screenWidth! - _safeAreaHorizontal) / 100;
+    safeBlockVertical = (screenHeight! - _safeAreaVertical) / 100;
 
     safeAreaBottom = mediaQueryData.padding.bottom;
 

@@ -13,7 +13,7 @@ class SingleScrollView extends StatefulWidget {
 
   ///wrap child with SingleChildScrollView, but the height of the view will be as matchParent and if the keyboard
   ///appear this height will be kept and view will be scrollable
-  SingleScrollView({Key key, this.child, this.minHeight = 0, this.maxHeight = 0}) : super(key: key);
+  SingleScrollView({Key? key, required this.child, this.minHeight = 0, this.maxHeight = 0}) : super(key: key);
 
   @override
   _SingleScrollViewState createState() => _SingleScrollViewState();
@@ -21,7 +21,7 @@ class SingleScrollView extends StatefulWidget {
 
 class _SingleScrollViewState extends State<SingleScrollView> {
   double _bodyHeight = 0.0;
-  bool isLandscape;
+  bool? isLandscape;
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +40,8 @@ class _SingleScrollViewState extends State<SingleScrollView> {
   double _getPrimaryHeight(BoxConstraints viewportConstraints) {
     if (_bodyHeight == 0.0 ||
         isLandscape == null ||
-        (isLandscape && viewportConstraints.maxHeight > viewportConstraints.maxWidth) ||
-        (!isLandscape && viewportConstraints.maxHeight < viewportConstraints.maxWidth)) {
+        (isLandscape! && viewportConstraints.maxHeight > viewportConstraints.maxWidth) ||
+        (!isLandscape! && viewportConstraints.maxHeight < viewportConstraints.maxWidth)) {
 
       isLandscape = viewportConstraints.maxHeight < viewportConstraints.maxWidth;
 

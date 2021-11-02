@@ -6,7 +6,7 @@ part 'company.g.dart';
 //flutter pub run build_runner watch
 @JsonSerializable(explicitToJson: true)
 class Company {
-  String id,
+  String? id,
       name,
       description,
       address,
@@ -22,7 +22,7 @@ class Company {
       accentColor,
       language,timeZone,
       defaultCategoryId;
-  bool isApproved;
+  bool? isApproved;
 
   Company(
       {this.id,
@@ -56,9 +56,9 @@ class Company {
 
 @JsonSerializable(explicitToJson: true)
 class Category {
-  String id, name, companyId;
-  bool isDefault;
-  List<Attribute> attributes;
+  String? id, name, companyId;
+  bool? isDefault;
+  List<Attribute>? attributes;
 
   Category();
 
@@ -77,14 +77,14 @@ enum FieldDateFormat { US, EU, GENERAL }
 
 @JsonSerializable()
 class Attribute {
-  String id, name, label, currencySign;
+  String? id, name, label, currencySign;
   @JsonKey(unknownEnumValue: FieldDateFormat.US)
-  FieldDateFormat dateTimeFormat;
+  FieldDateFormat? dateTimeFormat;
   @JsonKey(unknownEnumValue: AttributeType.TEXT)
-  AttributeType type;
-  bool isRequired, isActive;
-  int orderNumber, valuePrecision;
-  List<Option> options;
+  AttributeType? type;
+  bool? isRequired, isActive;
+  int? orderNumber, valuePrecision;
+  List<Option>? options;
 
   Attribute(
       {this.id,
@@ -106,7 +106,7 @@ class Attribute {
 
 @JsonSerializable(explicitToJson: true)
 class Option {
-  String id, value, attributeId;
+  String? id, value, attributeId;
 
   Option({this.id, this.value, this.attributeId});
 

@@ -8,12 +8,12 @@ typedef void OnUploadProgressCallback(int sentBytes, int totalBytes);
 class Call {
   CallMethod callMethod;
   String endpoint;
-  Map<String, String> params, headers;
-  String body, toLog, token, language, fileName;
+  Map<String, String>? params, headers;
+  String? body, toLog, token, language, fileName;
   bool isFullUrl, isServerUrl, refreshOn401, printLogs, printResponseBody, shouldCheckCustomErrors;
-  File file;
-  MediaType mediaType;
-  OnUploadProgressCallback onUploadProgress;
+  File? file;
+  MediaType? mediaType;
+  OnUploadProgressCallback? onUploadProgress;
 
   Call.name(
     this.callMethod,

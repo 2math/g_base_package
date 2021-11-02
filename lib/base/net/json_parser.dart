@@ -5,10 +5,10 @@ import '../utils/utils.dart';
 import '../app_exception.dart';
 
 class JsonParser {
-  String parseErr(AppException exception) {
+  String? parseErr(AppException? exception) {
     if (exception != null && exception.data != null) {
       try {
-        Map<String, dynamic> jsonData = jsonDecode(exception.data);
+        Map<String, dynamic>? jsonData = jsonDecode(exception.data as String);
         if (jsonData != null && jsonData.containsKey("code")) {
           return jsonData["code"];
         }
@@ -20,12 +20,12 @@ class JsonParser {
     return null;
   }
 
-  void removeNulls(Map<String, dynamic> jsonMap) {
+  void removeNulls(Map<String, dynamic>? jsonMap) {
     if (jsonMap == null) {
       return;
     }
 
-    List<String> keysToRemove = new List();
+    List<String> keysToRemove = [];
 
     jsonMap.forEach((k, v) {
       if (jsonMap[k] == null) {
@@ -33,8 +33,8 @@ class JsonParser {
       }
     });
 
-    keysToRemove.forEach((key) {
+    for (var key in keysToRemove) {
       jsonMap.remove(key);
-    });
+    }
   }
 }

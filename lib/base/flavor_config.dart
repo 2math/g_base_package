@@ -9,29 +9,29 @@ enum Flavor { DEV, STAGE, PROD, TEST }
 ///Create BaseAppFlavor for each App that extend this one and init common data there
 ///Then create specific flavor classes that should extend from your BaseAppFlavor
 class FlavorConfig {
-  static late FlavorConfig _instance;
+  static FlavorConfig? _instance;
   final Flavor flavor;
   final String baseUrl;
 
-  String _appName;
-  String _packageName;
-  String _version;
-  String _buildNumber;
+  String? _appName;
+  String? _packageName;
+  String? _version;
+  String? _buildNumber;
 
-  final String msgLoadingKey;
-  final String unauthorizedKey;
-  final String forbiddenKey;
-  final String notFoundKey;
-  final String unsupportedVersionKey;
-  final String noNetworkKey;
-  final String socketExceptionKey;
-  final String serverErrorKey;
-  final String headerLanguage,
+  final String? msgLoadingKey;
+  final String? unauthorizedKey;
+  final String? forbiddenKey;
+  final String? notFoundKey;
+  final String? unsupportedVersionKey;
+  final String? noNetworkKey;
+  final String? socketExceptionKey;
+  final String? serverErrorKey;
+  final String? headerLanguage,
       headerToken,
       headerContentType,
       headerVersion,
       headerOS;
-  final String headerValueAndroid, headerValueIOS;
+  final String? headerValueAndroid, headerValueIOS;
   final bool useVersionForIOS;
 
   FlavorConfig(this.flavor,
@@ -78,23 +78,23 @@ class FlavorConfig {
     return 'FlavorConfig{flavor: $flavor, _appName: $_appName, _packageName: $_packageName, _version: $_version, _buildNumber: $_buildNumber}';
   }
 
-  static FlavorConfig get instance {
+  static FlavorConfig? get instance {
     return _instance;
   }
 
-  static bool isProduction() => _instance.flavor == Flavor.PROD;
+  static bool isProduction() => _instance!.flavor == Flavor.PROD;
 
-  static bool isDevelopment() => _instance.flavor == Flavor.DEV;
+  static bool isDevelopment() => _instance!.flavor == Flavor.DEV;
 
-  static bool isStaging() => _instance.flavor == Flavor.STAGE;
+  static bool isStaging() => _instance!.flavor == Flavor.STAGE;
 
-  static bool isTesting() => _instance.flavor == Flavor.TEST;
+  static bool isTesting() => _instance!.flavor == Flavor.TEST;
 
-  String get appName => _appName;
+  String? get appName => _appName;
 
-  String get packageName => _packageName;
+  String? get packageName => _packageName;
 
-  String get version => _version;
+  String? get version => _version;
 
-  String get buildNumber => _buildNumber;
+  String? get buildNumber => _buildNumber;
 }

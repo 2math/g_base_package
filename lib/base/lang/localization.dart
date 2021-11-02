@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 //import 'package:devicelocale/devicelocale.dart';
 
 class Localization {
-  static VoidCallback onLocaleChanged;
-  static List<AppLocale> _supportedLocales, _globalLocales;
-  static AppLocale _defaultLocale, _currentLocale, _currentGlobalLocale;
+  static VoidCallback? onLocaleChanged;
+  static List<AppLocale>? _supportedLocales, _globalLocales;
+  static AppLocale? _defaultLocale, _currentLocale, _currentGlobalLocale;
 
   ///support to have locales per flavors, each flavor has its custom strings in "locales" and
   ///similar strings are added in "globalLocales". This way if you have 2 flavors that has differences
@@ -17,8 +17,9 @@ class Localization {
   ///for a String will check first in "locales" and if is not there will check in "globalLocales".
   ///
   ///If your app does not care about multi flavors, can omit the "globalLocales" and send it's "locales" only
-  static bool init(BuildContext context, List<AppLocale> locales, AppLocale defaultLocale,
-      {List<AppLocale> globalLocales})
+  static bool init(BuildContext? context, List<AppLocale> locales, AppLocale
+  defaultLocale,
+      {List<AppLocale>? globalLocales})
   /*async*/ {
     if (_defaultLocale == null) {
       _defaultLocale = defaultLocale;
@@ -34,14 +35,14 @@ class Localization {
 //    Log.d(deviceLanguageCode, "deviceLanguageCode");
   }
 
-  static String setLocale(String code) {
+  static String? setLocale(String code) {
     Log.d(code, "setLocale");
 
     if (BaseUtils.isEmpty(_supportedLocales)) return _currentLocale?.languageCode;
 
     bool isLocaleFound = false;
 
-    for (var locale in _supportedLocales) {
+    for (var locale in _supportedLocales!) {
       if (locale.languageCode == code) {
         _currentLocale = locale;
         isLocaleFound = true;
@@ -53,15 +54,15 @@ class Localization {
       _currentLocale = _defaultLocale; //non supported locales default to en.
     }
 
-    Log.d(_currentLocale.languageCode, "applied Locale");
+    Log.d(_currentLocale!.languageCode, "applied Locale");
 
     _selectCurrentGlobalLocale();
 
     if (onLocaleChanged != null) {
-      onLocaleChanged();
+      onLocaleChanged!();
     }
 
-    return _currentLocale.languageCode;
+    return _currentLocale!.languageCode;
   }
 
   static get deviceLanguageCode {
@@ -71,19 +72,19 @@ class Localization {
   static get currentLanguageCode => _currentLocale?.languageCode ?? deviceLanguageCode;
 
   static Locale getAppLocale() {
-    return Locale(_currentLocale.languageCode);
+    return Locale(_currentLocale!.languageCode);
   }
 
   ///Use for key parameter one out of Keys class
   ///
   ///import 'package:sofia_airport/res/strings/string_keys.dart';
-  static String getString(String key) {
+  static String getString(String? key) {
     if (_currentLocale == null && _currentGlobalLocale == null) return "no locale";
 
-    String textToReturn = _currentLocale?.localizedStrings != null ? _currentLocale.localizedStrings[key] : null;
+    String? textToReturn = _currentLocale?.localizedStrings != null ? _currentLocale!.localizedStrings[key!] : null;
 
     if (textToReturn == null && _currentGlobalLocale?.localizedStrings != null) {
-      textToReturn = _currentGlobalLocale?.localizedStrings[key];
+      textToReturn = _currentGlobalLocale?.localizedStrings[key!];
     }
 
     if (textToReturn == null) {
@@ -95,8 +96,8 @@ class Localization {
 
   static void _selectCurrentGlobalLocale() {
     if (BaseUtils.isNotEmpty(_globalLocales) && _currentLocale != null) {
-      for (final locale in _globalLocales) {
-        if (locale.languageCode == _currentLocale.languageCode) {
+      for (final locale in _globalLocales!) {
+        if (locale.languageCode == _currentLocale!.languageCode) {
           _currentGlobalLocale = locale;
           break;
         }
@@ -108,7 +109,7 @@ class Localization {
 class Txt {
   ///Short call of Localization.getString(key)
   ///use live template txt for Txt.get(StrKey.$)
-  static String get(String key) {
+  static String get(String? key) {
     return Localization.getString(key);
   }
 }

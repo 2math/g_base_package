@@ -8,9 +8,9 @@ class Version {
   static const int UPDATE_AVAILABLE = 2;
   static const int ON_LATEST_VERSION = 3;
 
-  int minimalVersion;
-  int currentVersion;
-  String clientVersion;
+  int? minimalVersion;
+  int? currentVersion;
+  String? clientVersion;
 
   Version({
     this.minimalVersion,
@@ -38,10 +38,10 @@ class Version {
     }
 
     try {
-      int appVersion = int.parse(FlavorConfig.instance.buildNumber);
-      if (appVersion >= currentVersion) {
+      int appVersion = int.parse(FlavorConfig.instance!.buildNumber!);
+      if (appVersion >= currentVersion!) {
         return ON_LATEST_VERSION;
-      } else if (appVersion >= minimalVersion) {
+      } else if (appVersion >= minimalVersion!) {
         return UPDATE_AVAILABLE;
       } else {
         return UPDATE_REQUIRED;

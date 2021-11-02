@@ -7,19 +7,19 @@ part 'user.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class User {
-  String address;
-  String city;
-  String email;
-  String id;
-  String firstName;
-  String lastName;
-  String phone1;
-  String phone2;
-  String phone3;
-  String state;
-  String zipCode;
-  List<Category> categories;
-  Company company;
+  String? address;
+  String? city;
+  String? email;
+  String? id;
+  String? firstName;
+  String? lastName;
+  String? phone1;
+  String? phone2;
+  String? phone3;
+  String? state;
+  String? zipCode;
+  List<Category>? categories;
+  Company? company;
 
 
   User({this.address, this.city, this.email, this.id, this.firstName,

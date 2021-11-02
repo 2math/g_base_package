@@ -6,11 +6,11 @@ import 'package:g_base_package/base/flavor_config.dart';
 ///Custom app config file for each application. Each app flavor must extend from it
 ///so all flavors will share same fields. Also set common data here
 abstract class AppBaseConfig extends FlavorConfig {
-  static AppBaseConfig _instance;
+  static AppBaseConfig? _instance;
 
   final String webURL;
 
-  AppBaseConfig(Flavor flavor, {@required baseUrl, @required this.webURL})
+  AppBaseConfig(Flavor flavor, {required baseUrl, required this.webURL})
       : super(flavor,
             baseUrl: baseUrl,
             msgLoadingKey: StrKey.msgLoading,
@@ -30,7 +30,7 @@ abstract class AppBaseConfig extends FlavorConfig {
     _instance ??= this;
   }
 
-  static AppBaseConfig get instance {
+  static AppBaseConfig? get instance {
     return _instance;
   }
 }

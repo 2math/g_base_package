@@ -5,10 +5,10 @@ import '../reporters/crash_reporter.dart';
 import 'package:flutter/foundation.dart';
 
 class InstanceProvider<R, P, C extends BaseCrashReporter, A extends BaseAnalyticsUtil> {
-  static InstanceProvider _instance;
+  static InstanceProvider? _instance;
   static bool _ignoreInstanceForUnitTests = false;
 
-  static InstanceProvider getInstance() {
+  static InstanceProvider? getInstance() {
     if (_instance == null && !_ignoreInstanceForUnitTests) {
 //            throw new AppException(errorMessage: "You must init repository on app start" );
       Log.printInDebugOnly("InstanceProvider", "You must init repository on app start", Level.warning,
@@ -22,44 +22,44 @@ class InstanceProvider<R, P, C extends BaseCrashReporter, A extends BaseAnalytic
     _ignoreInstanceForUnitTests = value;
   }
 
-  R _repositoryInstance;
-  P _persistenceInstance;
-  C _crashReporter;
-  A _analyticsUtil;
+  R? _repositoryInstance;
+  P? _persistenceInstance;
+  C? _crashReporter;
+  A? _analyticsUtil;
 
   InstanceProvider.init(this._repositoryInstance, this._persistenceInstance, this._crashReporter, this._analyticsUtil) {
     _instance = this;
   }
 
-  R provideRepository() {
+  R? provideRepository() {
     return _repositoryInstance;
   }
 
-  P provideLocalRepository() {
+  P? provideLocalRepository() {
     return _persistenceInstance;
   }
 
   @visibleForTesting
-  setTestRepositoryInstance(R testRepository) {
+  setTestRepositoryInstance(R? testRepository) {
     _repositoryInstance = testRepository;
   }
 
   @visibleForTesting
-  setTestLocalRepositoryInstance(P testRepository) {
+  setTestLocalRepositoryInstance(P? testRepository) {
     _persistenceInstance = testRepository;
   }
 
-  C get crashReporter => _crashReporter;
+  C? get crashReporter => _crashReporter;
 
   @visibleForTesting
-  setTestCrashReporter(C crashReporter) {
+  setTestCrashReporter(C? crashReporter) {
     _crashReporter = crashReporter;
   }
 
-  A get analyticsUtil => _analyticsUtil;
+  A? get analyticsUtil => _analyticsUtil;
 
   @visibleForTesting
-  setTestAnalyticsUtil(A analyticsUtil) {
+  setTestAnalyticsUtil(A? analyticsUtil) {
     _analyticsUtil = analyticsUtil;
   }
 }

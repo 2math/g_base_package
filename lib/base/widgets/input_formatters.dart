@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 class NumberTextInputFormatter extends TextInputFormatter {
   NumberTextInputFormatter({this.decimalRange}) : assert(decimalRange == null || decimalRange > 0);
 
-  final int decimalRange;
+  final int? decimalRange;
 
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
@@ -41,7 +41,7 @@ class NumberTextInputFormatter extends TextInputFormatter {
       return false;
     }
 
-    return text.substring(text.indexOf('.') + 1).length <= decimalRange;
+    return text.substring(text.indexOf('.') + 1).length <= decimalRange!;
   }
 
   TextEditingValue sanitize(TextEditingValue value) {

@@ -5,12 +5,12 @@ import '../flavor_config.dart';
 //todo provider
 class BaseCrashReporter {
 
-  log(String log, [String tag]) {
+  log(String log, [String? tag]) {
 //    Crashlytics.instance.log('${tag == null ? '' : tag} : $log');
 //    Instabug.logUserEvent('$tag : $log');
   }
 
-  logError(String log, [String tag, Error error]) {
+  logError(String log, [String? tag, Error? error]) {
 //    Crashlytics.instance
 //        .recordError(error, null, context: '${tag == null ? '' : tag} : $log');
 //    Instabug.logUserEvent('$tag : $log \n $error');
@@ -46,7 +46,7 @@ class BaseCrashReporter {
 //    Instabug.setUserAttribute(value.toString(),key);
   }
 
-  setString(String key, String value) {
+  setString(String key, String? value) {
 //    Crashlytics.instance.setString(key, value);
 //    Instabug.setUserAttribute(value,key);
   }

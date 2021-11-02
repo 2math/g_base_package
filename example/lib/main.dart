@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  MyHomePage({Key? key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -79,7 +79,7 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
+  final String? title;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -88,7 +88,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
   final String tag = "MyHomePage";
   int _counter = 0;
-  String token, companyId;
+  String? token, companyId;
 
   void _incrementCounter() {
     Log.d("${System.isKeyboardVisible(context)}", tag);
@@ -106,10 +106,10 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         Log.d("login", tag);
         NetworkManager(null).login("g.blagoev@futurist-labs.com", "123456", (json) {
           try {
-            token = jsonDecode(json)['sessionId'] as String;
+            token = jsonDecode(json)['sessionId'] as String?;
             //companyId = jsonDecode(json)["user"]['company']["id"] as String;
           } catch (e) {
-            Log.e("weird error parsing session", tag, e);
+            Log.error("weird error parsing session", tag:tag, error: e);
           }
         }).catchError((error){
           Log.error("login error", tag: tag, error: error);
@@ -117,7 +117,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
       } else {
         NetworkManager(token).getWorkspaces(companyId, (json) {
           Log.d("getWorkspaces", tag);
-          return List();
+          return [];
         }).catchError((error) {
           Log.e("error getting Workspaces", tag, error is Error ? error : AppException(data: error));
         });
@@ -141,7 +141,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(widget.title!),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -208,7 +208,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
 
                       if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
                         bool isBlocking = status == Version.UPDATE_REQUIRED;
-                        int result = await Dialogs.showVersions(
+                        int? result = await Dialogs.showVersions(
                             context,
                             Text("App Name"),
                             Text(isBlocking
@@ -228,7 +228,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                           await System.popToExit(animated: true);
                         } else {
                           Dialogs.showSnackBar(context, "Continue",
-                              marginBottom: SizeConfig.screenHeight / 2.4,
+                              marginBottom: SizeConfig.screenHeight! / 2.4,
                               textStyle: TextStyle(color: Colors.black),
                               bkgColor: Colors.blue,
                               duration: Duration(seconds: 2));

@@ -12,14 +12,14 @@ import 'package:flutter/services.dart';
 ///Create AppBaseState for each app where K should be App Repository class, which was init on App
 /// create
 abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
-  K remoteRepository;
-  P localRepository;
-  AlertDialog progressDialog;
+  K? remoteRepository;
+  P? localRepository;
+  AlertDialog? progressDialog;
 
   String get tag;
 
   ///this getter is for consistence with older versions
-  K get repository => remoteRepository;
+  K? get repository => remoteRepository;
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     return progressDialog == null;
   }
 
-  bool showProgressIndicatorIfNotShowing({String msgKey, String text}) {
+  bool showProgressIndicatorIfNotShowing({String? msgKey, String? text}) {
     if(canShowProgressDialog()){
       showProgressIndicator(msgKey: msgKey, text: text);
       return true;
@@ -55,21 +55,21 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     return false;
   }
 
-  showProgressIndicator({String msgKey, String text}) {
+  showProgressIndicator({String? msgKey, String? text}) {
     if (progressDialog == null || msgKey != null) {
       String message;
       if (msgKey != null) {
         message = Txt.get(msgKey);
       } else if (text != null) {
         message = text;
-      } else if (FlavorConfig.instance.msgLoadingKey != null) {
-        message = Txt.get(FlavorConfig.instance.msgLoadingKey);
+      } else if (FlavorConfig.instance!.msgLoadingKey != null) {
+        message = Txt.get(FlavorConfig.instance!.msgLoadingKey);
       } else {
         message = 'Loading...';
       }
       progressDialog = Dialogs.createProgressDialog(null, message);
     }
-    Dialogs.showProgressDialog(context, progressDialog);
+    Dialogs.showProgressDialog(context, progressDialog!);
   }
 
   hideProgressIndicator() {
@@ -86,17 +86,17 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
   }
 
   void showError(e,
-      {BuildContext buildContext,
-      Color bkgColor,
-      TextStyle textStyle,
+      {BuildContext? buildContext,
+      Color? bkgColor,
+      TextStyle? textStyle,
       double marginBottom = 0,
-      Duration duration,
-      String closeAction,
-      Color closeActionColor,
-      SnackBarAction action}) {
+      Duration? duration,
+      String? closeAction,
+      Color? closeActionColor,
+      SnackBarAction? action}) {
     hideProgressIndicator();
 //    Log.e("login_screen", "$e");
-    var msg = getErrorMessage(e);
+    var msg = getErrorMessage(e)!;
     Log.e(msg);
 
     Dialogs.showSnackBar(
@@ -113,14 +113,14 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
   }
 
   void showInfoMessage(String msg,
-      {BuildContext buildContext,
-      TextStyle textStyle,
-      Color bkgColor,
+      {BuildContext? buildContext,
+      TextStyle? textStyle,
+      Color? bkgColor,
       double marginBottom = 0,
-      Duration duration,
-      String closeAction,
-      Color closeActionColor,
-      SnackBarAction action}) {
+      Duration? duration,
+      String? closeAction,
+      Color? closeActionColor,
+      SnackBarAction? action}) {
 //    Log.e("login_screen", "$e");
     Dialogs.showSnackBar(
       buildContext != null ? buildContext : context,
@@ -135,40 +135,40 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     );
   }
 
-  String getErrorMessage(error, {String defaultMessage}) {
+  String? getErrorMessage(error, {String? defaultMessage}) {
     if (error is AppException) {
       switch (error.code) {
         case 400:
-          String serverCode = JsonParser().parseErr(error);
+          String? serverCode = JsonParser().parseErr(error);
           if (serverCode != null &&
               serverCode == AppException.UNSUPPORTED_VERSION &&
-              FlavorConfig.instance.unsupportedVersionKey != null) {
-            return Txt.get(FlavorConfig.instance.unsupportedVersionKey);
+              FlavorConfig.instance!.unsupportedVersionKey != null) {
+            return Txt.get(FlavorConfig.instance!.unsupportedVersionKey);
           }
           break;
         case 401:
-          if (FlavorConfig.instance.unauthorizedKey != null) {
-            return Txt.get(FlavorConfig.instance.unauthorizedKey);
+          if (FlavorConfig.instance!.unauthorizedKey != null) {
+            return Txt.get(FlavorConfig.instance!.unauthorizedKey);
           }
           break;
         case 403:
-          if (FlavorConfig.instance.forbiddenKey != null) {
-            return Txt.get(FlavorConfig.instance.forbiddenKey);
+          if (FlavorConfig.instance!.forbiddenKey != null) {
+            return Txt.get(FlavorConfig.instance!.forbiddenKey);
           }
           break;
         case 404:
-          if (FlavorConfig.instance.notFoundKey != null) {
-            return Txt.get(FlavorConfig.instance.notFoundKey);
+          if (FlavorConfig.instance!.notFoundKey != null) {
+            return Txt.get(FlavorConfig.instance!.notFoundKey);
           }
           break;
         case 500:
-          if (FlavorConfig.instance.serverErrorKey != null) {
-            return Txt.get(FlavorConfig.instance.serverErrorKey);
+          if (FlavorConfig.instance!.serverErrorKey != null) {
+            return Txt.get(FlavorConfig.instance!.serverErrorKey);
           }
           break;
         case AppException.OFFLINE_ERROR:
-          if (FlavorConfig.instance.noNetworkKey != null) {
-            return Txt.get(FlavorConfig.instance.noNetworkKey);
+          if (FlavorConfig.instance!.noNetworkKey != null) {
+            return Txt.get(FlavorConfig.instance!.noNetworkKey);
           }
           break;
       }
@@ -176,9 +176,9 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
       if (!Validator.isEmpty(defaultMessage)) {
         return defaultMessage;
       }
-      return error.data is String && BaseUtils.isNotEmptyStr(error.data) ? error.data : error.error;
-    } else if (error is SocketException && FlavorConfig.instance.socketExceptionKey != null) {
-      return Txt.get(FlavorConfig.instance.noNetworkKey);
+      return error.data is String && BaseUtils.isNotEmptyStr(error.data as String?) ? error.data as String? : error.error;
+    } else if (error is SocketException && FlavorConfig.instance!.socketExceptionKey != null) {
+      return Txt.get(FlavorConfig.instance!.noNetworkKey);
     } else {
       return "$error";
     }
