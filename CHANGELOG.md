@@ -1,3 +1,5 @@
+## [2.0.1] - null safety
+
 ## [1.26.6] - fixed localization problem
 
 ## [1.26.5] - fixed System().isMobile
