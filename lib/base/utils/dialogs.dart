@@ -137,13 +137,14 @@ class Dialogs {
     );
 
 // Find the Scaffold in the Widget tree and use it to show a SnackBar
-    ScaffoldState scaffoldState;
+    var scaffoldState;
     try {
-      scaffoldState = Scaffold.of(context);
+      // scaffoldState = Scaffold.of(context);
+      scaffoldState = ScaffoldMessenger.of(context);
     } catch (e) {
       Log.error('Wrong context?',error: e);
     }
-    // ScaffoldMessengerState scaffoldState = ScaffoldMessenger.of(context);
+
     if (scaffoldState != null) {
       scaffoldState.removeCurrentSnackBar();
       scaffoldState.showSnackBar(snackBar);
