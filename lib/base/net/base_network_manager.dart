@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:g_base_package/base/provider/instance_provider.dart';
 
 import '../lang/localization.dart';
@@ -10,7 +11,7 @@ import '../utils/logger.dart';
 import '../utils/versions.dart';
 import '../app_exception.dart';
 import 'call.dart';
-import 'package:connectivity/connectivity.dart';
+// import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 
 class BaseNetworkManager {
@@ -262,7 +263,7 @@ class BaseNetworkManager {
 
     String requestLog = "$fileURL\nHeaders :\n${_printMap(headers)}";
 
-    _logLastRequest("DELETE", requestLog);
+    _logLastRequest("Download", requestLog);
 
     if (call.printLogs) {
       Log.d(requestLog, "$netTag GET");

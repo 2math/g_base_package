@@ -1,3 +1,26 @@
+## [1.26.6] - fixed localization problem
+
+## [1.26.5] - fixed System().isMobile
+
+## [1.26.4] - updated logs to add device data on each new log file, fixed Log tag for DOWNLOAD file,
+showProgressIndicatorIfNotShowing
+
+## [1.26.3] - updated path_provider to support windows
+
+## [1.26.2] - remove connectivity and platform, only plus versions remain
+
+## [1.26.1] - helper functions to check platform
+
+## [1.26.0] - connectivity_plus and package_info_plus to support Windows
+
+## [1.25.19] - fix on InstanceProvider log error if no instance
+
+## [1.25.18] - validator fix
+
+## [1.25.17] - updated error log on parseErr
+
+## [1.25.16] - fix on create directory
+
 ## [1.25.15] - do not write sensitive info to the file logs that are logged by Log.s
 
 ## [1.25.14] - fix to write error logs in the file, better marking in the file for error logs

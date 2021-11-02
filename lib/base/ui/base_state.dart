@@ -46,6 +46,15 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     return progressDialog == null;
   }
 
+  bool showProgressIndicatorIfNotShowing({String msgKey, String text}) {
+    if(canShowProgressDialog()){
+      showProgressIndicator(msgKey: msgKey, text: text);
+      return true;
+    }
+
+    return false;
+  }
+
   showProgressIndicator({String msgKey, String text}) {
     if (progressDialog == null || msgKey != null) {
       String message;

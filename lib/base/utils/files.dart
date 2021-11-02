@@ -25,11 +25,13 @@ class BaseFileUtils {
     var baseDir = await localPath;
     String finalDir =
         dirToBeCreated == null ? baseDir : join(baseDir, dirToBeCreated);
+
     var dir = Directory(finalDir);
 
     if (!await dir.exists()) {
       return dir.create(recursive: recursive);
     }
+
     return dir;
   }
 

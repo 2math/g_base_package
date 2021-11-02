@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:g_base_package/base/utils/logger.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+// import 'package:package_info/package_info.dart';
 
 enum Flavor { DEV, STAGE, PROD, TEST }
 
@@ -56,16 +57,20 @@ class FlavorConfig {
     if (!isTesting()) {
       WidgetsFlutterBinding.ensureInitialized();
 
-      PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-        _appName = packageInfo.appName;
-        _packageName = packageInfo.packageName;
-        _version = packageInfo.version;
-        _buildNumber = packageInfo.buildNumber;
-      }).catchError((e) {
-        Log.e("getting app info : $e", "flavorConfig",
-            e is Error ? e : AssertionError("$e"));
-      });
+      updatePlatformInfo();
     }
+  }
+
+  void updatePlatformInfo() {
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      _appName = packageInfo.appName;
+      _packageName = packageInfo.packageName;
+      _version = packageInfo.version;
+      _buildNumber = packageInfo.buildNumber;
+    }).catchError((e) {
+      Log.e("getting app info : $e", "flavorConfig",
+          e is Error ? e : AssertionError("$e"));
+    });
   }
 
   @override

@@ -357,6 +357,12 @@ class CustomFileOutput extends LogOutput {
       file = newFile;
 
       init();
+
+      _sink?.writeAll(["*******************************************",
+          "Continue Session - ${DateTime.now().toIso8601String()}",
+          "${FlavorConfig.instance.toString()}",
+          "is release : $kReleaseMode",
+          "*******************************************\n"], '\n');
     }
 
     isOpeningNewFile = false;

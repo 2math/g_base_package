@@ -1,11 +1,19 @@
 import 'dart:io';
 
-import 'package:connectivity/connectivity.dart';
+// import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';// as
+// connectivity_plus;
 
 class NetUtil {
+
   Future<ConnectivityResult> checkNetwork() async {
     return (Connectivity().checkConnectivity());
   }
+
+  ///support all platforms
+  // Future<connectivity_plus.ConnectivityResult> checkNetworkPlus() async {
+  //   return (connectivity_plus.Connectivity().checkConnectivity());
+  // }
 
   Future<bool> isMobile() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
