@@ -9,7 +9,7 @@ enum Flavor { DEV, STAGE, PROD, TEST }
 ///Create BaseAppFlavor for each App that extend this one and init common data there
 ///Then create specific flavor classes that should extend from your BaseAppFlavor
 class FlavorConfig {
-  static FlavorConfig _instance;
+  static late FlavorConfig _instance;
   final Flavor flavor;
   final String baseUrl;
 
@@ -35,7 +35,7 @@ class FlavorConfig {
   final bool useVersionForIOS;
 
   FlavorConfig(this.flavor,
-      {@required this.baseUrl,
+      {required this.baseUrl,
       this.msgLoadingKey,
       this.unauthorizedKey,
       this.forbiddenKey,

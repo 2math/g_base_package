@@ -5,14 +5,12 @@ class AppException extends Error{
     static const String DUPLICATE_DATA = "DUPLICATE_DATA";
     static const String UNSUPPORTED_VERSION = "UNSUPPORTED_VERSION";
 
-    String error;
-    int code;
-    Object data;
+    String? error;
+    int? code;
+    Object? data;
 
-    AppException({String errorMessage, int code, Object data}){
-        this.error = errorMessage;
-        this.code = code;
-        this.data = data;
+    AppException({String? errorMessage, this.code, this.data}){
+        error = errorMessage;
     }
 
     @override
