@@ -115,7 +115,7 @@ class Log {
         logger.w(textToLog);
         break;
       case Level.error:
-        logger.e(textToLog, error, stackTrace!);
+        logger.e(textToLog, error, stackTrace);
         break;
       default:
         logger.d(textToLog);
