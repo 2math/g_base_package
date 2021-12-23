@@ -1,3 +1,5 @@
+## [2.0.5] - small update and migrate to plus plugins
+
 ## [2.0.1] - null safety
 
 ## [1.26.6] - fixed localization problem
