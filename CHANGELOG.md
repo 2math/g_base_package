@@ -1,3 +1,5 @@
+## [2.0.6] - finally deprecated the repository in the BaseBloc
+
 ## [2.0.5] - small update and migrate to plus plugins
 
 ## [2.0.1] - null safety

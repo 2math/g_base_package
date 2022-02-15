@@ -9,7 +9,7 @@ abstract class BaseBloc<Event, State, T, P> extends Bloc<Event, State> {
   T? remoteRepository;
   P? localRepository;
 
-  ///this getter is for consistence with older versions
+  @Deprecated('this getter is for consistence with older versions')
   T? get repository => remoteRepository;
 
 //  /// Returns the [state] before any `events` have been [add]ed.
