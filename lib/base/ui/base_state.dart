@@ -19,6 +19,7 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
   String get tag;
 
   ///this getter is for consistence with older versions
+  @Deprecated('This getter is for consistence with older versions. Use remoteRepository or localRepository')
   K? get repository => remoteRepository;
 
   @override
@@ -100,7 +101,7 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     Log.e(msg);
 
     Dialogs.showSnackBar(
-      buildContext != null ? buildContext : context,
+      buildContext ?? context,
       msg,
       bkgColor: bkgColor,
       textStyle: textStyle,
@@ -123,7 +124,7 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
       SnackBarAction? action}) {
 //    Log.e("login_screen", "$e");
     Dialogs.showSnackBar(
-      buildContext != null ? buildContext : context,
+      buildContext ?? context,
       msg,
       bkgColor: bkgColor,
       textStyle: textStyle,
