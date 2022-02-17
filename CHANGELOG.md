@@ -1,3 +1,7 @@
+## [2.0.8] - deprecated extensions in the extention file to fix the typo
+
+## [2.0.7] - finally deprecated the repository in the BaseState
+
 ## [2.0.6] - finally deprecated the repository in the BaseBloc
 
 ## [2.0.5] - small update and migrate to plus plugins

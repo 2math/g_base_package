@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 extension BaseColor on Color {
     /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
-    @Deprecated('Please use same function from package:g_base_package/base/utils/extensions.dart')
     static Color fromHex(String hexString) {
         final buffer = StringBuffer();
         if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
@@ -11,7 +10,6 @@ extension BaseColor on Color {
     }
 
     /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
-    @Deprecated('Please use same function from package:g_base_package/base/utils/extensions.dart')
     String toHex({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
             '${alpha.toRadixString(16).padLeft(2, '0')}'
             '${red.toRadixString(16).padLeft(2, '0')}'
