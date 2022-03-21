@@ -1,3 +1,5 @@
+## [2.0.10] - save latest response headers and cookie and option to print them on positive response
+
 ## [2.0.8] - deprecated extensions in the extention file to fix the typo
 
 ## [2.0.7] - finally deprecated the repository in the BaseState

@@ -17,7 +17,8 @@ import 'package:http/http.dart' as http;
 
 class BaseNetworkManager {
   final String netTag = "NET";
-
+  String? latestCookie;
+  Map<String, String>? latestHeaders;
 
   Future<T?> doServerCall<T>(
       Call call, Function handlePositiveResultBody) async {
@@ -107,6 +108,14 @@ class BaseNetworkManager {
 
   Future<T?> _onPositiveResponse<T>(Call call, http.Response response,
       Function handlePositiveResultBody) async {
+    if(call.printResponseHeaders) {
+      Log.d(_printMap(response.headers));
+    }
+
+    latestHeaders = response.headers;
+
+    latestCookie = response.headers['set-cookie'];
+
     if (call.callMethod == CallMethod.DOWNLOAD) {
       return await _saveToFile(call, response);
     } else {
