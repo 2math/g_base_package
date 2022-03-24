@@ -9,7 +9,7 @@ class Call {
   CallMethod callMethod;
   String endpoint;
   Map<String, String>? params, headers;
-  String? body, toLog, token, language, fileName;
+  String? body, toLog, token, language, fileName, fileField;
   bool isFullUrl, isServerUrl, refreshOn401, printLogs, printResponseBody, shouldCheckCustomErrors,
       printResponseHeaders;
   File? file;
@@ -32,6 +32,7 @@ class Call {
     this.file,
     this.mediaType,
     this.fileName,
+    this.fileField,
     this.refreshOn401 = true,
     this.shouldCheckCustomErrors = true,
     this.printResponseHeaders = false,
