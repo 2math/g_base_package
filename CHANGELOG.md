@@ -1,3 +1,5 @@
+## [2.0.12] - option to refresh session with new Call
+
 ## [2.0.11] - option to customized the field name for file upload on multipart request
 
 ## [2.0.10] - save latest response headers and cookie and option to print them on positive response

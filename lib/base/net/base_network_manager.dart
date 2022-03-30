@@ -39,24 +39,31 @@ class BaseNetworkManager {
 
       if (response.statusCode == 401 && call.refreshOn401) {
         Log.d("tryToRefreshSession", netTag);
-        String? newToken = await tryToRefreshSession();
+        if (call.refreshWithCall) {
+          Call? newCall = await tryToRefreshSessionWithCall(call);
 
-        if (newToken != null) {
-          Log.d("repeat call with new session", netTag);
+          if (newCall != null) {
+            Log.d("repeat call with new session and call", netTag);
+            call = newCall;
 
-          call.token = newToken;
-
-          final response2 = await _doCall(call);
-
-          if (response2.statusCode < 300) {
-            return await (_onPositiveResponse(call, response2, handlePositiveResultBody));
+            return await _repeatCall(call, handlePositiveResultBody);
           } else {
-            throw AppException(
-                errorMessage: 'Server Error', code: response2.statusCode, data: _getBodyAsUtf8(response2));
+            //return original response if we couldn't auto login!
+            throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
           }
         } else {
-          //return original response if we couldn't auto login!
-          throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
+          String? newToken = await tryToRefreshSession();
+
+          if (newToken != null) {
+            Log.d("repeat call with new session", netTag);
+
+            call.token = newToken;
+
+            return await _repeatCall(call, handlePositiveResultBody);
+          } else {
+            //return original response if we couldn't auto login!
+            throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
+          }
         }
       } else {
         // If that call was not successful, throw an error.
@@ -65,8 +72,25 @@ class BaseNetworkManager {
     }
   }
 
+  Future<dynamic> _repeatCall(Call call, Function handlePositiveResultBody) async {
+    final response2 = await _doCall(call);
+
+    if (response2.statusCode < 300) {
+      return await (_onPositiveResponse(call, response2, handlePositiveResultBody));
+    } else {
+      throw AppException(errorMessage: 'Server Error', code: response2.statusCode, data: _getBodyAsUtf8(response2));
+    }
+  }
+
   ///override this function if you want to refresh session on 401 and repeat call
+  ///return the new token
   Future<String?> tryToRefreshSession() async {
+    return Future.value(null);
+  }
+
+  ///override this function if you want to refresh session on 401 and repeat call
+  ///return new call
+  Future<Call?> tryToRefreshSessionWithCall(Call call) async {
     return Future.value(null);
   }
 

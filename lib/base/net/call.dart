@@ -11,7 +11,7 @@ class Call {
   Map<String, String>? params, headers;
   String? body, toLog, token, language, fileName, fileField;
   bool isFullUrl, isServerUrl, refreshOn401, printLogs, printResponseBody, shouldCheckCustomErrors,
-      printResponseHeaders;
+      printResponseHeaders, refreshWithCall;
   File? file;
   MediaType? mediaType;
   OnUploadProgressCallback? onUploadProgress;
@@ -34,6 +34,7 @@ class Call {
     this.fileName,
     this.fileField,
     this.refreshOn401 = true,
+    this.refreshWithCall = false,
     this.shouldCheckCustomErrors = true,
     this.printResponseHeaders = false,
     this.onUploadProgress,
