@@ -38,24 +38,24 @@ class Dialogs {
             content: message,
             actions: <Widget>[
               btnSkip != null
-                  ? FlatButton(
+                  ? TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(Version.UPDATE_AVAILABLE);
                       },
                       child: btnSkip,
                     )
-                  : SizedBox(
+                  : const SizedBox(
                       width: 0,
                       height: 0,
                     ),
               btnGoToStore != null
-                  ? FlatButton(
+                  ? TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(Version.UPDATE_REQUIRED);
                       },
                       child: btnGoToStore,
                     )
-                  : SizedBox(
+                  : const SizedBox(
                       width: 0,
                       height: 0,
                     ),
@@ -107,7 +107,7 @@ class Dialogs {
         ? SnackBar(
       content: Text(msg, style: textStyle),
       backgroundColor: bkgColor,
-      duration: duration ?? Duration(milliseconds: 4000),
+      duration: duration ?? const Duration(milliseconds: 4000),
       action: snackBarAction,
     )
         : SnackBar(
@@ -120,7 +120,7 @@ class Dialogs {
             mainAxisSize: MainAxisSize.max,
             children: [
               Expanded(child: Text(msg, style: textStyle)),
-              snackBarAction ?? SizedBox(width: 0, height: 0),
+              snackBarAction ?? const SizedBox(width: 0, height: 0),
             ],
           ),
         ),
@@ -131,7 +131,7 @@ class Dialogs {
         ),
       ),
       backgroundColor: Colors.transparent,
-      duration: duration ?? Duration(milliseconds: 4000),
+      duration: duration ?? const Duration(milliseconds: 4000),
       elevation: 0,
       behavior: SnackBarBehavior.floating,
     );

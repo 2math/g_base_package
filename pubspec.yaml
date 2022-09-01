@@ -1,7 +1,6 @@
 name: g_base_package
 description: Base functionality for a project
 version: 0.1.13
-author: Galeen
 homepage: https://github.com/2math/g_base_package
 
 # The following line prevents the package from being accidentally published to

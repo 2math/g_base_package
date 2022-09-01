@@ -174,14 +174,14 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                 '$_counter',
                 style: Theme.of(context).textTheme.headline4,
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Print Log files"),
                 onPressed: () async{
                   var list = await FileLogs().getLogFileVersions();
                   Log.w("file versions $list");
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Logout"),
                 onPressed: () {
                   // showProgressIndicator(text: "some really long text mmmmmmmmmmmmmmmmmmm mmmmmmmmmmmmmmmmmmmmmmmmmmm");
@@ -194,7 +194,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               ),
               LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  return FlatButton(
+                  return TextButton(
                     child: Text("Get versions"),
                     onPressed: () async {
                       var versions = await NetworkManager(null).getVersions();
@@ -242,7 +242,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               ),
               LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  return FlatButton(
+                  return TextButton(
                     child: Text("Show snackbar"),
                     onPressed: () {
                       Dialogs.showSnackBar(
@@ -257,7 +257,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               ),
               LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  return FlatButton(
+                  return TextButton(
                     child: Text("Show snackbar 150"),
                     onPressed: () {
                       Dialogs.showSnackBar(
@@ -272,43 +272,43 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                   );
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Select and Upload Image"),
                 onPressed: () {
                   _selectImage();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Select and Upload Document"),
                 onPressed: () {
                   _selectFile();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("delete Document"),
                 onPressed: () {
                   _deleteFiles();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Fetch Documents"),
                 onPressed: () {
                   _fetchFiles();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Edit Document With file"),
                 onPressed: () {
                   _editFile(false);
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Edit Document Without file"),
                 onPressed: () {
                   _editFile(true);
                 },
               ),
-              FlatButton(
+              TextButton(
                   child: Text("Check Internet"),
                   onPressed: () async {
                     Log.d(DateTime.now().toIso8601String());
@@ -316,7 +316,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                     Log.d(DateTime.now().toIso8601String());
                     showInfoMessage(res ? "Has internet" : "No internet");
                   }),
-              FlatButton(
+              TextButton(
                 child: Text("check"),
                 onPressed: () {
                   Call call = new Call.name(
