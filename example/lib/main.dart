@@ -6,21 +6,14 @@ import 'package:example/res/res.dart';
 import 'package:example/res/strings/main/bg_strings.dart';
 import 'package:example/res/strings/main/en_strings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:g_base_package/base/app_exception.dart';
 import 'package:g_base_package/base/net/call.dart';
 import 'package:g_base_package/base/ui/base_state.dart';
-import 'package:g_base_package/base/ui/logs_screen.dart';
-import 'package:g_base_package/base/utils/dialogs.dart';
-import 'package:g_base_package/base/utils/logger.dart';
-import 'package:g_base_package/base/utils/system.dart';
 import 'package:g_base_package/base/utils/utils.dart';
 import 'package:g_base_package/base/utils/versions.dart';
-import 'package:g_base_package/base/utils/files.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:launch_review/launch_review.dart';
 
-import 'model/session.dart';
 
 void main() {
   DevConfig();
@@ -174,14 +167,14 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                 '$_counter',
                 style: Theme.of(context).textTheme.headline4,
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Print Log files"),
                 onPressed: () async{
                   var list = await FileLogs().getLogFileVersions();
                   Log.w("file versions $list");
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Logout"),
                 onPressed: () {
                   // showProgressIndicator(text: "some really long text mmmmmmmmmmmmmmmmmmm mmmmmmmmmmmmmmmmmmmmmmmmmmm");
@@ -194,7 +187,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               ),
               LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  return FlatButton(
+                  return TextButton(
                     child: Text("Get versions"),
                     onPressed: () async {
                       var versions = await NetworkManager(null).getVersions();
@@ -242,7 +235,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               ),
               LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  return FlatButton(
+                  return TextButton(
                     child: Text("Show snackbar"),
                     onPressed: () {
                       Dialogs.showSnackBar(
@@ -257,7 +250,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               ),
               LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
-                  return FlatButton(
+                  return TextButton(
                     child: Text("Show snackbar 150"),
                     onPressed: () {
                       Dialogs.showSnackBar(
@@ -272,43 +265,43 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                   );
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Select and Upload Image"),
                 onPressed: () {
                   _selectImage();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Select and Upload Document"),
                 onPressed: () {
                   _selectFile();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("delete Document"),
                 onPressed: () {
                   _deleteFiles();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Fetch Documents"),
                 onPressed: () {
                   _fetchFiles();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Edit Document With file"),
                 onPressed: () {
                   _editFile(false);
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text("Edit Document Without file"),
                 onPressed: () {
                   _editFile(true);
                 },
               ),
-              FlatButton(
+              TextButton(
                   child: Text("Check Internet"),
                   onPressed: () async {
                     Log.d(DateTime.now().toIso8601String());
@@ -316,7 +309,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                     Log.d(DateTime.now().toIso8601String());
                     showInfoMessage(res ? "Has internet" : "No internet");
                   }),
-              FlatButton(
+              TextButton(
                 child: Text("check"),
                 onPressed: () {
                   Call call = new Call.name(
@@ -357,7 +350,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         Log.error("selectImage copy", error: error);
       });
 
-      if (copiedFile != null && await copiedFile.exists()) {
+      if (await copiedFile.exists()) {
         NetworkManager(token).uploadImageFuture(
           copiedFile.path,
           "b55306bc-20d0-4ee6-adb1-d3307c308502",
@@ -387,7 +380,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         Log.error("selectImage copy", error: error);
       });
 
-      if (copiedFile != null && await copiedFile.exists()) {
+      if (await copiedFile.exists()) {
         NetworkManager(token).uploadFileFuture(
           copiedFile.path,
           "b55306bc-20d0-4ee6-adb1-d3307c308502",

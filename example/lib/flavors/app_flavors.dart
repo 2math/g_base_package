@@ -1,6 +1,5 @@
 
 import 'package:example/res/res.dart';
-import 'package:flutter/material.dart';
 import 'package:g_base_package/base/flavor_config.dart';
 
 ///Custom app config file for each application. Each app flavor must extend from it

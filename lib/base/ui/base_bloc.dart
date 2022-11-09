@@ -22,7 +22,8 @@ abstract class BaseBloc<Event, State, T, P> extends Bloc<Event, State> {
 
   @override
   void onTransition(Transition<Event, State> transition) {
-    Log.i("New transition", "$tag");
+    super.onTransition(transition);
+    Log.i("New transition", tag);
     Log.i("${transition.currentState}", "$tag currentState");
     Log.i("${transition.event}", "$tag event");
     Log.i("${transition.nextState}", "$tag nextState");
