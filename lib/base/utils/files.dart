@@ -15,7 +15,7 @@ class BaseFileUtils {
     Directory dir = await getLocalDir(directory);
     String fullName = join(dir.path, fileName);
     Log.d(fullName);
-    return File('$fullName');
+    return File(fullName);
   }
 
   ///Get or create a local directory , pass recursive as true if directory is recursive

@@ -3,7 +3,7 @@ import 'package:http_parser/http_parser.dart';
 
 enum CallMethod { GET, POST, PUT, PATCH, DELETE, DOWNLOAD, UPLOAD, UPLOAD_UPDATE }
 
-typedef void OnUploadProgressCallback(int sentBytes, int totalBytes);
+typedef OnUploadProgressCallback = void Function(int sentBytes, int totalBytes);
 
 class Call {
   CallMethod callMethod;

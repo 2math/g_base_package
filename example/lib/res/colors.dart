@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:g_base_package/base/utils/extentions.dart' as extentions;
+import 'package:g_base_package/base/utils/extensions.dart' as extensions;
 
 ///Here we will keep references to colors like a style
 class AppColors {
@@ -16,8 +16,8 @@ class AppColors {
 
   static final red = Colors.red;
   static final lightBlueAccent = Colors.lightBlueAccent;
-  static final seaBuckthorn = extentions.BaseColor.fromHex("F49F27");
-  static final tundora = extentions.BaseColor.fromHex("4D4D4D");
+  static final seaBuckthorn = extensions.BaseColor.fromHex("F49F27");
+  static final tundora = extensions.BaseColor.fromHex("4D4D4D");
 
   static var primaryColor = Color(0xFF4D4D4D);
   static var accentColor = Color(0xFFF7A100);

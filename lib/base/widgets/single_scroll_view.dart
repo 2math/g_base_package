@@ -13,7 +13,7 @@ class SingleScrollView extends StatefulWidget {
 
   ///wrap child with SingleChildScrollView, but the height of the view will be as matchParent and if the keyboard
   ///appear this height will be kept and view will be scrollable
-  SingleScrollView({Key? key, required this.child, this.minHeight = 0, this.maxHeight = 0}) : super(key: key);
+  const SingleScrollView({Key? key, required this.child, this.minHeight = 0, this.maxHeight = 0}) : super(key: key);
 
   @override
   _SingleScrollViewState createState() => _SingleScrollViewState();

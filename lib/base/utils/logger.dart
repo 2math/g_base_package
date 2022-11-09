@@ -8,7 +8,7 @@ import 'package:g_base_package/base/app_exception.dart';
 
 import '../flavor_config.dart';
 import '../provider/instance_provider.dart';
-import 'package:flutter/foundation.dart' as Foundation;
+import 'package:flutter/foundation.dart' as _foundation;
 import 'package:logger/logger.dart';
 
 import 'files.dart';
@@ -88,7 +88,7 @@ class Log {
           ?.log(log, tag); //always save in Crash Reporter
     }
 
-    if (printInRelease || !Foundation.kReleaseMode) {
+    if (printInRelease || !_foundation.kReleaseMode) {
       _print('$tag : $log', level, _logger);
     }
 
@@ -131,7 +131,7 @@ class Log {
   static _fixError(error) {
     if (error == null) {
       error = AppException(data: "Handled error!");
-    } else if (!(error is Error)) {
+    } else if (error is! Error) {
       error = AppException(data: error);
     }
     return error;
@@ -148,7 +148,7 @@ class Log {
       _printError(tag, error, log, _fileLogger);
     }
 
-    if (printInRelease || !Foundation.kReleaseMode) {
+    if (printInRelease || !_foundation.kReleaseMode) {
       _printError(tag, error, log, _logger);
       return true;
     }
@@ -193,9 +193,7 @@ class FileLogs {
 
     int latestVersion = 0;
 
-    if (fileName == null) {
-      fileName = generateDefaultFileName(fileName);
-    }
+    fileName ??= generateDefaultFileName(fileName);
 
     String initialFileName = fileName;
 
@@ -293,9 +291,7 @@ class FileLogs {
 
     var files = dir.listSync();
 
-    if (fileName == null) {
-      fileName = generateDefaultFileName(fileName);
-    }
+    fileName ??= generateDefaultFileName(fileName);
 
     String initialFileName = fileName;
 
@@ -361,6 +357,7 @@ class CustomFileOutput extends LogOutput {
         _openNewFile();
       }
     } catch (e) {
+      // ignore: avoid_print
       print(e);
     }
   }
@@ -376,25 +373,23 @@ class CustomFileOutput extends LogOutput {
 
     File newFile = await getNewFile!(file);
 
-    if (newFile != null) {
-      await _sink?.flush();
+    await _sink?.flush();
 
-      await _sink?.close();
+    await _sink?.close();
 
-      _sink = null;
+    _sink = null;
 
-      file = newFile;
+    file = newFile;
 
-      init();
+    init();
 
-      _sink?.writeAll([
-        "*******************************************",
-        "Continue Session - ${DateTime.now().toIso8601String()}",
-        "${FlavorConfig.instance.toString()}",
-        "is release : $kReleaseMode",
-        "*******************************************\n"
-      ], '\n');
-    }
+    _sink?.writeAll([
+      "*******************************************",
+      "Continue Session - ${DateTime.now().toIso8601String()}",
+      (FlavorConfig.instance.toString()),
+      "is release : $kReleaseMode",
+      "*******************************************\n"
+    ], '\n');
 
     isOpeningNewFile = false;
   }
@@ -411,12 +406,8 @@ class MultiOutput extends LogOutput {
   List<LogOutput> _normalizeOutputs(List<LogOutput> outputs) {
     final normalizedOutputs = <LogOutput>[];
 
-    if (outputs != null) {
-      for (final output in outputs) {
-        if (output != null) {
-          normalizedOutputs.add(output);
-        }
-      }
+    for (final output in outputs) {
+      normalizedOutputs.add(output);
     }
 
     return normalizedOutputs;
@@ -424,16 +415,22 @@ class MultiOutput extends LogOutput {
 
   @override
   void init() {
-    _outputs.forEach((o) => o.init());
+    for (var o in _outputs) {
+      o.init();
+    }
   }
 
   @override
   void output(OutputEvent event) {
-    _outputs.forEach((o) => o.output(event));
+    for (var o in _outputs) {
+      o.output(event);
+    }
   }
 
   @override
   void destroy() {
-    _outputs.forEach((o) => o.destroy());
+    for (var o in _outputs) {
+      o.destroy();
+    }
   }
 }

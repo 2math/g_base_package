@@ -6,21 +6,14 @@ import 'package:example/res/res.dart';
 import 'package:example/res/strings/main/bg_strings.dart';
 import 'package:example/res/strings/main/en_strings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:g_base_package/base/app_exception.dart';
 import 'package:g_base_package/base/net/call.dart';
 import 'package:g_base_package/base/ui/base_state.dart';
-import 'package:g_base_package/base/ui/logs_screen.dart';
-import 'package:g_base_package/base/utils/dialogs.dart';
-import 'package:g_base_package/base/utils/logger.dart';
-import 'package:g_base_package/base/utils/system.dart';
 import 'package:g_base_package/base/utils/utils.dart';
 import 'package:g_base_package/base/utils/versions.dart';
-import 'package:g_base_package/base/utils/files.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:launch_review/launch_review.dart';
 
-import 'model/session.dart';
 
 void main() {
   DevConfig();
@@ -357,7 +350,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         Log.error("selectImage copy", error: error);
       });
 
-      if (copiedFile != null && await copiedFile.exists()) {
+      if (await copiedFile.exists()) {
         NetworkManager(token).uploadImageFuture(
           copiedFile.path,
           "b55306bc-20d0-4ee6-adb1-d3307c308502",
@@ -387,7 +380,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         Log.error("selectImage copy", error: error);
       });
 
-      if (copiedFile != null && await copiedFile.exists()) {
+      if (await copiedFile.exists()) {
         NetworkManager(token).uploadFileFuture(
           copiedFile.path,
           "b55306bc-20d0-4ee6-adb1-d3307c308502",

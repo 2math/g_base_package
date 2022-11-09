@@ -184,6 +184,7 @@ class BaseNetworkManager {
     return response;
   }
 
+  // ignore: unused_element
   void _logLastRequestAndResponse(String method, String requestLog, String responseLog) {
     InstanceProvider.getInstance()?.crashReporter?.setString("Last Call", '$method : $requestLog');
     InstanceProvider.getInstance()?.crashReporter?.setString("Last Call response", responseLog);
