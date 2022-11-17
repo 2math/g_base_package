@@ -19,9 +19,9 @@ class Localization {
   ///If your app does not care about multi flavors, can omit the "globalLocales" and send it's "locales" only
   static bool init(BuildContext? context, List<AppLocale> locales, AppLocale
   defaultLocale,
-      {List<AppLocale>? globalLocales})
+      {List<AppLocale>? globalLocales, bool force = false})
   /*async*/ {
-    if (_defaultLocale == null) {
+    if (force || _defaultLocale == null) {
       _defaultLocale = defaultLocale;
       _currentLocale = _defaultLocale;
       _supportedLocales = locales;
@@ -35,6 +35,8 @@ class Localization {
 //    Log.d(deviceLanguageCode, "deviceLanguageCode");
   }
 
+  ///This one works only if you have set a list of supported Locales and to pick one of them.
+  ///If the language code is not for one of the locales, current language remains.
   static String? setLocale(String code) {
     Log.d(code, "setLocale");
 
