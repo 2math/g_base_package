@@ -1,4 +1,8 @@
+import 'dart:collection';
+
 import 'package:collection/collection.dart';
+
+import 'logger.dart';
 
 class BaseUtils{
     static bool isEmpty(List? list){
@@ -82,5 +86,46 @@ class BaseUtils{
 
     List<String> stringToMultiSelectOptions(String value, {String? divider = ","}) {
       return value.split(divider!);
+    }
+
+    //replace all symbols that are not numbers and +
+    String? clearPhone(String? phone) {
+      if (phone != null) {
+        return phone.replaceAll(RegExp(r'[^0-9+]'), "");
+      }
+
+      return phone;
+    }
+
+    static double? getDouble(String? string) {
+      if (string == null) return null;
+      double? doubleNumber;
+      try {
+        doubleNumber = double.parse(string.replaceAll(",", "."));
+      } on FormatException {
+        Log.d("can't parse $string");
+      }
+      return doubleNumber;
+    }
+
+    static bool isValidDouble(String? text) {
+      return text != null && double.tryParse(text.replaceAll(",", ".")) != null;
+    }
+
+    LinkedHashMap<K?, V?> sortMapByKeys<K, V>(Map temp, {bool isAcs = true}) {
+      var sortedKeys = temp.keys.toList(growable: false)..sort((k1, k2) => isAcs ? k1.compareTo(k2) : k2.compareTo(k1));
+
+      LinkedHashMap<K?, V?> sortedMap = new LinkedHashMap.fromIterable(sortedKeys, key: (k) => k, value: (k) => temp[k]);
+
+      return sortedMap;
+    }
+
+    LinkedHashMap<K?, V?> sortMapByValues<K, V>(Map temp, {bool isAcs = true}) {
+      var sortedKeys = temp.keys.toList(growable: false)
+        ..sort((k1, k2) => isAcs ? temp[k1].compareTo(temp[k2]) : temp[k2].compareTo(temp[k1]));
+
+      LinkedHashMap<K?, V?> sortedMap = new LinkedHashMap.fromIterable(sortedKeys, key: (k) => k, value: (k) => temp[k]);
+
+      return sortedMap;
     }
 }
