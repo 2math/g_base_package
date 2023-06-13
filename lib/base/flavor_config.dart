@@ -51,8 +51,11 @@ class FlavorConfig {
       this.headerOS,
       this.headerValueAndroid,
       this.headerValueIOS,
-      this.useVersionForIOS = false}) {
-    _instance ??= this;
+      this.useVersionForIOS = false,
+      bool force = false}) {
+    if(force || _instance == null) {
+      _instance = this;
+    }
 
     if (!isTesting()) {
       WidgetsFlutterBinding.ensureInitialized();
