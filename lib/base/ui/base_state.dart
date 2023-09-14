@@ -48,7 +48,7 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
   }
 
   bool showProgressIndicatorIfNotShowing({String? msgKey, String? text}) {
-    if(canShowProgressDialog()){
+    if (canShowProgressDialog()) {
       showProgressIndicator(msgKey: msgKey, text: text);
       return true;
     }
@@ -177,12 +177,20 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
       if (!Validator.isEmpty(defaultMessage)) {
         return defaultMessage;
       }
-      return error.data is String && BaseUtils.isNotEmptyStr(error.data as String?) ? error.data as String? : error.error;
-    } else if (error is SocketException && FlavorConfig.instance!.socketExceptionKey != null) {
-      return Txt.get(FlavorConfig.instance!.noNetworkKey);
-    } else {
-      return "$error";
+      return error.data is String && BaseUtils.isNotEmptyStr(error.data as String?)
+          ? error.data as String?
+          : error.error;
+    } else if (error is SocketException) {
+      if (FlavorConfig.instance!.socketExceptionKey != null) {
+        return Txt.get(FlavorConfig.instance!.socketExceptionKey);
+      }
+
+      if (FlavorConfig.instance!.noNetworkKey != null) {
+        return Txt.get(FlavorConfig.instance!.noNetworkKey);
+      }
     }
+
+    return "$error";
   }
 
   void removeCurrentFocus(BuildContext context, {bool ignorePrimaryFocus = true}) {
