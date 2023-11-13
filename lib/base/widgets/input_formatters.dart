@@ -12,7 +12,7 @@ class NumberTextInputFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    TextEditingValue _newValue = this.sanitize(newValue);
+    TextEditingValue _newValue = sanitize(newValue);
     String text = _newValue.text;
 
     if (decimalRange == null) {
@@ -27,7 +27,7 @@ class NumberTextInputFormatter extends TextInputFormatter {
       );
     }
 
-    return this.isValid(text) ? _newValue : oldValue;
+    return isValid(text) ? _newValue : oldValue;
   }
 
   bool isValid(String text) {

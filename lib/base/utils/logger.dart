@@ -8,7 +8,7 @@ import 'package:g_base_package/base/app_exception.dart';
 
 import '../flavor_config.dart';
 import '../provider/instance_provider.dart';
-import 'package:flutter/foundation.dart' as Foundation;
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:logger/logger.dart';
 
 import 'files.dart';
@@ -38,8 +38,7 @@ class Log {
 
   static Logger? _fileLogger;
 
-  static initFileLogger(
-      {File? fileToLog, Future<File> Function(File? currentFile)? getNewFile}) {
+  static initFileLogger({File? fileToLog, Future<File> Function(File? currentFile)? getNewFile}) {
     _fileLogger = Logger(
         filter: ProductionFilter(),
         printer: PrettyPrinter(
@@ -54,41 +53,29 @@ class Log {
   ///This method will print developer's info in logs only if we are in debug
   ///mode
   static d(String log, [String? tag]) {
-    printInDebugOnly(
-        tag != null ? '$tagDebug $appTag $tag' : '$tagDebug $appTag',
-        log,
-        Level.debug);
+    printInDebugOnly(tag != null ? '$tagDebug $appTag $tag' : '$tagDebug $appTag', log, Level.debug);
   }
 
   ///This method will print developer's info in logs only if we are in debug
   ///mode, but will not add to the CrashReporter. This one is save for print passwords or other sensitive information
   /// in the console
   static s(String log, [String? tag]) {
-    printInDebugOnly(
-        tag != null ? '$tagDebug $appTag $tag' : '$tagDebug $appTag',
-        log,
-        Level.debug,
+    printInDebugOnly(tag != null ? '$tagDebug $appTag $tag' : '$tagDebug $appTag', log, Level.debug,
         addToCrashReporter: false);
   }
 
   ///This method will print developer's warning logs only if we are in debug
   ///mode
   static w(String log, [String? tag]) {
-    printInDebugOnly(
-        tag != null ? '$tagWarning $appTag $tag' : '$tagWarning $appTag',
-        log,
-        Level.warning);
+    printInDebugOnly(tag != null ? '$tagWarning $appTag $tag' : '$tagWarning $appTag', log, Level.warning);
   }
 
-  static void printInDebugOnly(String tag, String log, Level level,
-      {bool addToCrashReporter = true}) {
+  static void printInDebugOnly(String tag, String log, Level level, {bool addToCrashReporter = true}) {
     if (fromUI && addToCrashReporter) {
-      InstanceProvider.getInstance()
-          ?.crashReporter
-          ?.log(log, tag); //always save in Crash Reporter
+      InstanceProvider.getInstance()?.crashReporter?.log(log, tag); //always save in Crash Reporter
     }
 
-    if (printInRelease || !Foundation.kReleaseMode) {
+    if (printInRelease || !foundation.kReleaseMode) {
       _print('$tag : $log', level, _logger);
     }
 
@@ -97,8 +84,7 @@ class Log {
     }
   }
 
-  static void _print(String textToLog, Level? level, Logger? logger,
-      {dynamic error, StackTrace? stackTrace}) {
+  static void _print(String textToLog, Level? level, Logger? logger, {dynamic error, StackTrace? stackTrace}) {
     if (logger == null) return;
 //    print("${DateTime.now()} $textToLog");
 
@@ -115,7 +101,7 @@ class Log {
         logger.w(textToLog);
         break;
       case Level.error:
-        logger.e(textToLog, error, stackTrace);
+        logger.e(textToLog, error: error, stackTrace: stackTrace);
         break;
       default:
         logger.d(textToLog);
@@ -131,7 +117,7 @@ class Log {
   static _fixError(error) {
     if (error == null) {
       error = AppException(data: "Handled error!");
-    } else if (!(error is Error)) {
+    } else if (error is! Error) {
       error = AppException(data: error);
     }
     return error;
@@ -148,54 +134,43 @@ class Log {
       _printError(tag, error, log, _fileLogger);
     }
 
-    if (printInRelease || !Foundation.kReleaseMode) {
+    if (printInRelease || !foundation.kReleaseMode) {
       _printError(tag, error, log, _logger);
       return true;
     }
   }
 
-  static void _printError(
-      String? tag, Error? error, String log, Logger? logger) {
+  static void _printError(String? tag, Error? error, String log, Logger? logger) {
     if (logger == null) return;
 
     String systemTag = '$tagError $appTag';
     if (tag != null && error != null) {
-      _print('$systemTag $tag : $log \n $error', Level.error, logger,
-          error: error, stackTrace: error.stackTrace);
+      _print('$systemTag $tag : $log \n $error', Level.error, logger, error: error, stackTrace: error.stackTrace);
     } else if (tag != null) {
-      _print('$systemTag $tag : $log', Level.error, logger,
-          error: error, stackTrace: error?.stackTrace);
+      _print('$systemTag $tag : $log', Level.error, logger, error: error, stackTrace: error?.stackTrace);
     } else if (error != null) {
-      _print('$systemTag : $log \n $error', Level.error, logger,
-          error: error, stackTrace: error.stackTrace);
+      _print('$systemTag : $log \n $error', Level.error, logger, error: error, stackTrace: error.stackTrace);
     } else {
-      _print('$systemTag : $log', Level.error, logger,
-          error: error, stackTrace: error?.stackTrace);
+      _print('$systemTag : $log', Level.error, logger, error: error, stackTrace: error?.stackTrace);
     }
   }
 
   ///Use this method to print in logs user's information messages.
   static i(String log, [String? tag]) {
-    printInDebugOnly(tag != null ? '$tagInfo $appTag $tag' : '$tagInfo $appTag',
-        log, Level.info);
+    printInDebugOnly(tag != null ? '$tagInfo $appTag $tag' : '$tagInfo $appTag', log, Level.info);
   }
 }
 
 class FileLogs {
   Future init(
-      {String dirName = 'logs',
-      String? fileName,
-      bool deleteOtherLogFiles = true,
-      int keepVersionsCount = 5}) async {
+      {String dirName = 'logs', String? fileName, bool deleteOtherLogFiles = true, int keepVersionsCount = 5}) async {
     Directory dir = await BaseFileUtils.getLocalDir(dirName);
 
     var files = dir.listSync();
 
     int latestVersion = 0;
 
-    if (fileName == null) {
-      fileName = generateDefaultFileName(fileName);
-    }
+    fileName ??= generateDefaultFileName(fileName);
 
     String initialFileName = fileName;
 
@@ -214,8 +189,7 @@ class FileLogs {
       }
     }
 
-    _deleteOldLogFile(
-        latestVersion, keepVersionsCount, initialFileName, dirName);
+    _deleteOldLogFile(latestVersion, keepVersionsCount, initialFileName, dirName);
 
     File fileToLog = await BaseFileUtils.getLocalFile(dirName, fileName!);
 
@@ -231,11 +205,9 @@ class FileLogs {
     Log.initFileLogger(
         fileToLog: fileToLog,
         getNewFile: (currentFile) {
-          int version =
-              currentFile == null ? 0 : getFileVersion(currentFile.path);
+          int version = currentFile == null ? 0 : getFileVersion(currentFile.path);
 
-          _deleteOldLogFile(
-              version, keepVersionsCount, initialFileName, dirName);
+          _deleteOldLogFile(version, keepVersionsCount, initialFileName, dirName);
 
           String fileName = '${initialFileName}_${version + 1}';
 
@@ -250,16 +222,14 @@ class FileLogs {
     return fileName;
   }
 
-  Future _deleteOldLogFile(int latestVersion, int keepVersionsCount,
-      String initialFileName, String dirName) async {
+  Future _deleteOldLogFile(int latestVersion, int keepVersionsCount, String initialFileName, String dirName) async {
     // Log.w('Latest version $latestVersion', '_deleteOldLogFile');
     if (latestVersion >= keepVersionsCount) {
       String fileNameToDelete = latestVersion == keepVersionsCount - 1
           ? initialFileName
           : '${initialFileName}_${latestVersion - (keepVersionsCount - 1)}';
 
-      File fileToDelete =
-          await BaseFileUtils.getLocalFile(dirName, fileNameToDelete);
+      File fileToDelete = await BaseFileUtils.getLocalFile(dirName, fileNameToDelete);
 
       try {
         fileToDelete.delete();
@@ -287,15 +257,12 @@ class FileLogs {
     return int.tryParse(version) ?? 0;
   }
 
-  Future<List<File>> getLogFileVersions(
-      {String dirName = 'logs', String? fileName}) async {
+  Future<List<File>> getLogFileVersions({String dirName = 'logs', String? fileName}) async {
     Directory dir = await BaseFileUtils.getLocalDir(dirName);
 
     var files = dir.listSync();
 
-    if (fileName == null) {
-      fileName = generateDefaultFileName(fileName);
-    }
+    fileName ??= generateDefaultFileName(fileName);
 
     String initialFileName = fileName;
 
@@ -328,7 +295,7 @@ class CustomFileOutput extends LogOutput {
   });
 
   @override
-  void init() {
+  Future<void> init() async {
     linesCount = 0;
 
     if (file != null) {
@@ -361,12 +328,12 @@ class CustomFileOutput extends LogOutput {
         _openNewFile();
       }
     } catch (e) {
-      print(e);
+      Log.error("Print log in file", error: e);
     }
   }
 
   @override
-  void destroy() async {
+  Future<void> destroy() async {
     await _sink?.flush();
     await _sink?.close();
   }
@@ -376,25 +343,23 @@ class CustomFileOutput extends LogOutput {
 
     File newFile = await getNewFile!(file);
 
-    if (newFile != null) {
-      await _sink?.flush();
+    await _sink?.flush();
 
-      await _sink?.close();
+    await _sink?.close();
 
-      _sink = null;
+    _sink = null;
 
-      file = newFile;
+    file = newFile;
 
-      init();
+    init();
 
-      _sink?.writeAll([
-        "*******************************************",
-        "Continue Session - ${DateTime.now().toIso8601String()}",
-        "${FlavorConfig.instance.toString()}",
-        "is release : $kReleaseMode",
-        "*******************************************\n"
-      ], '\n');
-    }
+    _sink?.writeAll([
+      "*******************************************",
+      "Continue Session - ${DateTime.now().toIso8601String()}",
+      "${FlavorConfig.instance?.toString()}",
+      "is release : $kReleaseMode",
+      "*******************************************\n"
+    ], '\n');
 
     isOpeningNewFile = false;
   }
@@ -411,29 +376,31 @@ class MultiOutput extends LogOutput {
   List<LogOutput> _normalizeOutputs(List<LogOutput> outputs) {
     final normalizedOutputs = <LogOutput>[];
 
-    if (outputs != null) {
-      for (final output in outputs) {
-        if (output != null) {
-          normalizedOutputs.add(output);
-        }
-      }
+    for (final output in outputs) {
+      normalizedOutputs.add(output);
     }
 
     return normalizedOutputs;
   }
 
   @override
-  void init() {
-    _outputs.forEach((o) => o.init());
+  Future<void> init() async {
+    for (var o in _outputs) {
+      await o.init();
+    }
   }
 
   @override
   void output(OutputEvent event) {
-    _outputs.forEach((o) => o.output(event));
+    for (var o in _outputs) {
+      o.output(event);
+    }
   }
 
   @override
-  void destroy() {
-    _outputs.forEach((o) => o.destroy());
+  Future<void> destroy() async {
+    for (var o in _outputs) {
+      await o.destroy();
+    }
   }
 }

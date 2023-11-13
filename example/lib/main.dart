@@ -6,21 +6,13 @@ import 'package:example/res/res.dart';
 import 'package:example/res/strings/main/bg_strings.dart';
 import 'package:example/res/strings/main/en_strings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:g_base_package/base/app_exception.dart';
 import 'package:g_base_package/base/net/call.dart';
 import 'package:g_base_package/base/ui/base_state.dart';
-import 'package:g_base_package/base/ui/logs_screen.dart';
-import 'package:g_base_package/base/utils/dialogs.dart';
-import 'package:g_base_package/base/utils/logger.dart';
-import 'package:g_base_package/base/utils/system.dart';
 import 'package:g_base_package/base/utils/utils.dart';
 import 'package:g_base_package/base/utils/versions.dart';
-import 'package:g_base_package/base/utils/files.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:launch_review/launch_review.dart';
-
-import 'model/session.dart';
 
 void main() {
   DevConfig();
@@ -109,10 +101,11 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
             token = jsonDecode(json)['sessionId'] as String?;
             //companyId = jsonDecode(json)["user"]['company']["id"] as String;
           } catch (e) {
-            Log.error("weird error parsing session", tag:tag, error: e);
+            Log.error("weird error parsing session", tag: tag, error: e);
           }
-        }).catchError((error){
+        }).catchError((error) {
           Log.error("login error", tag: tag, error: error);
+          return null;
         });
       } else {
         NetworkManager(token).getWorkspaces(companyId, (json) {
@@ -120,6 +113,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
           return [];
         }).catchError((error) {
           Log.e("error getting Workspaces", tag, error is Error ? error : AppException(data: error));
+          return null;
         });
       }
     });
@@ -172,11 +166,11 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               ),
               Text(
                 '$_counter',
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               TextButton(
                 child: Text("Print Log files"),
-                onPressed: () async{
+                onPressed: () async {
                   var list = await FileLogs().getLogFileVersions();
                   Log.w("file versions $list");
                 },
@@ -343,8 +337,9 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
   }
 
   Future<void> _selectImage() async {
-    var selectedFile = await ImagePicker().getImage(source: ImageSource.gallery).catchError((error) {
+    var selectedFile = await ImagePicker().pickImage(source: ImageSource.gallery).catchError((error) {
       Log.error("selectImage", error: error);
+      return null;
     });
 
     if (selectedFile != null) {
@@ -353,28 +348,31 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
-      var copiedFile = await emptyFile.writeAsBytes(await selectedFile.readAsBytes()).catchError((error) {
-        Log.error("selectImage copy", error: error);
-      });
+      try {
+        var copiedFile = await emptyFile.writeAsBytes(await selectedFile.readAsBytes());
 
-      if (copiedFile != null && await copiedFile.exists()) {
-        NetworkManager(token).uploadImageFuture(
-          copiedFile.path,
-          "b55306bc-20d0-4ee6-adb1-d3307c308502",
-          "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
-          (json) {
-            Log.d(json, tag);
-          },
-        ).catchError((e) {
-          Log.error("uploadImageFuture", error: e);
-        });
+        if (await copiedFile.exists()) {
+          NetworkManager(token).uploadImageFuture(
+            copiedFile.path,
+            "b55306bc-20d0-4ee6-adb1-d3307c308502",
+            "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
+            (json) {
+              Log.d(json, tag);
+            },
+          ).catchError((e) {
+            Log.error("uploadImageFuture", error: e);
+          });
+        }
+      } catch (e) {
+        Log.error("selectImage copy", error: e);
       }
     }
   }
 
   Future<void> _selectFile() async {
-    var selectedFile = await ImagePicker().getImage(source: ImageSource.gallery).catchError((error) {
+    var selectedFile = await ImagePicker().pickImage(source: ImageSource.gallery).catchError((error) {
       Log.error("selectImage", error: error);
+      return null;
     });
 
     if (selectedFile != null) {
@@ -383,23 +381,25 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
-      var copiedFile = await emptyFile.writeAsBytes(await selectedFile.readAsBytes()).catchError((error) {
-        Log.error("selectImage copy", error: error);
-      });
+      try {
+        var copiedFile = await emptyFile.writeAsBytes(await selectedFile.readAsBytes());
 
-      if (copiedFile != null && await copiedFile.exists()) {
-        NetworkManager(token).uploadFileFuture(
-          copiedFile.path,
-          "b55306bc-20d0-4ee6-adb1-d3307c308502",
-          "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
-          "{\"displayName\": \"Dox 1\",\"description\": \"description\",\"createDate\":\"2020-09-02T07:30:47\","
-              "\"visibility\":\"PUBLIC\",\"typeId\": \"3c3b5ae4-955c-4b9d-8bd9-3d564767a2e8\"}",
-          (json) {
-            Log.d(json, tag);
-          },
-        ).catchError((e) {
-          Log.error("uploadImageFuture", error: e);
-        });
+        if (await copiedFile.exists()) {
+                NetworkManager(token).uploadFileFuture(
+                  copiedFile.path,
+                  "b55306bc-20d0-4ee6-adb1-d3307c308502",
+                  "2ac7d50d-da40-41a8-b84d-3a87c0fb9e4a",
+                  "{\"displayName\": \"Dox 1\",\"description\": \"description\",\"createDate\":\"2020-09-02T07:30:47\","
+                      "\"visibility\":\"PUBLIC\",\"typeId\": \"3c3b5ae4-955c-4b9d-8bd9-3d564767a2e8\"}",
+                  (json) {
+                    Log.d(json, tag);
+                  },
+                ).catchError((e) {
+                  Log.error("uploadImageFuture", error: e);
+                });
+              }
+      } catch (e) {
+        Log.error("selectImage copy", error: e);
       }
     }
   }
@@ -407,8 +407,9 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
   Future<void> _editFile(bool dataOnly) async {
     var selectedFile = dataOnly
         ? null
-        : await ImagePicker().getImage(source: ImageSource.gallery).catchError((error) {
+        : await ImagePicker().pickImage(source: ImageSource.gallery).catchError((error) {
             Log.error("selectImage", error: error);
+            return null;
           });
 
     var copiedFile;
@@ -419,9 +420,11 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
         '${DateTime.now().millisecondsSinceEpoch.toString()}.jpg',
       );
 
-      copiedFile = await emptyFile.writeAsBytes(await selectedFile.readAsBytes()).catchError((error) {
-        Log.error("selectImage copy", error: error);
-      });
+      try {
+        copiedFile = await emptyFile.writeAsBytes(await selectedFile.readAsBytes());
+      } catch (e) {
+        Log.error("selectImage copy", error: e);
+      }
     }
     // if (copiedFile != null && await copiedFile.exists()) {
     NetworkManager(token)

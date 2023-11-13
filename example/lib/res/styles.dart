@@ -7,16 +7,22 @@ class Style {
   static void refreshTheme() {
     appTheme = ThemeData(
       primaryColor: AppColors.primaryColor,
-      accentColor: AppColors.accentColor,
-      backgroundColor: AppColors.appBackground,
+      colorScheme: ColorScheme.light(
+        primary: AppColors.primaryColor,
+        secondary: AppColors.accentColor,
+        background: AppColors.appBackground,
+      ),
       /* fontFamily: "Gilroy"*/
     );
   }
 
   static var appTheme = ThemeData(
     primaryColor: AppColors.primaryColor,
-    accentColor: AppColors.accentColor,
-    backgroundColor: AppColors.appBackground,
+    colorScheme: ColorScheme.light(
+      primary: AppColors.primaryColor,
+      secondary: AppColors.accentColor,
+      background: AppColors.appBackground,
+    ),
     /* fontFamily: "Gilroy"*/
   );
 

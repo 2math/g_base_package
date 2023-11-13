@@ -22,7 +22,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.6
 
   #custom libs are bellow
   g_base_package:
@@ -35,16 +35,16 @@ dependencies:
 #      #change log : https://github.com/2math/g_base_package/blob/master/CHANGELOG.md
 
   launch_review: ^3.0.1
-  image_picker: ^0.8.0+3
-  collection: ^1.15.0-nullsafety.4
+  image_picker: ^1.0.4
+  collection: ^1.17.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  test: ^1.9.0
+  test: ^1.16.0
 
-  build_runner: ^2.1.4
-  json_serializable: ^6.0.1
+  build_runner: ^2.4.6
+  json_serializable: ^6.7.1
 
 
 

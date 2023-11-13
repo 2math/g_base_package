@@ -1,9 +1,10 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:g_base_package/base/platform/sdk_platform.dart';
 
 class System {
   static double getScreenHeight(BuildContext context) {

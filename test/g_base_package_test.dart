@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/g_base_package.dart';
+import 'package:g_base_package/g_base_package.dart';
 
 
 void main() {

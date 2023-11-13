@@ -14,14 +14,14 @@ class Validator {
 
   ///if you don't specify pattern that one is in use : r'^(?:[+0]9)?[0-9]{10}$'
   static bool isPhone(String phone, {String? pattern}) {
-    return RegExp(pattern == null ? r'^(?:[+0]9)?[0-9]{10}$' : pattern).hasMatch(phone);
+    return RegExp(pattern ?? r'^(?:[+0]9)?[0-9]{10}$').hasMatch(phone);
   }
 
-  static bool isValidLength(String pass, int length) {
+  static bool isValidLength(String? pass, int length) {
     return pass != null && pass.length >= length;
   }
 
-  static bool confirmPass(String pass, String confirmPass) {
+  static bool confirmPass(String? pass, String? confirmPass) {
     return pass != null && confirmPass != null && pass == confirmPass;
   }
 
@@ -29,8 +29,8 @@ class Validator {
     return text == null || text.trim() == "";
   }
 
-  static bool isEmptyList(List list) {
-    return list == null || list.length == 0;
+  static bool isEmptyList(List? list) {
+    return list == null || list.isEmpty;
   }
 
   static bool isLink(String input) {

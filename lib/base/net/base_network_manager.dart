@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:g_base_package/base/provider/instance_provider.dart';
+import 'package:g_base_package/base/utils/system.dart';
 
 import '../lang/localization.dart';
 import '../flavor_config.dart';
@@ -12,7 +12,6 @@ import '../utils/versions.dart';
 import '../app_exception.dart';
 import 'call.dart';
 
-// import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 
 class BaseNetworkManager {
@@ -109,7 +108,7 @@ class BaseNetworkManager {
 
   Future<Version?> getVersions() async {
 //    return Version(clientVersion: "1.10.7", currentVersion: 5, minimalVersion: 2);
-    Call call = new Call.name(CallMethod.GET, "versions/${Platform.isIOS ? "IOS" : "ANDROID"}");
+    Call call = new Call.name(CallMethod.GET, "versions/${System().isIOS() ? "IOS" : "ANDROID"}");
 
     return await doServerCall<Version>(call, (json) {
       Log.d(json, "$netTag versions");
@@ -148,9 +147,10 @@ class BaseNetworkManager {
       case CallMethod.DOWNLOAD:
         return _doDownloadFileRequest(call);
       case CallMethod.UPLOAD:
-        return call.onUploadProgress != null ? _doUploadFileMultipart(call) : _doUploadFile(call);
+      // return call.onUploadProgress != null ? _doUploadFileMultipart(call) : _doUploadFile(call);
       case CallMethod.UPLOAD_UPDATE:
-        return _doUploadFileMultipart(call);
+        // return _doUploadFileMultipart(call);
+        return _doUploadFile(call);
       default:
         throw AppException(errorMessage: 'Call without method', code: AppException.NO_CALL_METHOD_ERROR, data: call);
     }
@@ -184,6 +184,7 @@ class BaseNetworkManager {
     return response;
   }
 
+  // ignore: unused_element
   void _logLastRequestAndResponse(String method, String requestLog, String responseLog) {
     InstanceProvider.getInstance()?.crashReporter?.setString("Last Call", '$method : $requestLog');
     InstanceProvider.getInstance()?.crashReporter?.setString("Last Call response", responseLog);
@@ -345,113 +346,113 @@ class BaseNetworkManager {
     return response;
   }
 
-  Future<http.Response> _doUploadFileMultipart(Call call) async {
-    if (call.callMethod == CallMethod.UPLOAD && (call.file == null || !await call.file!.exists())) {
-      Log.w('Uploading File without actual file set', "$netTag UploadFile");
-      // throw AppException(
-      //     errorMessage: 'Uploading File without actual file set', code: AppException.NO_CALL_METHOD_ERROR, data: call);
-    }
-
-    String url = _getUrl(call);
-
-    final request = call.callMethod == CallMethod.UPLOAD_UPDATE
-        ? await HttpClient().putUrl(Uri.parse(url))
-        : await HttpClient().postUrl(Uri.parse(url));
-
-    var requestMultipart = http.MultipartRequest(request.method, Uri.parse("uri"));
-
-    if (call.file != null && await call.file!.exists()) {
-      var multipartFile = await http.MultipartFile.fromPath(call.fileField ?? "file", call.file!.path,
-          filename: call.fileName, contentType: call.mediaType);
-
-      requestMultipart.files.add(multipartFile);
-    }
-
-    if (call.params != null) {
-      requestMultipart.fields.addAll(call.params!);
-    }
-
-    var msStream = requestMultipart.finalize();
-
-    var totalByteLength = requestMultipart.contentLength;
-
-    request.contentLength = totalByteLength;
-
-    Map<String, String> headers = _getUpdatedHeaders(
-        call.token, call.language, requestMultipart.headers[HttpHeaders.contentTypeHeader], call.headers);
-    headers.forEach((key, value) {
-      request.headers.set(key, value);
-    });
-
-    if (call.printLogs) {
-      Log.d(requestMultipart.headers[HttpHeaders.contentTypeHeader]!);
-    }
-//    request.headers.set(HttpHeaders.contentTypeHeader, requestMultipart.headers[HttpHeaders.contentTypeHeader]);
-
-    int byteCount = 0;
-
-    Stream<List<int>> streamUpload = msStream.transform(
-      new StreamTransformer.fromHandlers(
-        handleData: (data, sink) {
-          sink.add(data);
-
-          byteCount += data.length;
-
-          if (call.onUploadProgress != null) {
-            call.onUploadProgress!(byteCount, totalByteLength);
-            // CALL STATUS CALLBACK;
-          }
-        },
-        handleError: (error, stack, sink) {
-          //print(error.toString());
-        },
-        handleDone: (sink) {
-          sink.close();
-          // UPLOAD DONE;
-        },
-      ),
-    );
-
-    await request.addStream(streamUpload);
-
-    String requestLog = "$url\nParams :\n${_printMap(call.params)}"
-        "\nHeaders :\n${_printMap(headers)}"
-        "\nFile : ${call.file?.path}"
-        "\nfilename : ${call.fileName}"
-        "\ncontentType : ${call.mediaType}"
-        "\ncontentLength : $totalByteLength";
-
-    _logLastRequest("UploadFile", requestLog);
-
-    if (call.printLogs) {
-      Log.d(requestLog, "$netTag UploadFile");
-    }
-    final httpResponse = await request.close();
-//    var response = await request.send();
+//   Future<http.Response> _doUploadFileMultipart(Call call) async {
+//     if (call.callMethod == CallMethod.UPLOAD && (call.file == null || !await call.file!.exists())) {
+//       Log.w('Uploading File without actual file set', "$netTag UploadFile");
+//       // throw AppException(
+//       //     errorMessage: 'Uploading File without actual file set', code: AppException.NO_CALL_METHOD_ERROR, data: call);
+//     }
 //
-//    http.Response httpResponse = await http.Response.fromStream(response);
-
-    String res = await _readResponseAsString(httpResponse);
-
-    String responseLog = "Response Code : ${httpResponse.statusCode}\n"
-        "${call.printResponseBody ? "Body :\n${_printJson(res)}" : ""}";
-
-    _logLastResponse("UploadFile", url, responseLog);
-
-    if (call.printLogs) {
-      Log.d("$url\n$responseLog", "$netTag Response UploadFile");
-    }
-    return http.Response(res, httpResponse.statusCode);
-  }
-
-  Future<String> _readResponseAsString(HttpClientResponse response) {
-    var completer = Completer<String>();
-    var contents = StringBuffer();
-    response.transform(utf8.decoder).listen((String data) {
-      contents.write(data);
-    }, onDone: () => completer.complete(contents.toString()));
-    return completer.future;
-  }
+//     String url = _getUrl(call);
+//
+//     final request = call.callMethod == CallMethod.UPLOAD_UPDATE
+//         ? await HttpClient().putUrl(Uri.parse(url))
+//         : await HttpClient().postUrl(Uri.parse(url));
+//
+//     var requestMultipart = http.MultipartRequest(request.method, Uri.parse("uri"));
+//
+//     if (call.file != null && await call.file!.exists()) {
+//       var multipartFile = await http.MultipartFile.fromPath(call.fileField ?? "file", call.file!.path,
+//           filename: call.fileName, contentType: call.mediaType);
+//
+//       requestMultipart.files.add(multipartFile);
+//     }
+//
+//     if (call.params != null) {
+//       requestMultipart.fields.addAll(call.params!);
+//     }
+//
+//     var msStream = requestMultipart.finalize();
+//
+//     var totalByteLength = requestMultipart.contentLength;
+//
+//     request.contentLength = totalByteLength;
+//
+//     Map<String, String> headers = _getUpdatedHeaders(
+//         call.token, call.language, requestMultipart.headers[HttpHeaders.contentTypeHeader], call.headers);
+//     headers.forEach((key, value) {
+//       request.headers.set(key, value);
+//     });
+//
+//     if (call.printLogs) {
+//       Log.d(requestMultipart.headers[HttpHeaders.contentTypeHeader]!);
+//     }
+// //    request.headers.set(HttpHeaders.contentTypeHeader, requestMultipart.headers[HttpHeaders.contentTypeHeader]);
+//
+//     int byteCount = 0;
+//
+//     Stream<List<int>> streamUpload = msStream.transform(
+//       new StreamTransformer.fromHandlers(
+//         handleData: (data, sink) {
+//           sink.add(data);
+//
+//           byteCount += data.length;
+//
+//           if (call.onUploadProgress != null) {
+//             call.onUploadProgress!(byteCount, totalByteLength);
+//             // CALL STATUS CALLBACK;
+//           }
+//         },
+//         handleError: (error, stack, sink) {
+//           //print(error.toString());
+//         },
+//         handleDone: (sink) {
+//           sink.close();
+//           // UPLOAD DONE;
+//         },
+//       ),
+//     );
+//
+//     await request.addStream(streamUpload);
+//
+//     String requestLog = "$url\nParams :\n${_printMap(call.params)}"
+//         "\nHeaders :\n${_printMap(headers)}"
+//         "\nFile : ${call.file?.path}"
+//         "\nfilename : ${call.fileName}"
+//         "\ncontentType : ${call.mediaType}"
+//         "\ncontentLength : $totalByteLength";
+//
+//     _logLastRequest("UploadFile", requestLog);
+//
+//     if (call.printLogs) {
+//       Log.d(requestLog, "$netTag UploadFile");
+//     }
+//     final httpResponse = await request.close();
+// //    var response = await request.send();
+// //
+// //    http.Response httpResponse = await http.Response.fromStream(response);
+//
+//     String res = await _readResponseAsString(httpResponse);
+//
+//     String responseLog = "Response Code : ${httpResponse.statusCode}\n"
+//         "${call.printResponseBody ? "Body :\n${_printJson(res)}" : ""}";
+//
+//     _logLastResponse("UploadFile", url, responseLog);
+//
+//     if (call.printLogs) {
+//       Log.d("$url\n$responseLog", "$netTag Response UploadFile");
+//     }
+//     return http.Response(res, httpResponse.statusCode);
+//   }
+//
+//   Future<String> _readResponseAsString(HttpClientResponse response) {
+//     var completer = Completer<String>();
+//     var contents = StringBuffer();
+//     response.transform(utf8.decoder).listen((String data) {
+//       contents.write(data);
+//     }, onDone: () => completer.complete(contents.toString()));
+//     return completer.future;
+//   }
 
   Future<http.Response> _doUploadFile(Call call) async {
     if (call.file == null || !await call.file!.exists()) {
@@ -547,14 +548,14 @@ class BaseNetworkManager {
 
     if (FlavorConfig.instance!.headerVersion != null) {
       customHeadersToAdd[FlavorConfig.instance!.headerVersion!] =
-          Platform.isIOS && FlavorConfig.instance!.useVersionForIOS
+          System().isIOS() && FlavorConfig.instance!.useVersionForIOS
               ? (FlavorConfig.instance!.version ?? "unknown")
               : (FlavorConfig.instance!.buildNumber ?? "unknown");
     }
     if (FlavorConfig.instance!.headerOS != null) {
-      String? os = (Platform.isAndroid
+      String? os = (System().isAndroid()
               ? FlavorConfig.instance!.headerValueAndroid
-              : Platform.isIOS
+              : System().isIOS()
                   ? FlavorConfig.instance!.headerValueIOS
                   : "unknown") ??
           "headerValue not set";
