@@ -174,7 +174,7 @@ class BaseNetworkManager {
 //    String responseHeaders = _printMap(response.headers);
     String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
+        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response), call.isJsonResponse)}" : ""}";
 
     _logLastResponse("GET", url, responseLog);
 
@@ -208,7 +208,7 @@ class BaseNetworkManager {
     String url = _getUrl(call);
 
     String requestLog = "$url\nHeaders :\n${_printMap(headers)}\n"
-        "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}";
+        "Body :\n${call.body != null ? _printJson(call.body, true) : _printMap(call.params)}";
 
     _logLastRequest("POST", requestLog);
 
@@ -225,7 +225,7 @@ class BaseNetworkManager {
 
     String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
+        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response), call.isJsonResponse)}" : ""}";
 
     _logLastResponse("POST", url, responseLog);
 
@@ -242,7 +242,7 @@ class BaseNetworkManager {
     String url = _getUrl(call);
 
     String requestLog = "$url\nHeaders :\n${_printMap(headers)}\n"
-        "Body :\n${call.body != null ? _printJson(call.body) : _printMap(call.params)}";
+        "Body :\n${call.body != null ? _printJson(call.body, true) : _printMap(call.params)}";
 
     _logLastRequest(call.callMethod == CallMethod.PUT ? "PUT" : "PATCH", requestLog);
 
@@ -257,7 +257,7 @@ class BaseNetworkManager {
 
     String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
+        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response), call.isJsonResponse)}" : ""}";
 
     _logLastResponse(call.callMethod == CallMethod.PUT ? "PUT" : "PATCH", url, responseLog);
 
@@ -284,7 +284,7 @@ class BaseNetworkManager {
 //    String responseHeaders = _printMap(response.headers);
     String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
-        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response))}" : ""}";
+        "${call.printResponseBody ? "Body :\n${_printJson(_getBodyAsUtf8(response), call.isJsonResponse)}" : ""}";
 
     _logLastResponse("DELETE", url, responseLog);
 
@@ -488,7 +488,7 @@ class BaseNetworkManager {
     http.Response httpResponse = await http.Response.fromStream(response);
 
     String responseLog = "Response Code : ${response.statusCode}\n"
-        "${call.printResponseBody ? "Body :\n${_printJson(httpResponse.body)}" : ""}";
+        "${call.printResponseBody ? "Body :\n${_printJson(httpResponse.body, call.isJsonResponse)}" : ""}";
 
     _logLastResponse("UploadFile", url, responseLog);
 
@@ -573,23 +573,28 @@ class BaseNetworkManager {
     return res;
   }
 
-  String _printJson(String? jsonToParse) {
+  String _printJson(String? jsonToParse, bool isJson) {
     if (jsonToParse == null) {
       return "NULL";
     }
     if (jsonToParse.isEmpty) {
       return "EMPTY";
     }
-    try {
+
+    if (isJson) {
+      try {
 //      JsonUtf8Encoder e8 = JsonUtf8Encoder();
 //      Log.d("b: "+utf8.decode(e8.convert(json.decode(jsonToParse))));
 
-      JsonEncoder encoder = const JsonEncoder.withIndent('  ');
-      return encoder.convert(json.decode(jsonToParse));
-    } catch (e) {
-      Log.error("printJson", error: e);
-      return jsonToParse;
+        JsonEncoder encoder = const JsonEncoder.withIndent('  ');
+        return encoder.convert(json.decode(jsonToParse));
+      } catch (e) {
+        Log.error("printJson", error: e);
+        return jsonToParse;
+      }
     }
+
+    return jsonToParse;
   }
 
   Future _checkNetwork() async {

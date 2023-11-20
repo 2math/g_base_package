@@ -10,8 +10,15 @@ class Call {
   String endpoint;
   Map<String, String>? params, headers;
   String? body, toLog, token, language, fileName, fileField;
-  bool isFullUrl, isServerUrl, refreshOn401, printLogs, printResponseBody, shouldCheckCustomErrors,
-      printResponseHeaders, refreshWithCall;
+  bool isFullUrl,
+      isServerUrl,
+      refreshOn401,
+      printLogs,
+      printResponseBody,
+      shouldCheckCustomErrors,
+      printResponseHeaders,
+      refreshWithCall,
+      isJsonResponse;
   File? file;
   MediaType? mediaType;
   OnUploadProgressCallback? onUploadProgress;
@@ -29,6 +36,7 @@ class Call {
     this.isServerUrl = true,
     this.printLogs = true,
     this.printResponseBody = true,
+    this.isJsonResponse = true,
     this.file,
     this.mediaType,
     this.fileName,
