@@ -151,6 +151,9 @@ class BaseNetworkManager {
       case CallMethod.UPLOAD_UPDATE:
         // return _doUploadFileMultipart(call);
         return _doUploadFile(call);
+      case CallMethod.MULTIPART:
+        // return _doUploadFileMultipart(call);
+        return _doMultipart(call);
       default:
         throw AppException(errorMessage: 'Call without method', code: AppException.NO_CALL_METHOD_ERROR, data: call);
     }
@@ -470,6 +473,10 @@ class BaseNetworkManager {
 
     request.files.add(multipartFile);
 
+    if (call.params != null) {
+      request.fields.addAll(call.params!);
+    }
+
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     request.headers.addAll(headers);
 
@@ -494,6 +501,64 @@ class BaseNetworkManager {
 
     if (call.printLogs) {
       Log.d("$url\n$responseLog", "$netTag Response UploadFile");
+    }
+    return httpResponse;
+  }
+
+  Future<http.Response> _doMultipart(Call call) async {
+    if (call.fileBites == null) {
+      throw AppException(
+          errorMessage: 'Uploading File without actual fileBites set',
+          code: AppException.NO_CALL_METHOD_ERROR,
+          data: call);
+    }
+
+    String url = _getUrl(call);
+
+    var request = http.MultipartRequest(
+      call.multipartMethod == CallMethod.PUT ? "PUT" : "POST",
+      Uri.parse(url),
+    );
+
+    var multipartFile = http.MultipartFile.fromBytes(
+      call.fileField ?? 'file',
+      call.fileBites!,
+      filename: call.fileName,
+      contentType: call.mediaType,
+    );
+
+    request.files.add(multipartFile);
+
+    if (call.params != null) {
+      request.fields.addAll(call.params!);
+    }
+
+    Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
+
+    request.headers.addAll(headers);
+
+    String requestLog = "$url\nHeaders :\n${_printMap(request.headers)}"
+        "\nfilename : ${call.fileName}"
+        "\ncontentType : ${call.mediaType}"
+        "\ncontentLength : ${call.fileBites?.length}";
+
+    _logLastRequest("UploadFile", requestLog);
+
+    if (call.printLogs) {
+      Log.d(requestLog, "$netTag UploadFileBites");
+    }
+
+    var response = await request.send();
+
+    http.Response httpResponse = await http.Response.fromStream(response);
+
+    String responseLog = "Response Code : ${response.statusCode}\n"
+        "${call.printResponseBody ? "Body :\n${_printJson(httpResponse.body, call.isJsonResponse)}" : ""}";
+
+    _logLastResponse("UploadFile", url, responseLog);
+
+    if (call.printLogs) {
+      Log.d("$url\n$responseLog", "$netTag Response UploadFileBites");
     }
     return httpResponse;
   }
