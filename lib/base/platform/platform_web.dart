@@ -1,10 +1,12 @@
 // ignore: unused_import
 import 'dart:html' as html;
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 class PlatformInterface {
 
   static Future<bool> checkInternet() async {
-    return true;
+    return await (Connectivity().checkConnectivity()) != ConnectivityResult.none;
     // String? type = html.window.navigator.connection?.type;
     // return type != 'none' && type != null;
   }

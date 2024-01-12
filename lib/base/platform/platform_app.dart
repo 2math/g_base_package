@@ -1,14 +1,11 @@
 import 'dart:io';
 
+import 'package:g_base_package/base/utils/network.dart';
+
+
 class PlatformInterface {
   static Future<bool> checkInternet() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException catch (_) {
-      return false;
-    }
+    return NetUtil().checkInternet();
   }
 
   static bool get isAndroid => Platform.isAndroid;

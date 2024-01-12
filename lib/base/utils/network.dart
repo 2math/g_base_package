@@ -1,8 +1,7 @@
 import 'dart:io';
 
-// import 'package:connectivity/connectivity.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';// as
-// connectivity_plus;
+import 'package:connectivity_plus/connectivity_plus.dart';
+
 
 class NetUtil {
 
@@ -34,7 +33,7 @@ class NetUtil {
   ///If you are connected to WiFi but there is no internet will return false up to 30 sec
   Future<bool> checkInternet() async {
     try {
-      final result = await InternetAddress.lookup('google.com');
+      final result = await InternetAddress.lookup('bing.com');
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
     } on SocketException catch (_) {
       return false;

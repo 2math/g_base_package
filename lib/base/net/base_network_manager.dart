@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:g_base_package/base/platform/sdk_platform.dart' as sdk;
 import 'package:g_base_package/base/provider/instance_provider.dart';
 import 'package:g_base_package/base/utils/system.dart';
 
@@ -274,7 +274,8 @@ class BaseNetworkManager {
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
     String url = _getUrl(call);
 
-    String requestLog = "$url\nHeaders :\n${_printMap(headers)}";
+    String requestLog =
+        "$url\nHeaders :\n${_printMap(headers)}\nBody :\n${call.body != null ? _printJson(call.body, true) : ''}";
 
     _logLastRequest("DELETE", requestLog);
 
@@ -282,7 +283,12 @@ class BaseNetworkManager {
       Log.d(requestLog, "$netTag DELETE");
     }
     // make GET request
-    http.Response response = await http.delete(Uri.parse(url), headers: headers);
+    http.Response response = await http.delete(
+      Uri.parse(url),
+      headers: headers,
+      body: call.body,
+      encoding: Encoding.getByName("utf-8"),
+    );
 
 //    String responseHeaders = _printMap(response.headers);
     String responseLog = "Response Code : ${response.statusCode}\n"
@@ -663,8 +669,12 @@ class BaseNetworkManager {
   }
 
   Future _checkNetwork() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
+    // var connectivityResult = await (Connectivity().checkConnectivity());
+    // if (connectivityResult == ConnectivityResult.none) {
+    //   _throwNoNetwork();
+    // }
+
+    if (!await sdk.Platform.checkInternet()) {
       _throwNoNetwork();
     }
   }
