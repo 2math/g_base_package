@@ -31,7 +31,7 @@ class Call {
   Map<String, String>? headers;
 
   ///JSON formatted body.
-  ///For POST, UPDATE or PATCH will set the content type to application/json.
+  ///For POST, UPDATE, PATCH, Delete will set the content type to application/json.
   ///You can set either [body] or [params].
   String? body;
 

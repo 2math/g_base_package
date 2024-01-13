@@ -204,8 +204,7 @@ class BaseNetworkManager {
   String _getBodyAsUtf8(http.Response response) => utf8.decode(response.bodyBytes);
 
   Future<http.Response> _doPostRequest(Call call) async {
-    String contentType =
-        call.params != null ? "application/x-www-form-urlencoded; charset=utf-8" : "application/json; charset=utf-8";
+    String contentType = _getContentType(call);
     Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
 
     String url = _getUrl(call);
@@ -238,9 +237,17 @@ class BaseNetworkManager {
     return response;
   }
 
+  String _getContentType(Call call) {
+    String contentType =
+        call.params != null ? "application/x-www-form-urlencoded; charset=utf-8" : "application/json; charset=utf-8";
+    return contentType;
+  }
+
   Future<http.Response> _doPutRequest(Call call) async {
+    String contentType = _getContentType(call);
+
     Map<String, String> headers =
-        _getUpdatedHeaders(call.token, call.language, "application/json; charset=utf-8", call.headers);
+        _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
 
     String url = _getUrl(call);
 
@@ -255,8 +262,8 @@ class BaseNetworkManager {
 
     // make PUT request
     http.Response response = call.callMethod == CallMethod.PUT
-        ? await http.put(Uri.parse(url), headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"))
-        : await http.patch(Uri.parse(url), headers: headers, body: call.body, encoding: Encoding.getByName("utf-8"));
+        ? await http.put(Uri.parse(url), headers: headers, body: call.body ?? call.params, encoding: Encoding.getByName("utf-8"))
+        : await http.patch(Uri.parse(url), headers: headers, body: call.body ?? call.params, encoding: Encoding.getByName("utf-8"));
 
     String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
@@ -271,7 +278,10 @@ class BaseNetworkManager {
   }
 
   Future<http.Response> _doDeleteRequest(Call call) async {
-    Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, null, call.headers);
+    String contentType = _getContentType(call);
+
+    Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
+
     String url = _getUrl(call);
 
     String requestLog =
@@ -286,7 +296,7 @@ class BaseNetworkManager {
     http.Response response = await http.delete(
       Uri.parse(url),
       headers: headers,
-      body: call.body,
+      body: call.body ?? call.params,
       encoding: Encoding.getByName("utf-8"),
     );
 
