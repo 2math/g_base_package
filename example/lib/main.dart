@@ -12,7 +12,6 @@ import 'package:g_base_package/base/ui/base_state.dart';
 import 'package:g_base_package/base/utils/utils.dart';
 import 'package:g_base_package/base/utils/versions.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:launch_review/launch_review.dart';
 
 void main() {
   DevConfig();
@@ -213,10 +212,10 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                             Text("Go To Store"));
                         if (result == Version.UPDATE_REQUIRED) {
                           //go to store
-                          LaunchReview.launch(
-                            androidAppId: "com.facebook.katana",
-                            iOSAppId: "284882215",
-                          );
+                          // LaunchReview.launch(
+                          //   androidAppId: "com.facebook.katana",
+                          //   iOSAppId: "284882215",
+                          // );
                         } else if (isBlocking) {
                           //exit app
                           await System.popToExit(animated: true);

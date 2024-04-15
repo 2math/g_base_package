@@ -25,14 +25,14 @@ class Dialogs {
   static Future<int?> showVersions(
       BuildContext context, Widget? title, Widget message, Widget? btnSkip, Widget? btnGoToStore) async {
     if (btnGoToStore == null && btnSkip == null) {
-      throw AppException(errorMessage: "please provide atleast one button");
+      throw AppException(errorMessage: "please provide at least one button");
     }
     return showDialog<int>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => false, //prevent back btn
+        return PopScope(
+          onPopInvoked: (canPop) async => false, //prevent back btn
           child: AlertDialog(
             title: title,
             content: message,
@@ -71,8 +71,8 @@ class Dialogs {
       context: context,
       barrierDismissible: false, //cancelable false
       builder: (BuildContext context) {
-        return WillPopScope(
-            onWillPop: () async => false, //prevent back btn
+        return PopScope(
+            onPopInvoked: (canPop) async => false, //prevent back btn
             child: alertDialog);
       },
     );
