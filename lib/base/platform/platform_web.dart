@@ -1,4 +1,4 @@
-// ignore: unused_import
+// ignore: unused_import, avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 
 import 'package:connectivity_plus/connectivity_plus.dart';
