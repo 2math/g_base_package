@@ -76,6 +76,10 @@ class Localization {
     return Locale(_currentLocale!.languageCode);
   }
 
+  static AppLocale? getFullAppLocale() {
+    return _currentLocale;
+  }
+
   ///Use for key parameter one out of Keys class
   ///
   ///import 'package:sofia_airport/res/strings/string_keys.dart';
