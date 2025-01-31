@@ -31,7 +31,6 @@ class Log {
 
   static final _logger = Logger(
     printer: PrettyPrinter(
-      printTime: false,
       methodCount: 0,
     ),
   );
@@ -42,7 +41,6 @@ class Log {
     _fileLogger = Logger(
         filter: ProductionFilter(),
         printer: PrettyPrinter(
-          printTime: false,
           methodCount: 0,
         ),
         output: CustomFileOutput(file: fileToLog, getNewFile: getNewFile));

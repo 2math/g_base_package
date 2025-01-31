@@ -9,7 +9,7 @@ class Platform {
 
   static bool get isAndroid => PlatformInterface.isAndroid;
 
-  static bool get isIOS => PlatformInterface.isAndroid;
+  static bool get isIOS => PlatformInterface.isIOS;
   static bool get isWindows => PlatformInterface.isWindows;
   static bool get isMacOS => PlatformInterface.isMacOS;
   static bool get isLinux => PlatformInterface.isLinux;

@@ -8,8 +8,8 @@ homepage: https://github.com/2math/g_base_package
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: '^3.2.0'
-  flutter: ">=3.16.0"
+  sdk: '^3.3.0'
+  flutter: ">=3.19.0"
 
 dependencies:
   flutter:
@@ -23,12 +23,16 @@ dependencies:
 
   connectivity_plus: ^6.0.2
 
-  http: ^1.2.1
+  http: ^1.2.2
 
-  logger: ^2.2.0
+  logger: ^2.5.0
 
-  path_provider: ^2.1.3
-  package_info_plus: ^7.0.0
+  path_provider: ^2.1.4
+  package_info_plus: ^8.1.4
+
+dependency_overrides:
+  #Because package_info_plus: ^8.1.4 if we upgrade Flutter > 3.19.0(need dart 3.4.0)
+  win32: 5.5.0
 
 dev_dependencies:
   flutter_test:
