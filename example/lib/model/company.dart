@@ -1,4 +1,5 @@
 import 'package:example/res/res.dart';
+// ignore: depend_on_referenced_packages
 import 'package:json_annotation/json_annotation.dart';
 
 part 'company.g.dart';

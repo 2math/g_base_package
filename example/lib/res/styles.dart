@@ -10,7 +10,7 @@ class Style {
       colorScheme: ColorScheme.light(
         primary: AppColors.primaryColor,
         secondary: AppColors.accentColor,
-        background: AppColors.appBackground,
+        surface: AppColors.appBackground,
       ),
       /* fontFamily: "Gilroy"*/
     );
@@ -21,7 +21,7 @@ class Style {
     colorScheme: ColorScheme.light(
       primary: AppColors.primaryColor,
       secondary: AppColors.accentColor,
-      background: AppColors.appBackground,
+      surface: AppColors.appBackground,
     ),
     /* fontFamily: "Gilroy"*/
   );
@@ -59,8 +59,8 @@ class Style {
   static final etUnderLine =
       new UnderlineInputBorder(borderSide: new BorderSide(color: AppColors.accentColor, width: 1));
 
-  static final etUnderErrorLine =
-      new UnderlineInputBorder(borderSide: new BorderSide(color: AppColors.errorText, width: 1));
+  static const etUnderErrorLine =
+      UnderlineInputBorder(borderSide: BorderSide(color: AppColors.errorText, width: 1));
 
   static final etText =
       TextStyle(color: AppColors.regularText, fontSize: Dimen.etTextSize, fontWeight: FontWeight.normal);
@@ -79,7 +79,7 @@ class Style {
 
   static final attributeButton = TextStyle(color: AppColors.white, fontSize: Dimen.buttonsText);
 
-  static final etBorder = OutlineInputBorder(
+  static const etBorder = OutlineInputBorder(
     borderRadius: BorderRadius.all(Radius.circular(10.0)),
   );
 
@@ -140,12 +140,12 @@ class Style {
   );
 
   ///when you need to return a widget but has to be Gone
-  static final emptySpace = SizedBox(
+  static const emptySpace = SizedBox(
     height: 0,
     width: 0,
   );
 
-  static final centerLoading = Center(
+  static const centerLoading = Center(
     child: CircularProgressIndicator(),
   );
 

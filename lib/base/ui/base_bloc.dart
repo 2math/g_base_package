@@ -15,7 +15,7 @@ abstract class BaseBloc<Event, State, T, P> extends Bloc<Event, State> {
 //  /// Returns the [state] before any `events` have been [add]ed.
 //  State get initialState;
 
-  BaseBloc(State initialState) : super(initialState) {
+  BaseBloc(super.initialState) {
     remoteRepository = InstanceProvider.getInstance()?.provideRepository();
     localRepository = InstanceProvider.getInstance()?.provideLocalRepository();
   }
@@ -27,11 +27,11 @@ abstract class BaseBloc<Event, State, T, P> extends Bloc<Event, State> {
     super.onTransition(transition);
 
     if (printBlocLogs) {
-    Log.i("${transition.currentState}", "$tag currentState");
-    Log.i("${transition.event}", "$tag event");
-    Log.i("${transition.nextState}", "$tag nextState");
+      Log.i("${transition.currentState}", "$tag currentState");
+      Log.i("${transition.event}", "$tag event");
+      Log.i("${transition.nextState}", "$tag nextState");
+    }
   }
-}
 
   bool get printBlocLogs => true;
 }

@@ -32,7 +32,7 @@ class Dialogs {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return PopScope(
-          onPopInvoked: (canPop) async => false, //prevent back btn
+          canPop: false, //prevent back btn
           child: AlertDialog(
             title: title,
             content: message,
@@ -72,7 +72,7 @@ class Dialogs {
       barrierDismissible: false, //cancelable false
       builder: (BuildContext context) {
         return PopScope(
-            onPopInvoked: (canPop) async => false, //prevent back btn
+            canPop: false, //prevent back btn
             child: alertDialog);
       },
     );
@@ -112,6 +112,11 @@ class Dialogs {
           )
         : SnackBar(
             content: Container(
+              margin: EdgeInsets.fromLTRB(0, 0, 0, marginBottom),
+              decoration: BoxDecoration(
+                color: bkgColor ?? Theme.of(context).snackBarTheme.backgroundColor,
+                borderRadius: BorderRadius.circular(6),
+              ),
               child: Padding(
                 padding: snackBarAction != null
                     ? const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0)
@@ -123,11 +128,6 @@ class Dialogs {
                     snackBarAction ?? const SizedBox(width: 0, height: 0),
                   ],
                 ),
-              ),
-              margin: EdgeInsets.fromLTRB(0, 0, 0, marginBottom),
-              decoration: BoxDecoration(
-                color: bkgColor ?? Theme.of(context).snackBarTheme.backgroundColor,
-                borderRadius: BorderRadius.circular(6),
               ),
             ),
             backgroundColor: Colors.transparent,
