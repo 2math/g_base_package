@@ -1,4 +1,4 @@
-library g_basse_package;
+library;
 
 /// A Calculator.
 class Calculator {

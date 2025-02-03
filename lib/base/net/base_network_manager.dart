@@ -154,9 +154,7 @@ class BaseNetworkManager {
       case CallMethod.MULTIPART:
         // return _doUploadFileMultipart(call);
         return _doMultipart(call);
-      default:
-        throw AppException(errorMessage: 'Call without method', code: AppException.NO_CALL_METHOD_ERROR, data: call);
-    }
+      }
   }
 
   Future<http.Response> _doGetRequest(Call call) async {
@@ -599,7 +597,7 @@ class BaseNetworkManager {
       String urlParams = call.params!.keys
           .map((key) => "${Uri.encodeComponent(key)}=${Uri.encodeComponent(call.params![key]!)}")
           .join("&");
-      url = url + "?" + urlParams;
+      url = "$url?$urlParams";
     }
 
     return url;

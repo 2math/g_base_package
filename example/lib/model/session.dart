@@ -1,4 +1,5 @@
 import 'package:example/model/user.dart';
+// ignore: depend_on_referenced_packages
 import 'package:json_annotation/json_annotation.dart';
 
 import 'company.dart';
@@ -11,7 +12,7 @@ class Session {
   User? user;
 
   Company? get company {
-    return user?.company ?? null;
+    return user?.company;
   }
 
   Session({this.sessionId, this.user});

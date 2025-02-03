@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:g_base_package/base/net/base_network_manager.dart';
 import 'package:g_base_package/base/flavor_config.dart';
 import 'package:flutter/foundation.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
 
 enum CallMethod { GET, POST, PUT, PATCH, DELETE, DOWNLOAD, UPLOAD, UPLOAD_UPDATE, MULTIPART }

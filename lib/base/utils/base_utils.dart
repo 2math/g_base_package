@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
 import 'logger.dart';

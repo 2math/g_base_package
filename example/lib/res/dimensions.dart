@@ -51,10 +51,10 @@ class Dimen {
   static final searchIconHeight = SizeConfig.safeBlockHorizontal! * 10.42;
   static final searchPaddingLeft = SizeConfig.safeBlockHorizontal! * 10.65;
 
-  static final cameraButtonIconSize = 32.0;
-  static final dropdownButtonIconSize = 24.0;
-  static final dropdownButtonElevation = 16;
-  static final uploadImageHeight = 100.0;
+  static const cameraButtonIconSize = 32.0;
+  static const dropdownButtonIconSize = 24.0;
+  static const dropdownButtonElevation = 16;
+  static const uploadImageHeight = 100.0;
 
   static final tuto4ImageSize = SizeConfig.safeBlockHorizontal! * 100.0; //full safe width
   static final homeSuccessImageSize = SizeConfig.safeBlockVertical! * 33.0 > SizeConfig.safeBlockHorizontal! * 70.0

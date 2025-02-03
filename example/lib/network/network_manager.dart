@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:g_base_package/base/utils/base_utils.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http_parser/http_parser.dart';
 
 import 'package:example/model/page.dart';

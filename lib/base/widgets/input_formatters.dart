@@ -12,22 +12,22 @@ class NumberTextInputFormatter extends TextInputFormatter {
 
   @override
   TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
-    TextEditingValue _newValue = sanitize(newValue);
-    String text = _newValue.text;
+    TextEditingValue newValue0 = sanitize(newValue);
+    String text = newValue0.text;
 
     if (decimalRange == null) {
-      return _newValue;
+      return newValue0;
     }
 
     if (text == '.') {
       return TextEditingValue(
         text: '0.',
-        selection: _newValue.selection.copyWith(baseOffset: 2, extentOffset: 2),
+        selection: newValue0.selection.copyWith(baseOffset: 2, extentOffset: 2),
         composing: TextRange.empty,
       );
     }
 
-    return isValid(text) ? _newValue : oldValue;
+    return isValid(text) ? newValue0 : oldValue;
   }
 
   bool isValid(String text) {
@@ -49,7 +49,7 @@ class NumberTextInputFormatter extends TextInputFormatter {
       return value;
     }
 
-    String text = '-' + value.text.replaceAll('-', '');
+    String text = '-${value.text.replaceAll('-', '')}';
 
     return TextEditingValue(text: text, selection: value.selection, composing: TextRange.empty);
   }

@@ -8,9 +8,8 @@ abstract class AppBaseConfig extends FlavorConfig {
 
   final String webURL;
 
-  AppBaseConfig(Flavor flavor, {required baseUrl, required this.webURL})
-      : super(flavor,
-            baseUrl: baseUrl,
+  AppBaseConfig(super.flavor, {required super.baseUrl, required this.webURL})
+      : super(
             msgLoadingKey: StrKey.msgLoading,
             noNetworkKey: StrKey.noNetwork,
             serverErrorKey: StrKey.serverError,

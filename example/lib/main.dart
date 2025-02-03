@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:example/flavors/main_dev.dart';
 import 'package:example/network/network_manager.dart';
@@ -21,7 +22,7 @@ void main() {
 
   initLogs();
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 Future initLogs() async {
@@ -34,6 +35,8 @@ Future initLogs() async {
 
 //todo Galeen (02 Apr 2020) : Make example of basic use, copy what can from Zoef
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -59,7 +62,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, this.title}) : super(key: key);
+  const MyHomePage({super.key, this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -73,10 +76,12 @@ class MyHomePage extends StatefulWidget {
   final String? title;
 
   @override
+  // ignore: library_private_types_in_public_api
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
+  @override
   final String tag = "MyHomePage";
   int _counter = 0;
   String? token, companyId;
@@ -160,7 +165,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               Text(
                 Txt.get(StrKey.appName),
               ),
-              Text(
+              const Text(
                 'You have pushed the button this many times:',
               ),
               Text(
@@ -168,14 +173,14 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
               TextButton(
-                child: Text("Print Log files"),
+                child: const Text("Print Log files"),
                 onPressed: () async {
                   var list = await FileLogs().getLogFileVersions();
                   Log.w("file versions $list");
                 },
               ),
               TextButton(
-                child: Text("Logout"),
+                child: const Text("Logout"),
                 onPressed: () {
                   // showProgressIndicator(text: "some really long text mmmmmmmmmmmmmmmmmmm mmmmmmmmmmmmmmmmmmmmmmmmmmm");
                   NetworkManager(token).logout().then((isOK) {
@@ -188,7 +193,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return TextButton(
-                    child: Text("Get versions"),
+                    child: const Text("Get versions"),
                     onPressed: () async {
                       var versions = await NetworkManager(null).getVersions();
 
@@ -199,17 +204,19 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                       int status = versions.getStatus();
                       Log.d("status : $status");
 
+                      if(!context.mounted) return;
+
                       if (status != Version.ON_LATEST_VERSION && status != Version.UNKNOWN) {
                         bool isBlocking = status == Version.UPDATE_REQUIRED;
                         int? result = await Dialogs.showVersions(
                             context,
-                            Text("App Name"),
+                            const Text("App Name"),
                             Text(isBlocking
                                 ? "You are using a version which "
                                     "is no longer supported.\nTo continue using this app, please install latest version."
                                 : "There is a new version available."),
                             Text(isBlocking ? "Exit" : "Next Time"),
-                            Text("Go To Store"));
+                            const Text("Go To Store"));
                         if (result == Version.UPDATE_REQUIRED) {
                           //go to store
                           // LaunchReview.launch(
@@ -220,11 +227,12 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                           //exit app
                           await System.popToExit(animated: true);
                         } else {
+                          if(!context.mounted) return;
                           Dialogs.showSnackBar(context, "Continue",
                               marginBottom: SizeConfig.screenHeight! / 2.4,
-                              textStyle: TextStyle(color: Colors.black),
+                              textStyle: const TextStyle(color: Colors.black),
                               bkgColor: Colors.blue,
-                              duration: Duration(seconds: 2));
+                              duration: const Duration(seconds: 2));
                         }
                       } else {
                         Dialogs.showSnackBar(context, "Continue");
@@ -236,7 +244,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return TextButton(
-                    child: Text("Show snackbar"),
+                    child: const Text("Show snackbar"),
                     onPressed: () {
                       Dialogs.showSnackBar(
                         context,
@@ -251,12 +259,12 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
               LayoutBuilder(
                 builder: (BuildContext context, BoxConstraints constraints) {
                   return TextButton(
-                    child: Text("Show snackbar 150"),
+                    child: const Text("Show snackbar 150"),
                     onPressed: () {
                       Dialogs.showSnackBar(
                         context,
                         "bottom 150",
-                        textStyle: TextStyle(color: Colors.black),
+                        textStyle: const TextStyle(color: Colors.black),
                         bkgColor: Colors.blue,
                         marginBottom: 150,
                         closeAction: "Close",
@@ -266,43 +274,43 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                 },
               ),
               TextButton(
-                child: Text("Select and Upload Image"),
+                child: const Text("Select and Upload Image"),
                 onPressed: () {
                   _selectImage();
                 },
               ),
               TextButton(
-                child: Text("Select and Upload Document"),
+                child: const Text("Select and Upload Document"),
                 onPressed: () {
                   _selectFile();
                 },
               ),
               TextButton(
-                child: Text("delete Document"),
+                child: const Text("delete Document"),
                 onPressed: () {
                   _deleteFiles();
                 },
               ),
               TextButton(
-                child: Text("Fetch Documents"),
+                child: const Text("Fetch Documents"),
                 onPressed: () {
                   _fetchFiles();
                 },
               ),
               TextButton(
-                child: Text("Edit Document With file"),
+                child: const Text("Edit Document With file"),
                 onPressed: () {
                   _editFile(false);
                 },
               ),
               TextButton(
-                child: Text("Edit Document Without file"),
+                child: const Text("Edit Document Without file"),
                 onPressed: () {
                   _editFile(true);
                 },
               ),
               TextButton(
-                  child: Text("Check Internet"),
+                  child: const Text("Check Internet"),
                   onPressed: () async {
                     Log.d(DateTime.now().toIso8601String());
                     bool res = await NetUtil().checkInternet();
@@ -310,7 +318,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
                     showInfoMessage(res ? "Has internet" : "No internet");
                   }),
               TextButton(
-                child: Text("check"),
+                child: const Text("check"),
                 onPressed: () {
                   Call call = new Call.name(
                       CallMethod.GET,
@@ -330,7 +338,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
@@ -411,7 +419,7 @@ class _MyHomePageState extends BaseState<MyHomePage, Object, Object> {
             return null;
           });
 
-    var copiedFile;
+    File? copiedFile;
 
     if (selectedFile != null) {
       var emptyFile = await BaseFileUtils.getLocalFile(

@@ -1,4 +1,5 @@
 import 'package:g_base_package/base/utils/validators.dart';
+// ignore: depend_on_referenced_packages
 import 'package:json_annotation/json_annotation.dart';
 
 import 'company.dart';
@@ -38,15 +39,15 @@ class User {
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
   Map<String, dynamic> toJsonForUpdate() {
-      final Map<String, dynamic> data = new Map<String, dynamic>();
-      data['address'] = this.address;
-      data['city'] = this.city;
-      data['email'] = this.email;
-      data['name'] = this.firstName;
-      data['lastName'] = this.lastName;
-      data['phone'] = this.phone1;
-      data['state'] = this.state;
-      data['zipCode'] = this.zipCode;
+      final Map<String, dynamic> data = <String, dynamic>{};
+      data['address'] = address;
+      data['city'] = city;
+      data['email'] = email;
+      data['name'] = firstName;
+      data['lastName'] = lastName;
+      data['phone'] = phone1;
+      data['state'] = state;
+      data['zipCode'] = zipCode;
       return data;
   }
 
