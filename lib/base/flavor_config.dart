@@ -26,38 +26,37 @@ class FlavorConfig {
   final String? noNetworkKey;
   final String? socketExceptionKey;
   final String? serverErrorKey;
-  final String? headerLanguage,
-      headerToken,
-      headerContentType,
-      headerVersion,
-      headerOS;
+  final String? headerLanguage, headerToken, headerContentType, headerVersion, headerOS;
   final String? headerValueAndroid, headerValueIOS;
   final bool useVersionForIOS;
 
-  FlavorConfig(this.flavor,
-      {required this.baseUrl,
-      this.msgLoadingKey,
-      this.unauthorizedKey,
-      this.forbiddenKey,
-      this.notFoundKey,
-      this.unsupportedVersionKey,
-      this.noNetworkKey,
-      this.socketExceptionKey,
-      this.serverErrorKey,
-      this.headerLanguage,
-      this.headerToken,
-      this.headerContentType,
-      this.headerVersion,
-      this.headerOS,
-      this.headerValueAndroid,
-      this.headerValueIOS,
-      this.useVersionForIOS = false,
-      bool force = false}) {
-    if(force || _instance == null) {
+  FlavorConfig(
+    this.flavor, {
+    required this.baseUrl,
+    this.msgLoadingKey,
+    this.unauthorizedKey,
+    this.forbiddenKey,
+    this.notFoundKey,
+    this.unsupportedVersionKey,
+    this.noNetworkKey,
+    this.socketExceptionKey,
+    this.serverErrorKey,
+    this.headerLanguage,
+    this.headerToken,
+    this.headerContentType,
+    this.headerVersion,
+    this.headerOS,
+    this.headerValueAndroid,
+    this.headerValueIOS,
+    this.useVersionForIOS = false,
+    bool force = false,
+    bool shouldUpdatePlatformInfo = true,
+  }) {
+    if (force || _instance == null) {
       _instance = this;
     }
 
-    if (!isTesting()) {
+    if (shouldUpdatePlatformInfo && !isTesting()) {
       WidgetsFlutterBinding.ensureInitialized();
 
       updatePlatformInfo();
@@ -71,8 +70,7 @@ class FlavorConfig {
       _version = packageInfo.version;
       _buildNumber = packageInfo.buildNumber;
     }).catchError((e) {
-      Log.e("getting app info : $e", "flavorConfig",
-          e is Error ? e : AssertionError("$e"));
+      Log.e("getting app info : $e", "flavorConfig", e is Error ? e : AssertionError("$e"));
     });
   }
 
