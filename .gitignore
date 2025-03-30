@@ -78,3 +78,4 @@ build/
 /example/.dart_tool/
 /example/.metadata
 /pubspec.lock
+/.fvm/

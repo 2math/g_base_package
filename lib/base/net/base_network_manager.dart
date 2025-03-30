@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:g_base_package/base/provider/instance_provider.dart';
+import 'package:g_base_package/base/utils/network.dart';
 
 import '../lang/localization.dart';
 import '../flavor_config.dart';
@@ -592,10 +592,13 @@ class BaseNetworkManager {
   }
 
   Future _checkNetwork() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
+    if(!(await NetUtil().checkInternet())){
       _throwNoNetwork();
     }
+    // var connectivityResult = await (Connectivity().checkConnectivity());
+    // if (connectivityResult == ConnectivityResult.none) {
+    //   _throwNoNetwork();
+    // }
   }
 
   void _throwNoNetwork() {
