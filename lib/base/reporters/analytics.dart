@@ -40,7 +40,7 @@ class BaseAnalyticsUtil {
 //    return true;
 //    }
 
-  Future<void> logEvent(String name, Map<String, dynamic> params) async {
+  Future<void> logEvent(String name, Map<String, Object> params) async {
 //    if (_canNotLog()) return;
 //    await _analytics.logEvent(
 //      name: name,
