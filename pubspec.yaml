@@ -1,6 +1,6 @@
 name: g_base_package
 description: Base functionality for a project
-version: 3.27.2
+version: 3.32.0
 homepage: https://github.com/2math/g_base_package
 
 # The following line prevents the package from being accidentally published to
@@ -23,7 +23,7 @@ dependencies:
 
   connectivity_plus: ^6.1.4
 
-  http: ^1.3.0
+  http: ^1.4.0
 
   logger: ^2.5.0
 

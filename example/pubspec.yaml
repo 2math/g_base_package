@@ -35,17 +35,17 @@ dependencies:
 #      #don't forget to check for new version by tag at https://github.com/2math/g_base_package or in
 #      #change log : https://github.com/2math/g_base_package/blob/master/CHANGELOG.md
 
-  flutter_plugin_android_lifecycle: ^2.0.19
+  flutter_plugin_android_lifecycle: ^2.0.28
 
 #  launch_review: ^3.0.1
 
-  image_picker: ^1.0.8
+  image_picker: ^1.1.2
 
-  collection: ^1.18.0
+  collection: ^1.19.1
 
 dependency_overrides:
   #Because package_info_plus: ^8.1.4 if we upgrade Flutter > 3.19.0(need dart 3.4.0)
-  win32: 5.5.0
+#  win32: 5.5.0
 
 dev_dependencies:
   flutter_test:
