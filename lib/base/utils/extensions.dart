@@ -37,7 +37,7 @@ extension BaseString on String? {
   ///
   ///If you have a string as +359/888 666-555, this
   ///function will change the string to +359888666555.
-  clearForPhone() {
+  void clearForPhone() {
     if (this != null) {
       this!.replaceAll(RegExp(r'[^0-9+]'), "");
     }

@@ -18,7 +18,7 @@ class InstanceProvider<R, P, C extends BaseCrashReporter, A extends BaseAnalytic
   }
 
   @visibleForTesting
-  static setIgnoreInstanceForUnitTests(bool value) {
+  static void setIgnoreInstanceForUnitTests(bool value) {
     _ignoreInstanceForUnitTests = value;
   }
 
@@ -40,26 +40,26 @@ class InstanceProvider<R, P, C extends BaseCrashReporter, A extends BaseAnalytic
   }
 
   @visibleForTesting
-  setTestRepositoryInstance(R? testRepository) {
+  void setTestRepositoryInstance(R? testRepository) {
     _repositoryInstance = testRepository;
   }
 
   @visibleForTesting
-  setTestLocalRepositoryInstance(P? testRepository) {
+  void setTestLocalRepositoryInstance(P? testRepository) {
     _persistenceInstance = testRepository;
   }
 
   C? get crashReporter => _crashReporter;
 
   @visibleForTesting
-  setTestCrashReporter(C? crashReporter) {
+  void setTestCrashReporter(C? crashReporter) {
     _crashReporter = crashReporter;
   }
 
   A? get analyticsUtil => _analyticsUtil;
 
   @visibleForTesting
-  setTestAnalyticsUtil(A? analyticsUtil) {
+  void setTestAnalyticsUtil(A? analyticsUtil) {
     _analyticsUtil = analyticsUtil;
   }
 }

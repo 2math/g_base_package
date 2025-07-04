@@ -94,7 +94,7 @@ class Dialogs {
         ));
   }
 
-  static showSnackBar(BuildContext context, String msg,
+  static void showSnackBar(BuildContext context, String msg,
       {TextStyle? textStyle,
       Color? bkgColor,
       double marginBottom = 0,

@@ -37,7 +37,7 @@ class Log {
 
   static Logger? _fileLogger;
 
-  static initFileLogger({File? fileToLog, Future<File> Function(File? currentFile)? getNewFile}) {
+  static void initFileLogger({File? fileToLog, Future<File> Function(File? currentFile)? getNewFile}) {
     _fileLogger = Logger(
         filter: ProductionFilter(),
         printer: PrettyPrinter(
@@ -50,21 +50,21 @@ class Log {
 
   ///This method will print developer's info in logs only if we are in debug
   ///mode
-  static d(String log, [String? tag]) {
+  static void d(String log, [String? tag]) {
     printInDebugOnly(tag != null ? '$tagDebug $appTag $tag' : '$tagDebug $appTag', log, Level.debug);
   }
 
   ///This method will print developer's info in logs only if we are in debug
   ///mode, but will not add to the CrashReporter. This one is save for print passwords or other sensitive information
   /// in the console
-  static s(String log, [String? tag]) {
+  static void s(String log, [String? tag]) {
     printInDebugOnly(tag != null ? '$tagDebug $appTag $tag' : '$tagDebug $appTag', log, Level.debug,
         addToCrashReporter: false);
   }
 
   ///This method will print developer's warning logs only if we are in debug
   ///mode
-  static w(String log, [String? tag]) {
+  static void w(String log, [String? tag]) {
     printInDebugOnly(tag != null ? '$tagWarning $appTag $tag' : '$tagWarning $appTag', log, Level.warning);
   }
 
@@ -108,11 +108,11 @@ class Log {
   }
 
   ///Use this method to print in logs your error messages.
-  static error(String log, {String? tag, dynamic error}) {
+  static void error(String log, {String? tag, dynamic error}) {
     e(log, tag, _fixError(error));
   }
 
-  static _fixError(error) {
+  static dynamic _fixError(dynamic error) {
     if (error == null) {
       error = AppException(data: "Handled error!");
     } else if (error is! Error) {
@@ -122,7 +122,7 @@ class Log {
   }
 
   ///Use this method to print in logs your error messages.
-  static e(String log, [String? tag, Error? error]) {
+  static bool e(String log, [String? tag, Error? error]) {
     error = _fixError(error);
     if (fromUI) {
       InstanceProvider.getInstance()?.crashReporter?.logError(log, tag, error);
@@ -136,6 +136,8 @@ class Log {
       _printError(tag, error, log, _logger);
       return true;
     }
+
+    return false;
   }
 
   static void _printError(String? tag, Error? error, String log, Logger? logger) {
@@ -154,7 +156,7 @@ class Log {
   }
 
   ///Use this method to print in logs user's information messages.
-  static i(String log, [String? tag]) {
+  static void i(String log, [String? tag]) {
     printInDebugOnly(tag != null ? '$tagInfo $appTag $tag' : '$tagInfo $appTag', log, Level.info);
   }
 }

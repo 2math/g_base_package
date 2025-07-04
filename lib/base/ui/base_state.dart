@@ -56,7 +56,7 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     return false;
   }
 
-  showProgressIndicator({String? msgKey, String? text}) {
+  void showProgressIndicator({String? msgKey, String? text}) {
     if (progressDialog == null || msgKey != null) {
       String message;
       if (msgKey != null) {
@@ -73,7 +73,7 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     Dialogs.showProgressDialog(context, progressDialog!);
   }
 
-  hideProgressIndicator() {
+  void hideProgressIndicator() {
     if (progressDialog != null) {
       Navigator.of(context, rootNavigator: true).pop();
       progressDialog = null;
@@ -81,12 +81,12 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
   }
 
   ///pass focus from one field to another
-  fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+  void fieldFocusChange(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }
 
-  void showError(e,
+  void showError(dynamic e,
       {BuildContext? buildContext,
       Color? bkgColor,
       TextStyle? textStyle,
@@ -136,7 +136,7 @@ abstract class BaseState<T extends StatefulWidget, K, P> extends State<T> {
     );
   }
 
-  String? getErrorMessage(error, {String? defaultMessage}) {
+  String? getErrorMessage(dynamic error, {String? defaultMessage}) {
     if (error is AppException) {
       switch (error.code) {
         case 400:

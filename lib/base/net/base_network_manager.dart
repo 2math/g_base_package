@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:g_base_package/base/platform/sdk_platform.dart' as sdk;
 import 'package:g_base_package/base/provider/instance_provider.dart';
 import 'package:g_base_package/base/utils/system.dart';
@@ -48,7 +49,8 @@ class BaseNetworkManager {
             return await _repeatCall(call, handlePositiveResultBody);
           } else {
             //return original response if we couldn't auto login!
-            throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
+            throw AppException(
+                errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
           }
         } else {
           String? newToken = await tryToRefreshSession();
@@ -61,12 +63,14 @@ class BaseNetworkManager {
             return await _repeatCall(call, handlePositiveResultBody);
           } else {
             //return original response if we couldn't auto login!
-            throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
+            throw AppException(
+                errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
           }
         }
       } else {
         // If that call was not successful, throw an error.
-        throw AppException(errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
+        throw AppException(
+            errorMessage: 'Server Error', code: response.statusCode, data: _getBodyAsUtf8(response));
       }
     }
   }
@@ -77,7 +81,8 @@ class BaseNetworkManager {
     if (response2.statusCode < 300) {
       return await (_onPositiveResponse(call, response2, handlePositiveResultBody));
     } else {
-      throw AppException(errorMessage: 'Server Error', code: response2.statusCode, data: _getBodyAsUtf8(response2));
+      throw AppException(
+          errorMessage: 'Server Error', code: response2.statusCode, data: _getBodyAsUtf8(response2));
     }
   }
 
@@ -116,7 +121,8 @@ class BaseNetworkManager {
     });
   }
 
-  Future<T?> _onPositiveResponse<T>(Call call, http.Response response, Function handlePositiveResultBody) async {
+  Future<T?> _onPositiveResponse<T>(
+      Call call, http.Response response, Function handlePositiveResultBody) async {
     if (call.printResponseHeaders) {
       Log.d(_printMap(response.headers));
     }
@@ -147,14 +153,15 @@ class BaseNetworkManager {
       case CallMethod.DOWNLOAD:
         return _doDownloadFileRequest(call);
       case CallMethod.UPLOAD:
-      // return call.onUploadProgress != null ? _doUploadFileMultipart(call) : _doUploadFile(call);
+        return !kIsWeb && call.onUploadProgress != null
+            ? sdk.Platform.doUploadFileMultipart(_getUrl(call), call)
+            : _doUploadFile(call);
       case CallMethod.UPLOAD_UPDATE:
-        // return _doUploadFileMultipart(call);
-        return _doUploadFile(call);
+        return !kIsWeb ? sdk.Platform.doUploadFileMultipart(_getUrl(call), call) : _doUploadFile(call);
       case CallMethod.MULTIPART:
         // return _doUploadFileMultipart(call);
         return _doMultipart(call);
-      }
+    }
   }
 
   Future<http.Response> _doGetRequest(Call call) async {
@@ -196,7 +203,9 @@ class BaseNetworkManager {
   }
 
   void _logLastResponse(String method, String url, String responseLog) {
-    InstanceProvider.getInstance()?.crashReporter?.setString("Last Call response", '$method $url : $responseLog');
+    InstanceProvider.getInstance()
+        ?.crashReporter
+        ?.setString("Last Call response", '$method $url : $responseLog');
   }
 
   String _getBodyAsUtf8(http.Response response) => utf8.decode(response.bodyBytes);
@@ -236,16 +245,16 @@ class BaseNetworkManager {
   }
 
   String _getContentType(Call call) {
-    String contentType =
-        call.params != null ? "application/x-www-form-urlencoded; charset=utf-8" : "application/json; charset=utf-8";
+    String contentType = call.params != null
+        ? "application/x-www-form-urlencoded; charset=utf-8"
+        : "application/json; charset=utf-8";
     return contentType;
   }
 
   Future<http.Response> _doPutRequest(Call call) async {
     String contentType = _getContentType(call);
 
-    Map<String, String> headers =
-        _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
+    Map<String, String> headers = _getUpdatedHeaders(call.token, call.language, contentType, call.headers);
 
     String url = _getUrl(call);
 
@@ -260,8 +269,10 @@ class BaseNetworkManager {
 
     // make PUT request
     http.Response response = call.callMethod == CallMethod.PUT
-        ? await http.put(Uri.parse(url), headers: headers, body: call.body ?? call.params, encoding: Encoding.getByName("utf-8"))
-        : await http.patch(Uri.parse(url), headers: headers, body: call.body ?? call.params, encoding: Encoding.getByName("utf-8"));
+        ? await http.put(Uri.parse(url),
+            headers: headers, body: call.body ?? call.params, encoding: Encoding.getByName("utf-8"))
+        : await http.patch(Uri.parse(url),
+            headers: headers, body: call.body ?? call.params, encoding: Encoding.getByName("utf-8"));
 
     String responseLog = "Response Code : ${response.statusCode}\n"
 //            "Headers :\n$responseHeaders\n"
@@ -474,7 +485,9 @@ class BaseNetworkManager {
   Future<http.Response> _doUploadFile(Call call) async {
     if (call.file == null || !await call.file!.exists()) {
       throw AppException(
-          errorMessage: 'Uploading File without actual file set', code: AppException.NO_CALL_METHOD_ERROR, data: call);
+          errorMessage: 'Uploading File without actual file set',
+          code: AppException.NO_CALL_METHOD_ERROR,
+          data: call);
     }
     var stream = new http.ByteStream(call.file!.openRead());
     var length = await call.file!.length();
@@ -689,8 +702,9 @@ class BaseNetworkManager {
 
   void _throwNoNetwork() {
     throw AppException(
-        errorMessage:
-            FlavorConfig.instance!.noNetworkKey != null ? Txt.get(FlavorConfig.instance!.noNetworkKey) : "No network",
+        errorMessage: FlavorConfig.instance!.noNetworkKey != null
+            ? Txt.get(FlavorConfig.instance!.noNetworkKey)
+            : "No network",
         code: AppException.OFFLINE_ERROR);
   }
 

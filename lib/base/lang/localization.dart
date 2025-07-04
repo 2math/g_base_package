@@ -66,11 +66,11 @@ class Localization {
     return _currentLocale!.languageCode;
   }
 
-  static get deviceLanguageCode {
+  static String? get deviceLanguageCode {
     return _defaultLocale?.languageCode;
   }
 
-  static get currentLanguageCode => _currentLocale?.languageCode ?? deviceLanguageCode;
+  static String? get currentLanguageCode => _currentLocale?.languageCode ?? deviceLanguageCode;
 
   static Locale getAppLocale() {
     return Locale(_currentLocale!.languageCode);
