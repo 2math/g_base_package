@@ -1,6 +1,6 @@
 name: g_base_package
 description: Base functionality for a project
-version: 3.32.1
+version: 3.32.2
 homepage: https://github.com/2math/g_base_package
 
 # The following line prevents the package from being accidentally published to
