@@ -23,9 +23,9 @@ dependencies:
 
   connectivity_plus: ^6.1.4
 
-  http: ^1.4.0
+  http: ^1.6.0
 
-  logger: ^2.5.0
+  logger: ^2.6.2
 
   path_provider: ^2.1.5
   package_info_plus: ^8.3.0
