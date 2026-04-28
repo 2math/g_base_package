@@ -51,9 +51,13 @@ class NetUtil {
   ///Not working on web!
   Future<bool> checkInternet() async {
     try {
-      final result = await InternetAddress.lookup('bing.com');
+      // Try multiple hosts with short timeouts to handle regional DNS issues (e.g., China)
+      final result = await InternetAddress.lookup('bing.com')
+          .timeout(const Duration(seconds: 2))
+          .catchError((_) => InternetAddress.lookup('baidu.com').timeout(const Duration(seconds: 2)))
+          .catchError((_) => InternetAddress.lookup('google.com').timeout(const Duration(seconds: 2)));
       return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } on SocketException catch (_) {
+    } catch (_) {
       return false;
     }
   }
